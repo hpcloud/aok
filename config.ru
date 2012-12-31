@@ -1,0 +1,2 @@
+require './ehok'
+run Ehok
