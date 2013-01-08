@@ -34,10 +34,10 @@ class OpenidController < ApplicationController
       if oidreq.id_select
         if oidreq.immediate
           oidresp = oidreq.answer(false)
-        elsif session[:username].nil?
+        elsif current_user.nil?
           # The user hasn't logged in.
-          logger.debug "not logged in, Showing decision page"
-          return show_decision_page(oidreq)
+          redirect_to_auth(oidreq)
+          return
         else
           # Else, set the identity to the one the user is using.
           identity = url_for_user
@@ -55,11 +55,11 @@ class OpenidController < ApplicationController
         add_pape(oidreq, oidresp)
 
       elsif oidreq.immediate
-        server_url = url_for :action => 'index'
+        server_url = url('/')
         oidresp = oidreq.answer(false, server_url)
 
       else
-        return show_decision_page(oidreq)
+        return redirect_to_auth(oidreq)
       end
 
     else
@@ -79,11 +79,9 @@ class OpenidController < ApplicationController
     return @server
   end
 
-  def show_decision_page(oidreq, message="Do you trust this site with your identity?")
+  def redirect_to_auth(oidreq)
     session[:last_oidreq] = oidreq
-    @oidreq = oidreq
-
-    erb :decide, :layout => :server
+    redirect '/auth'
   end
 
   get '/idp_xrds' do
@@ -94,38 +92,17 @@ class OpenidController < ApplicationController
     render_xrds(types)
   end
 
-  post '/decision' do
+  get '/complete' do
     oidreq = session[:last_oidreq]
     session[:last_oidreq] = nil
 
-    if params[:yes].nil?
-      return redirect oidreq.cancel_url
-    else
-      id_to_send = params[:id_to_send]
+    identity = url_for_user
+    session[:approvals] ||= []
+    session[:approvals] << oidreq.trust_root
 
-      identity = oidreq.identity
-      if oidreq.id_select
-        if id_to_send and id_to_send != ""
-          session[:username] = id_to_send
-          session[:approvals] = []
-          identity = url_for_user
-        else
-          msg = "You must enter a username to in order to send " +
-            "an identifier to the Relying Party."
-          return show_decision_page(oidreq, msg)
-        end
-      end
-
-      if session[:approvals]
-        session[:approvals] << oidreq.trust_root
-      else
-        session[:approvals] = [oidreq.trust_root]
-      end
-      oidresp = oidreq.answer(true, nil, identity)
-      add_sreg(oidreq, oidresp)
-      add_pape(oidreq, oidresp)
-      return self.render_response(oidresp)
-    end
+    oidresp = oidreq.answer(true, nil, identity)
+    add_sreg(oidreq, oidresp)
+    return self.render_response(oidresp)
   end
 
   protected
@@ -145,19 +122,15 @@ class OpenidController < ApplicationController
     sregreq = OpenID::SReg::Request.from_openid_request(oidreq)
 
     return if sregreq.nil?
-    # In a real application, this data would be user-specific,
-    # and the user should be asked for permission to release
-    # it.
     sreg_data = {
-      'nickname' => session[:username],
-      'fullname' => 'Mayor McCheese',
-      'email' => 'mayor@example.com'
+      'email' => current_user.email
     }
 
     sregresp = OpenID::SReg::Response.extract_response(sregreq, sreg_data)
     oidresp.add_extension(sregresp)
   end
 
+  # XXX: Make this return accurate information.
   def add_pape(oidreq, oidresp)
     papereq = OpenID::PAPE::Request.from_openid_request(oidreq)
     return if papereq.nil?
@@ -180,6 +153,6 @@ class OpenidController < ApplicationController
   end
 
   def url_for_user
-    url("/users/#{session[:username]}", true, false)
+    url("/users/#{current_user.email}", true, false)
   end
 end

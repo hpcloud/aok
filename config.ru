@@ -1,11 +1,4 @@
-require 'bundler/setup'
-require 'sinatra/base'
-
-require './helpers/application_helper'
-
-require './controllers/application_controller'
-require './controllers/openid_controller'
-require './controllers/users_controller'
+require './config/dependencies'
 
 maps = {
   '/'        => ApplicationController,
@@ -15,3 +8,5 @@ maps = {
 maps.each do |path, controller|
   map(path){ run controller}
 end
+
+
