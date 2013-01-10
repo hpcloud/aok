@@ -13,7 +13,7 @@ gem 'stackato-kato'#, :path => '../stackato/kato/'
 
 # ActiveRecord stuff
 gem 'rake'
-gem 'activerecord', "~>3.0.18", :require => 'active_record'
+gem 'activerecord', "~>3.0.19", :require => 'active_record'
 gem 'pg'
 
 
