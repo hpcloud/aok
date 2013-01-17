@@ -1,0 +1,25 @@
+###
+# This YAML file tells the EhOK authetication system how it will run.
+#
+# Pick one of the following authetication strategies, and fill in all the
+# parameters required by that strategy:
+###
+
+
+#------------------------------------------------------------------------------
+# 1) Classic Stackato userid/login strategy. This is the default.
+#------------------------------------------------------------------------------
+strategy: builtin
+
+
+#------------------------------------------------------------------------------
+# 2) Your LDAP server.
+#------------------------------------------------------------------------------
+# strategy: ldap
+# server: 111.222.333.444
+
+
+#------------------------------------------------------------------------------
+# 3) Wide open for development only. No authentication. Use any id.
+#------------------------------------------------------------------------------
+# strategy: developer
