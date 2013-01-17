@@ -1,3 +1,4 @@
+Dir.chdir(File.dirname(__FILE__))
 require './config/dependencies'
 
 maps = {

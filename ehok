@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+puts "ehok starting up at #{Time.now}"
+
+require 'thin'
+
+socket = '/tmp/ehok.sock'
+$stderr.puts "Starting CC behind ehok_nginx"
+server = Thin::Server.new(socket)
+
+server.app = Rack::Adapter.load(File.join(File.dirname(__FILE__), 'config.ru'))
+# The routers proxying to us handle killing inactive connections. Set an upper limit
+# just to be safe.
+server.timeout = 15 * 60 # 15 min
+server.start
