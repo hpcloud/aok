@@ -1,5 +1,17 @@
 class UsersController < ApplicationController
 
+  #XXX: Authentication needed!!
+  post '/?' do
+    data = read_json_body
+    user = User.new
+    user.email = data['email']
+    user.password = data['password']
+    if user.save
+      return 204
+    else
+      return 400, {'Content-Type' => 'application/json'}, user.errors.full_messages.to_json
+    end
+  end
 
   get '/:username' do
     return user_xrds

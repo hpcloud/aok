@@ -1,20 +1,12 @@
 PATH
-  remote: ../stackato/kato/
+  remote: ../vcap/common
   specs:
-    stackato-kato (1.1.0)
-      docopt
-      em-http-request (~> 1.0.0)
+    vcap_common (1.0.12)
       eventmachine (~> 1.0.0)
-      eventmachine-tail (~> 0.6.3)
-      fraggle (= 4.0.1)
-      fraggle-block (= 0.2.0)
-      ipaddress (~> 0.8.0)
-      mustache
-      pg
-      sqlite3
-      term-ansicolor
-      uuid (~> 2.3.5)
-      vic (~> 1.0.0)
+      nats (~> 0.4.26)
+      posix-spawn (~> 0.3.6)
+      stackato-kato
+      thin (>= 1.4.0, < 1.6)
       yajl-ruby (~> 1.1.0)
 
 GEM
@@ -32,9 +24,11 @@ GEM
     activesupport (3.0.19)
     addressable (2.3.2)
     arel (2.0.10)
+    bcrypt-ruby (3.0.1)
     beefcake (0.3.7)
     builder (2.1.2)
     cookiejar (0.3.0)
+    daemons (1.1.9)
     docopt (0.5.0)
     em-http-request (1.0.3)
       addressable (>= 2.2.3)
@@ -47,7 +41,7 @@ GEM
     eventmachine (1.0.0)
     eventmachine-tail (0.6.4)
       eventmachine
-    ffi (1.2.0)
+    ffi (1.3.1)
     fraggle (4.0.1)
       beefcake (~> 0.3)
       eventmachine
@@ -57,19 +51,26 @@ GEM
     http_parser.rb (0.5.3)
     i18n (0.5.0)
     ipaddress (0.8.0)
-    listen (0.6.0)
+    json_pure (1.7.6)
+    listen (0.7.2)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
     mustache (0.99.4)
+    nats (0.4.26)
+      daemons (>= 1.1.5)
+      eventmachine (>= 0.12.10)
+      json_pure (>= 1.7.3)
+      thin (>= 1.4.1)
     omniauth (1.1.1)
       hashie (~> 1.2)
       rack
     pg (0.14.1)
-    rack (1.4.1)
+    posix-spawn (0.3.6)
+    rack (1.4.4)
     rack-protection (1.3.2)
       rack
     rake (10.0.3)
-    rb-inotify (0.8.8)
+    rb-inotify (0.9.0)
       ffi (>= 0.5.0)
     rerun (0.7.1)
       listen
@@ -78,9 +79,28 @@ GEM
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
-    sqlite3 (1.3.6)
+    sqlite3 (1.3.7)
+    stackato-kato (1.1.0)
+      docopt
+      em-http-request (~> 1.0.0)
+      eventmachine (~> 1.0.0)
+      eventmachine-tail (~> 0.6.3)
+      fraggle (= 4.0.1)
+      fraggle-block (= 0.2.0)
+      ipaddress (~> 0.8.0)
+      mustache
+      pg
+      sqlite3
+      term-ansicolor
+      uuid (~> 2.3.5)
+      vic (~> 1.0.0)
+      yajl-ruby (~> 1.1.0)
     systemu (2.5.2)
     term-ansicolor (1.0.7)
+    thin (1.5.0)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
     tilt (1.3.3)
     tzinfo (0.3.35)
     uuid (2.3.6)
@@ -93,6 +113,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 3.0.19)
+  bcrypt-ruby
   omniauth (~> 1.1.1)
   pg
   rake
@@ -100,4 +121,6 @@ DEPENDENCIES
   rerun
   ruby-openid (~> 2.2.2)
   sinatra (~> 1.3.3)
-  stackato-kato!
+  stackato-kato
+  thin
+  vcap_common!

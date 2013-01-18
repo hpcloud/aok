@@ -4,7 +4,6 @@ puts "ehok starting up at #{Time.now}"
 require 'thin'
 
 socket = '/tmp/ehok.sock'
-$stderr.puts "Starting CC behind ehok_nginx"
 server = Thin::Server.new(socket)
 
 server.app = Rack::Adapter.load(File.join(File.dirname(__FILE__), 'config.ru'))

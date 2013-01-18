@@ -23,4 +23,13 @@ EOS
     return 200, {'Content-Type' => 'application/xrds+xml'}, yadis
   end
 
+  def read_json_body
+    request.body.rewind  # in case someone already read it
+    data = JSON.parse(request.body.read)
+    if data.kind_of? Hash
+      data = data.with_indifferent_access
+    end
+    return data
+  end
+
 end
