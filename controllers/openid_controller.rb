@@ -95,13 +95,18 @@ class OpenidController < ApplicationController
   get '/complete' do
     oidreq = session[:last_oidreq]
     session[:last_oidreq] = nil
+    oidresp = nil
 
-    identity = url_for_user
-    session[:approvals] ||= []
-    session[:approvals] << oidreq.trust_root
+    if current_user
+      identity = url_for_user
+      session[:approvals] ||= []
+      session[:approvals] << oidreq.trust_root
 
-    oidresp = oidreq.answer(true, nil, identity)
-    add_sreg(oidreq, oidresp)
+      oidresp = oidreq.answer(true, nil, identity)
+      add_sreg(oidreq, oidresp)
+    else
+      oidresp = oidreq.answer(false)
+    end
     return self.render_response(oidresp)
   end
 

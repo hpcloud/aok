@@ -3,9 +3,9 @@ class UsersController < ApplicationController
   #XXX: Authentication needed!!
   post '/?' do
     data = read_json_body
-    user = User.new
+    user = Identity.new
     user.email = data['email']
-    user.password = data['password']
+    user.password = user.password_confirmation = data['password']
     if user.save
       return 204
     else

@@ -10,11 +10,12 @@ class ApplicationController < Sinatra::Base
   configure :development do
     set :logging, Logger::DEBUG
     puts "SETTING UP DEVELOPMENT ENVIRONMENT"
-    use OmniAuth::Strategies::Developer
-    set :strategy, :developer
   end
 
-  ActiveRecord::Base.establish_connection(Ehok::Config.get_database_config)
+  configure do
+    Ehok::Config.initialize_strategy
+    Ehok::Config.initialize_database
+  end
 
   before do
     headers({
@@ -33,13 +34,12 @@ class ApplicationController < Sinatra::Base
 
   post '/auth/:provider/callback' do
     email = auth_hash[:info][:email]
-    user = User.find_by_email(email)
-    unless user
-      user = User.new
-      user.email = email
-      user.save!
-    end
+    user = Identity.new(:email => email)
     set_current_user(user)
+    redirect '/openid/complete'
+  end
+
+  get '/auth/failure' do
     redirect '/openid/complete'
   end
 

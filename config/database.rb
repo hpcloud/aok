@@ -17,5 +17,9 @@ module Ehok
       return db_config
     end
 
+    def self.initialize_database
+      ActiveRecord::Base.establish_connection(get_database_config)
+    end
+
   end
 end

@@ -1,5 +1,24 @@
 Dir.chdir(File.dirname(__FILE__))
-require './config/dependencies'
+require 'bundler'
+Bundler.require(:default)
+require 'sinatra/base'
+
+%W{
+  lib/omniauth_identity_patch
+
+  config/strategy
+  config/database
+
+  helpers/application_helper
+  helpers/current_user_helper
+
+  controllers/application_controller
+  controllers/openid_controller
+  controllers/users_controller
+
+  models/identity
+
+}.each{|lib|require File.expand_path('../'+lib, __FILE__)}
 
 maps = {
   '/'        => ApplicationController,

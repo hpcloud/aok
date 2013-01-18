@@ -23,3 +23,4 @@ gem 'bcrypt-ruby', :require => 'bcrypt'
 
 #Auth
 gem 'omniauth', '~>1.1.1'
+gem 'omniauth-identity', '~>1.1.0'
