@@ -50,12 +50,16 @@ class ApplicationController < Sinatra::Base
   end
 
   def require_local
-    logger.warn "XXX WARNING: BYPASSING AUTHENTICATION FOR PRIVATE API" && return
-
-    unless request.host == 'localhost' && request.port == 9099
-      logger.debug "Unauthorized access attempted. #{request.env}"
+    host = request.host
+    port = request.env['HTTP_X_SERVER_PORT']
+    unless host == '127.0.0.1' && port == '9099'
+      logger.debug "Unauthorized access attempted to #{host.inspect} port #{port.inspect}"
       halt 403
     end
+  end
+
+  def log_request_env
+    logger.debug "REQUEST ENV:\n\t" + request.env.collect.sort{|a,b|a.first<=>b.first}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
   end
 
 end
