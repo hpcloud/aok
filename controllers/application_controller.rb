@@ -49,4 +49,13 @@ class ApplicationController < Sinatra::Base
     request.env['omniauth.auth']
   end
 
+  def require_local
+    logger.warn "XXX WARNING: BYPASSING AUTHENTICATION FOR PRIVATE API" && return
+
+    unless request.host == 'localhost' && request.port == 9099
+      logger.debug "Unauthorized access attempted. #{request.env}"
+      halt 403
+    end
+  end
+
 end

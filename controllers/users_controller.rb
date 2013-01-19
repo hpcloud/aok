@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
 
-  #XXX: Authentication needed!!
   post '/?' do
+    require_local
     data = read_json_body
     user = Identity.new
     user.email = data['email']
@@ -11,6 +11,28 @@ class UsersController < ApplicationController
     else
       return 400, {'Content-Type' => 'application/json'}, user.errors.full_messages.to_json
     end
+  end
+
+  delete '/:username' do
+    require_local
+    user = Identity.find_by_email(params[:username])
+    return 404 unless user
+    user.destroy
+    return 204
+  end
+
+  put '/:username' do
+    require_local
+    user = Identity.find_by_email(params[:username])
+    return 404 unless user
+    data = read_json_body
+    if data['password']
+      user.password = user.password_confirmation = data['password']
+    end
+    if user.changed? && !user.save
+      return 400, {'Content-Type' => 'application/json'}, user.errors.full_messages.to_json
+    end
+    return 204
   end
 
   get '/:username' do
