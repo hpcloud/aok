@@ -1,14 +1,14 @@
 module Ehok
   module Config
     def self.initialize_strategy
-      strategy_config = Kato::Doozer.get_component_config_value("ehok", "strategy")
-      case strategy_config
+      case AppConfig[:strategy]
       when 'builtin'
         ApplicationController.use OmniAuth::Strategies::Identity
         ApplicationController.set :strategy, :identity, :fields => [:email], :title => "Login"
-      when 'developer'
-        ApplicationController.use OmniAuth::Strategies::Developer
-        ApplicationController.set :strategy, :developer
+      # when 'developer'
+      #   puts "WARNING Developer strategy is wide-open access. Completely insecure!"
+      #   ApplicationController.use OmniAuth::Strategies::Developer
+      #   ApplicationController.set :strategy, :developer
       else
         abort "Ehok cannot start. Strategy was #{strategy_config.inspect} -- not a valid strategy."
       end

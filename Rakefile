@@ -1,10 +1,10 @@
 namespace :db do
-  task :migrate => :database_config do
+  task :migrate => :config do
     ActiveRecord::Base.establish_connection(Ehok::Config.get_database_config)
     ActiveRecord::Migrator.migrate 'db/migrate'
   end
 
-  task :create => :database_config do
+  task :create => :config do
     options = {:charset => 'utf8', :collation => 'utf8_unicode_ci'}
     @db_config = Ehok::Config.get_database_config
     ActiveRecord::Base.establish_connection @db_config.merge(:database => nil)
@@ -12,16 +12,18 @@ namespace :db do
 
   end
 
-  task :console => :database_config do
+  task :console => :config do
     config = Ehok::Config.get_database_config
     ENV["PGPASSWORD"] = config[:password]
     exec("psql -w -h #{config[:host]} #{config[:database]} #{config[:username]}")
   end
 
-  task :drop => :database_config do
-    config = Ehok::Config.get_database_config
-    ENV["PGPASSWORD"] = config[:password]
-    exec("dropdb -w -U #{config[:username]} -h #{config[:host]} #{config[:database]}")
+  task :drop => :config do
+    config = Ehok::Config.get_database_config.dup
+    db_name = config[:database]
+    config[:database] = nil
+    ActiveRecord::Base.establish_connection config
+    ActiveRecord::Base.connection.drop_database(db_name)
   end
 end
 
@@ -33,7 +35,9 @@ task :load_config do
   Kato::Doozer.set_component_config("ehok", config)
 end
 
-task :database_config do 
+task :config do 
+  ENV['RACK_ENV'] ||= 'production'
+  puts "Using #{ENV['RACK_ENV'].inspect} environment"
   require 'active_record'
-  require "./config/database"
+  require_relative "config/config"
 end

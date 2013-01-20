@@ -11,7 +11,6 @@
 #------------------------------------------------------------------------------
 strategy: builtin
 
-
 #------------------------------------------------------------------------------
 # 2) Your LDAP server.
 #------------------------------------------------------------------------------
@@ -23,3 +22,25 @@ strategy: builtin
 # 3) Wide open for development only. No authentication. Use any id.
 #------------------------------------------------------------------------------
 # strategy: developer
+
+
+database_environment:
+  production:
+    database: ehok
+    host: localhost
+    port: 5432
+    encoding: utf8
+    username: postgres
+    password: root
+    adapter: postgresql
+    timeout: 2000
+    template: template0 # Required for utf8 encoding
+  development:
+    adapter: sqlite3
+    database: db/ehok.sqlite3
+    encoding: utf8
+    timeout: 10000
+  test:
+    adapter: sqlite3
+    database: db/test.sqlite3
+    encoding: utf8

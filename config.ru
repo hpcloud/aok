@@ -6,8 +6,7 @@ require 'sinatra/base'
 %W{
   lib/omniauth_identity_patch
 
-  config/strategy
-  config/database
+  config/config
 
   helpers/application_helper
   helpers/current_user_helper
