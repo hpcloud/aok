@@ -14,6 +14,7 @@ require 'sinatra/base'
   controllers/application_controller
   controllers/openid_controller
   controllers/users_controller
+  controllers/logins_controller
 
   models/identity
 
@@ -22,7 +23,8 @@ require 'sinatra/base'
 maps = {
   '/'        => ApplicationController,
   '/openid'  => OpenidController,
-  '/users'   => UsersController
+  '/users'   => UsersController,
+  '/logins'  => LoginsController
 }
 maps.each do |path, controller|
   map(path){ run controller}

@@ -35,9 +35,8 @@ task :load_config do
   Kato::Doozer.set_component_config("ehok", config)
 end
 
-task :config do 
-  ENV['RACK_ENV'] ||= 'production'
-  puts "Using #{ENV['RACK_ENV'].inspect} environment"
+task :config do
   require 'active_record'
   require_relative "config/config"
+  puts "Using #{ENV['RACK_ENV'].inspect} environment"
 end
