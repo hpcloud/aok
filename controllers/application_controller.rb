@@ -40,6 +40,7 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/auth/failure' do
+    clear_current_user
     redirect '/openid/complete'
   end
 
