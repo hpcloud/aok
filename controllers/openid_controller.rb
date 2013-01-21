@@ -97,7 +97,7 @@ class OpenidController < ApplicationController
     session[:last_oidreq] = nil
     oidresp = nil
 
-    if current_user
+    if current_user && oidreq
       identity = url_for_user
       session[:approvals] ||= []
       session[:approvals] << oidreq.trust_root
