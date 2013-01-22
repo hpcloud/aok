@@ -3,10 +3,18 @@ module Aok
     class << self
       attr_reader :direct_login_enabled
       def initialize_strategy
-        case AppConfig[:strategy]
+        case AppConfig[:strategy][:use]
         when 'builtin'
           ApplicationController.use OmniAuth::Strategies::Identity
           ApplicationController.set :strategy, :identity, :fields => [:email], :title => "Login"
+          @direct_login_enabled = true
+        when 'ldap'
+          ApplicationController.use OmniAuth::Strategies::LDAP
+          options = AppConfig[:strategy][:ldap]
+          ApplicationController.set :strategy, :ldap, {
+            :title => "Login",
+
+          }
           @direct_login_enabled = true
         # when 'developer'
         #   puts "WARNING Developer strategy is wide-open access. Completely insecure!"

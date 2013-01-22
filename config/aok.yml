@@ -1,29 +1,53 @@
 ###
 # This YAML file tells the AOK authetication system how it will run.
 #
-# Pick one of the following authetication strategies, and fill in all the
-# parameters required by that strategy:
 ###
 
 
-#------------------------------------------------------------------------------
-# 1) Classic Stackato userid/login strategy. This is the default.
-#------------------------------------------------------------------------------
-strategy: builtin
+strategy: 
+  # Pick one of the following authetication strategies, and fill in all the
+  # parameters required by that strategy:
+  use: builtin # or ldap
+  #------------------------------------------------------------------------------
+  # 1) `builtin` Classic Stackato userid/login strategy.
+  #------------------------------------------------------------------------------
+  # no additional config needed for builtin strategy
 
-#------------------------------------------------------------------------------
-# 2) Your LDAP server.
-#------------------------------------------------------------------------------
-# strategy: ldap
-# server: 111.222.333.444
+  #------------------------------------------------------------------------------
+  # 2) `ldap` Your LDAP server.
+  #------------------------------------------------------------------------------
+  ldap:
+    host: localhost
+    port: 389
+    method: plain # other valid settings are: ssl, tls
+    base: 'dc=example, dc=com'
+    # uid is the LDAP attribute name for the user name in the login 
+    # form. Typically AD would be 'sAMAccountName' or 'UserPrincipalName',
+    # while OpenLDAP is 'uid'.
+    uid: 'sAMAccountName'
+    # Next two are optional. Anonymous access will be used if omitted.
+    bind_dn: 'default_bind_dn' #optional, default credentials for user lookup
+    password: 'password' #optional, default credentials for user lookup
+
+    # name_proc allows you to match the user name entered with the 
+    # format of the uid attributes. For example, value of 
+    # 'sAMAccountName' in AD contains only the windows user name. 
+    # If your user prefers using email to login, a name_proc as below
+    # will trim the email string down to just the windows login name. 
+    # In summary, use name_proc to fill the gap between the submitted 
+    # username and LDAP uid attribute value. Must be valid ruby code.
+    # name_proc: "Proc.new {|name| name.gsub(/@.*$/,'')}" #optional
+
+    # try_sasl and sasl_mechanisms are optional.
+    # Use them to initialize a SASL connection to server. If you are not 
+    # familiar with these authentication methods, please just avoid them.
+    # try_sasl: true
+    # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
 
 
-#------------------------------------------------------------------------------
-# 3) Wide open for development only. No authentication. Use any id.
-#------------------------------------------------------------------------------
-# strategy: developer
 
 
+# Database used by aok when using the `builtin` strategy
 database_environment:
   production:
     database: aok
