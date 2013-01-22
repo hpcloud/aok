@@ -13,8 +13,8 @@ class ApplicationController < Sinatra::Base
   end
 
   configure do
-    Ehok::Config.initialize_strategy
-    Ehok::Config.initialize_database
+    Aok::Config.initialize_strategy
+    Aok::Config.initialize_database
   end
 
   before do

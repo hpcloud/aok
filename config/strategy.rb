@@ -1,4 +1,4 @@
-module Ehok
+module Aok
   module Config
     class << self
       attr_reader :direct_login_enabled
@@ -13,7 +13,7 @@ module Ehok
         #   ApplicationController.use OmniAuth::Strategies::Developer
         #   ApplicationController.set :strategy, :developer
         else
-          abort "Ehok cannot start. Strategy was #{strategy_config.inspect} -- not a valid strategy."
+          abort "Aok cannot start. Strategy was #{strategy_config.inspect} -- not a valid strategy."
         end
         puts "Initialized #{ApplicationController.strategy} authentication strategy."
       end

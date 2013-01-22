@@ -1,14 +1,14 @@
 namespace :db do
   desc "Migrate the database to the current version"
   task :migrate => :config do
-    ActiveRecord::Base.establish_connection(Ehok::Config.get_database_config)
+    ActiveRecord::Base.establish_connection(Aok::Config.get_database_config)
     ActiveRecord::Migrator.migrate 'db/migrate'
   end
 
   desc "Create the database"
   task :create => :config do
     options = {:charset => 'utf8', :collation => 'utf8_unicode_ci'}
-    @db_config = Ehok::Config.get_database_config
+    @db_config = Aok::Config.get_database_config
     ActiveRecord::Base.establish_connection @db_config.merge(:database => nil)
     ActiveRecord::Base.connection.create_database @db_config[:database], options
 
@@ -16,14 +16,14 @@ namespace :db do
 
   desc "Start an interactive database session"
   task :console => :config do
-    config = Ehok::Config.get_database_config
+    config = Aok::Config.get_database_config
     ENV["PGPASSWORD"] = config[:password]
     exec("psql -w -h #{config[:host]} #{config[:database]} #{config[:username]}")
   end
 
   desc "Delete the database"
   task :drop => :config do
-    config = Ehok::Config.get_database_config.dup
+    config = Aok::Config.get_database_config.dup
     db_name = config[:database]
     config[:database] = nil
     ActiveRecord::Base.establish_connection config
@@ -35,9 +35,9 @@ desc "Reload Ehok's configuration from the YAML config file, overwriting current
 task :load_config do
   require 'kato/doozer'
   require 'yaml'
-  config_file = File.join(File.dirname(__FILE__), 'config', 'ehok.yml')
+  config_file = File.join(File.dirname(__FILE__), 'config', 'aok.yml')
   config = YAML.load_file(config_file)
-  Kato::Doozer.set_component_config("ehok", config)
+  Kato::Doozer.set_component_config("aok", config)
 end
 
 task :config do
@@ -59,17 +59,17 @@ task :import_users_from_cloud_controller => :config do
       ****************************************************************************
       * WARNING! You are about to import users and their passwords from the Cloud
       * Controller in to Ehok. This will DROP AND RECREATE your Ehok database.
-      * 
+      *
       * If you know what you are doing you can run this task with FORCE=true to
       * prevent this message appearing.
       ****************************************************************************
-      
+
       Are you sure? (Yes|No) [No]
     END
     confirmation = STDIN.gets.chomp.downcase
     unless confirmation == 'yes'
       puts('Exiting')
-      exit 
+      exit
     end
   end
   users = []
@@ -90,13 +90,13 @@ task :import_users_from_cloud_controller => :config do
         puts "Couldn't find any users with passwords in the Cloud Controller database. Doing nothing."
         exit
       end
-      
+
       Rake::Task["db:drop"].invoke
       Rake::Task["db:create"].invoke
       Rake::Task["db:migrate"].invoke
 
       Ehok::Config.initialize_database
-      values = users.collect do |user| 
+      values = users.collect do |user|
         "(" +
         %w{email crypted_password}.collect do |column|
           ActiveRecord::Base.connection.quote user[column]
@@ -136,7 +136,7 @@ task :export_passwords_to_cloud_controller => :config do
   ActiveRecord::Base.transaction do
     users.each do |user|
       num_migrated += ActiveRecord::Base.connection.update_sql("
-        update users 
+        update users
         set crypted_password = #{ActiveRecord::Base.connection.quote(user[:password_digest])}
         where email = #{ActiveRecord::Base.connection.quote(user[:email])}")
     end
@@ -148,4 +148,3 @@ task :export_passwords_to_cloud_controller => :config do
   puts "Some passwords were already synced." if users.size != num_migrated
   puts "Moved #{num_migrated} of #{users.size} password(s) to the cloud_controller."
 end
-

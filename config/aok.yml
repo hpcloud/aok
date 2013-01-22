@@ -1,5 +1,5 @@
 ###
-# This YAML file tells the EhOK authetication system how it will run.
+# This YAML file tells the AOK authetication system how it will run.
 #
 # Pick one of the following authetication strategies, and fill in all the
 # parameters required by that strategy:
@@ -26,7 +26,7 @@ strategy: builtin
 
 database_environment:
   production:
-    database: ehok
+    database: aok
     host: localhost
     port: 5432
     encoding: utf8
@@ -37,7 +37,7 @@ database_environment:
     template: template0 # Required for utf8 encoding
   development:
     adapter: sqlite3
-    database: db/ehok.sqlite3
+    database: db/aok.sqlite3
     encoding: utf8
     timeout: 10000
   test:

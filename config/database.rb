@@ -1,4 +1,4 @@
-module Ehok
+module Aok
   module Config
 
     def self.get_database_config
