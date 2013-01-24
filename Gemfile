@@ -1,4 +1,7 @@
 source (ENV['RUBYGEMS_MIRROR'] or :rubygems)
+
+ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
+
 gem 'sinatra', '~>1.3.3'
 
 group :development do

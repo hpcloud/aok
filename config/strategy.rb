@@ -4,11 +4,12 @@ module Aok
     STRATEGIES = %W{
       builtin
       ldap
+      developer
     }
+
     # Strategies for which we are capable of doing legacy client login with name/pw
     STRATEGIES_DIRECT = %W{
       builtin
-      ldap
     }
 
     class << self
@@ -62,11 +63,11 @@ module Aok
         ApplicationController.set :strategy, :ldap
       end
 
-      # def developer
-      #   puts "WARNING Developer strategy is wide-open access. Completely insecure!"
-      #   ApplicationController.use OmniAuth::Strategies::Developer
-      #   ApplicationController.set :strategy, :developer
-      # end
+      def developer
+        puts "WARNING Developer strategy is wide-open access. Completely insecure!"
+        ApplicationController.use OmniAuth::Strategies::Developer
+        ApplicationController.set :strategy, :developer
+      end
 
     end
   end
