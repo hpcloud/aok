@@ -75,7 +75,7 @@ module Aok
 
         def developer
           puts "WARNING Developer strategy is wide-open access. Completely insecure!"
-          ApplicationController.use OmniAuth::Strategies::Developer
+          ApplicationController.use OmniAuth::Strategies::Developer, :fields => [:email]
           ApplicationController.set :strategy, :developer
         end
 

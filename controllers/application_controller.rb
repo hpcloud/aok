@@ -53,6 +53,10 @@ class ApplicationController < Sinatra::Base
     redirect '/openid/complete'
   end
 
+  get '/?' do
+    "<h1>AOK!</h1>"
+  end
+
   protected
 
   def auth_hash

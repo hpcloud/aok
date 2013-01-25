@@ -17,7 +17,7 @@ class OpenidController < ApplicationController
     rescue ProtocolError => e
       # invalid openid request, so just display a page with an error message
       logger.debug "Invalid openid request: #{e.to_s}"
-      halt 500, e.to_s
+      halt 400, "Invalid openid request"
     end
 
     # no openid.mode was given
@@ -94,10 +94,17 @@ class OpenidController < ApplicationController
 
   get '/complete' do
     oidreq = session[:last_oidreq]
+    unless oidreq
+      logger.info "No openid request was found in the session. 
+      This can sometimes be caused by clock skew between the server
+      and the user-agent causing the cookie to expire prematurely."
+      halt "This is an OpenID server endpoint!"
+    end
+
     session[:last_oidreq] = nil
     oidresp = nil
 
-    if current_user && oidreq
+    if current_user
       identity = url_for_user
       session[:approvals] ||= []
       session[:approvals] << oidreq.trust_root
