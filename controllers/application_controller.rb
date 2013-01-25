@@ -16,7 +16,7 @@ class ApplicationController < Sinatra::Base
   end
 
   configure do
-    Aok::Config.initialize_strategy
+    Aok::Config::Strategy.initialize_strategy
     Aok::Config.initialize_database
   end
 
@@ -39,11 +39,17 @@ class ApplicationController < Sinatra::Base
     email = auth_hash[:info][:email]
     user = Identity.new(:email => email)
     set_current_user(user)
+
+    return 204 if env["aok.no_openid"] # legacy login
+
     redirect '/openid/complete'
   end
 
   get '/auth/failure' do
     clear_current_user
+
+    return 403 if env["aok.no_openid"] # legacy login
+
     redirect '/openid/complete'
   end
 
