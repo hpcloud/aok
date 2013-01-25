@@ -4,8 +4,11 @@ class ApplicationController < Sinatra::Base
   set :views, File.expand_path('../../views', __FILE__)
   set :logging, Logger::INFO
 
-  # XXX: get secret from doozer
-  use Rack::Session::Cookie, :secret => SecureRandom.urlsafe_base64(128)
+  use Rack::Session::ActiveRecord, {
+    :sidbits => 1024, 
+    :expire_after => 900, #15 minutes
+    :httponly => true
+  }
 
   configure :development do
     set :logging, Logger::DEBUG

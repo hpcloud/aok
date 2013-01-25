@@ -5,6 +5,7 @@ require 'sinatra/base'
 
 %W{
   lib/omniauth_identity_patch
+  lib/active_record_session_store
 
   config/config
 
@@ -17,6 +18,7 @@ require 'sinatra/base'
   controllers/logins_controller
 
   models/identity
+  models/session
 
 }.each{|lib|require File.expand_path('../'+lib, __FILE__)}
 
