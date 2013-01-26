@@ -4,7 +4,8 @@ Bundler.require(:default)
 require 'sinatra/base'
 
 %W{
-  lib/omniauth_identity_patch
+  lib/omniauth/strategies/identity
+  lib/omniauth/form
   lib/active_record_session_store
 
   config/config

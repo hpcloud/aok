@@ -1,0 +1,20 @@
+.sidebar ul li a:hover,
+.sidebar ul li.selected a {
+    background-color: #026982;
+    color: #f3f3f3;
+}
+
+body form .togglebox {
+    border: 0;
+    box-shadow: 0;
+}
+
+body form .togglebox label,
+body form .togglebox label b {
+    display: none !important;
+}
+
+body form .togglebox label::before,
+body form .togglebox label::after {
+    display: none !important;
+}

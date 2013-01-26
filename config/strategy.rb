@@ -1,6 +1,16 @@
+require 'omniauth'
 module Aok
   module Config
     module Strategy
+
+      class FailureEndpoint
+        def self.call(the_env)
+          return 403 if the_env["aok.no_openid"] # legacy login
+          OmniAuth::FailureEndpoint.call(the_env) # default behavior
+        end
+      end
+      OmniAuth.config.on_failure = Aok::Config::Strategy::FailureEndpoint
+
       # All valid strategies
       STRATEGIES = %W{
         builtin
@@ -16,12 +26,17 @@ module Aok
           :secret => :password
         },
         :builtin => {
+          :id => :auth_key
         },
         :ldap => {
           :id => :username
         },
         :developer => {
         }
+      }
+
+      DEFAULT_OPTIONS = {
+        :title => "Sign In"
       }
 
       class << self
@@ -39,17 +54,16 @@ module Aok
         end
 
         def builtin
-          ApplicationController.use OmniAuth::Strategies::Identity
-          ApplicationController.set :strategy, :identity, {
-            :fields => [:email], 
-            :title => "Login"
-          }
+          require 'omniauth-identity'
+          ApplicationController.use OmniAuth::Strategies::Identity, DEFAULT_OPTIONS.merge({
+            :fields => [:email]
+          })
+          ApplicationController.set :strategy, :identity
         end
 
         def ldap
-          options = {
-            :title => "Login",
-          }.merge(AppConfig[:strategy][:ldap])
+          require 'omniauth-ldap'
+          options = AppConfig[:strategy][:ldap].merge(DEFAULT_OPTIONS)
 
           if options.key? :name_proc
             proc = options[:name_proc]
@@ -74,8 +88,9 @@ module Aok
         end
 
         def developer
+          options = DEFAULT_OPTIONS.merge({:fields => [:email]})
           puts "WARNING Developer strategy is wide-open access. Completely insecure!"
-          ApplicationController.use OmniAuth::Strategies::Developer, :fields => [:email]
+          ApplicationController.use OmniAuth::Strategies::Developer, options
           ApplicationController.set :strategy, :developer
         end
 
@@ -95,6 +110,7 @@ module Aok
           STRATEGIES_DIRECT[AppConfig[:strategy][:use].to_sym]
         end
       end
+
     end
   end
 end

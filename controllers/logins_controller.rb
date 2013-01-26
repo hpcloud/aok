@@ -9,6 +9,10 @@ class LoginsController < ApplicationController
     end
   end
 
+  class << self
+    attr_reader :middleware
+  end
+
   post '/?' do
     # Take the credentials that were posted to us and simulate a form
     # submission on the configured omniauth strategy. We basically
@@ -26,11 +30,16 @@ class LoginsController < ApplicationController
 
     # Find what strategy we're using
     strategy = settings.strategy.to_s
-    middleware = OmniAuth::Strategies.const_get("#{OmniAuth::Utils.camelize(strategy)}")
+    klass = OmniAuth::Strategies.const_get("#{OmniAuth::Utils.camelize(strategy)}")
+    middleware = ApplicationController.middleware.find{|m| m.first == klass}
+    middleware_options = middleware[1].first
 
     # Fake out Rack to think we're on the auth callback with our synthesized form body
     path = "/auth/#{strategy}/callback"
-    auth_env = env.merge(
+
+    session # need this to ensure env['rack.session'] is set, needed by omniauth
+
+    env.merge!(
       "REQUEST_METHOD"=>"POST", 
       "REQUEST_PATH" => path, 
       "PATH_INFO" => path,
@@ -39,10 +48,10 @@ class LoginsController < ApplicationController
       "CONTENT_TYPE" => "application/x-www-form-urlencoded",
       "aok.no_openid" => true # just return a status code, no openid redirects
     )
-
+    
     # Call the middleware, which will then call up in to the auth code
     # in ApplicationController. The results can be returned directly.
-    middleware.new(self).call!(auth_env)
+    klass.new(self, middleware_options).call!(env)
   end
 
 end

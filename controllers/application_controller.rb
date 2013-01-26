@@ -18,6 +18,8 @@ class ApplicationController < Sinatra::Base
   configure do
     Aok::Config::Strategy.initialize_strategy
     Aok::Config.initialize_database
+    set :public_folder, File.expand_path('../../public', __FILE__)
+    puts "Serving static files from #{settings.public_folder.inspect}"
   end
 
   before do
@@ -40,16 +42,16 @@ class ApplicationController < Sinatra::Base
     user = Identity.new(:email => email)
     set_current_user(user)
 
-    return 204 if env["aok.no_openid"] # legacy login
+    if env["aok.no_openid"] # legacy login
+      return 200, {'Content-Type' => 'application/json'}, {:email => email}.to_json
+    end
 
     redirect '/openid/complete'
   end
 
   get '/auth/failure' do
+    # legacy login failures handles by Aok::Config::Strategy::FailureEndpoint
     clear_current_user
-
-    return 403 if env["aok.no_openid"] # legacy login
-
     redirect '/openid/complete'
   end
 
@@ -72,8 +74,9 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  def log_request_env
-    logger.debug "REQUEST ENV:\n\t" + request.env.collect.sort{|a,b|a.first<=>b.first}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
+  def log_env(en=nil)
+    en ||= env
+    logger.error "ENV:\n\t" + en.collect.sort{|a,b|a.first<=>b.first}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
   end
 
 end
