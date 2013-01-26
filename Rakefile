@@ -31,7 +31,7 @@ namespace :db do
   end
 end
 
-desc "Reload Ehok's configuration from the YAML config file, overwriting current config in Doozer."
+desc "Reload AOK's configuration from the YAML config file, overwriting current config in Doozer."
 task :load_config do
   require 'kato/doozer'
   require 'yaml'
@@ -46,10 +46,10 @@ task :config do
   puts "Using #{ENV['RACK_ENV'].inspect} environment"
 end
 
-desc "Import users and passwords from the cloud controller. This is for migrating to Ehok
-from the old ( <=2.8 ) Stackato login system to Ehok. This will drop and recreate Ehok's
-database. This is only necessary if you want to use Ehok but still use a built-in password
-database. This is not necessary if you want to use Ehok with an external auth system such
+desc "Import users and passwords from the cloud controller. This is for migrating to AOK
+from the old ( <=2.8 ) Stackato login system to AOK. This will drop and recreate AOK's
+database. This is only necessary if you want to use AOK but still use a built-in password
+database. This is not necessary if you want to use AOK with an external auth system such
 as LDAP."
 task :import_users_from_cloud_controller => :config do
   require 'kato/ui'
@@ -58,7 +58,7 @@ task :import_users_from_cloud_controller => :config do
     puts <<-END.gsub(/^[ ]+/, '')
       ****************************************************************************
       * WARNING! You are about to import users and their passwords from the Cloud
-      * Controller in to Ehok. This will DROP AND RECREATE your Ehok database.
+      * Controller in to AOK. This will DROP AND RECREATE your AOK database.
       *
       * If you know what you are doing you can run this task with FORCE=true to
       * prevent this message appearing.
@@ -95,7 +95,7 @@ task :import_users_from_cloud_controller => :config do
       Rake::Task["db:create"].invoke
       Rake::Task["db:migrate"].invoke
 
-      Ehok::Config.initialize_database
+      Aok::Config.initialize_database
       values = users.collect do |user|
         "(" +
         %w{email crypted_password}.collect do |column|
@@ -113,14 +113,14 @@ task :import_users_from_cloud_controller => :config do
 end
 
 desc "Export passwords to the cloud controller. This is for switching BACK to the
-cloud controller's built-in password login system after using Ehok with the 'builtin'
+cloud controller's built-in password login system after using AOK with the 'builtin'
 strategy."
 task :export_passwords_to_cloud_controller => :config do
   require 'kato/doozer'
 
-  puts "Gathering passwords from Ehok..."
+  puts "Gathering passwords from AOK..."
   users = []
-  Ehok::Config.initialize_database
+  Aok::Config.initialize_database
   rows = ActiveRecord::Base.connection.execute("select email, password_digest from identities")
   ActiveRecord::Base.connection.disconnect!
   users = []
