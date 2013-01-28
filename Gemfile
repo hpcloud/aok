@@ -10,6 +10,9 @@ group :development do
   gem 'rb-inotify'
 end
 
+gem 'rspec'
+gem 'rack-test'
+
 # OpenID support
 gem 'ruby-openid', '~>2.2.2'
 
