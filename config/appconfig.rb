@@ -1,9 +1,9 @@
 begin
   Kato::Doozer.client_name ||= "aok"
-  DoozerTree, DoozerTreeRev = Kato::Doozer.walk("/proc/aok/**", { :symbolize_keys => true })
-  if DoozerTree
-    AppConfig = DoozerTree[:config]
-  end
+  AppConfig = Kato::Doozer.walk("/proc/aok/config/**", { :symbolize_keys => true }).first
+
+  CCConfig = Kato::Doozer.walk("/proc/cloud_controller/config/**", { :symbolize_keys => true }).first
+
 rescue => ex
   $stderr.puts %[FATAL: Exception encountered while loading config: #{ex}\n#{ex.backtrace.join("\n")}]
   exit 1

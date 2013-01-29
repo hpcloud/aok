@@ -2,7 +2,7 @@ require 'omniauth'
 
 module OmniAuth
   class Form
-    DEFAULT_CSS = ''
+    DEFAULT_CSS = '' unless defined? DEFAULT_CSS
 
     attr_accessor :options
 
@@ -71,9 +71,8 @@ module OmniAuth
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>#{title}</title>
-        <link href="/css/all-ok-4c4ef89.css" rel="stylesheet" />
-        <!--[if IE]><link href="/css/all-ie-4c4ef89.css" rel="stylesheet" /><![endif]-->
-        <link href="/css/theme/style.css" rel="stylesheet" />
+        <link href="https://#{cc_url}/all-1.css" rel="stylesheet" />
+        <link href="https://#{cc_url}/theme/style.css" rel="stylesheet" />
         #{header_info}
       </head>
       <body class="login">
@@ -110,6 +109,10 @@ module OmniAuth
     def to_response
       footer
       Rack::Response.new(@html).finish
+    end
+
+    def cc_url
+      CCConfig[:external_uri]
     end
 
   end

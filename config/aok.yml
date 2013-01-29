@@ -1,5 +1,5 @@
 ###
-# This YAML file tells the AOK authetication system how it will run.
+# This YAML file tells the AOK authentication system how it will run.
 #
 ###
 
@@ -36,6 +36,11 @@ strategy:
     # will trim the email string down to just the windows login name. 
     # In summary, use name_proc to fill the gap between the submitted 
     # username and LDAP uid attribute value. Must be valid ruby code.
+    # It is possible to open security holes in Stackato through this
+    # setting, since the provided code will be accepting arbitrary user
+    # input. Administrators are urged to use this setting only when
+    # absolutely necessary, and to check the entered code thoroughly 
+    # for possible security implications.
     # name_proc: "Proc.new {|name| name.gsub(/@.*$/,'')}" #optional
 
     # try_sasl and sasl_mechanisms are optional.
@@ -47,7 +52,8 @@ strategy:
 
 
 
-# Database used by aok when using the `builtin` strategy
+# Database used by aok for sessions and to store users with 
+# the `builtin` strategy
 database_environment:
   production:
     database: aok
