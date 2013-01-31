@@ -149,6 +149,6 @@ task :export_passwords_to_cloud_controller => :config do
   puts "Moved #{num_migrated} of #{users.size} password(s) to the cloud_controller."
 end
 
-require 'rspec/core/rake_task'
-desc "run specs"
-RSpec::Core::RakeTask.new
+# require 'rspec/core/rake_task'
+# desc "run specs"
+# RSpec::Core::RakeTask.new
