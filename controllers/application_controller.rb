@@ -1,8 +1,7 @@
 require 'logger'
 class ApplicationController < Sinatra::Base
   helpers ApplicationHelper, CurrentUserHelper
-  set :views, File.expand_path('../../views', __FILE__)
-  set :logging, Logger::INFO
+  set :logging, Logger::DEBUG
 
   use Rack::Session::ActiveRecord, {
     :sidbits => 1024, 
