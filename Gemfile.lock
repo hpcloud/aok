@@ -138,7 +138,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (~> 3.0.19)
+  activerecord (~> 3.0.20)
   bcrypt-ruby
   omniauth (~> 1.1.1)
   omniauth-identity (~> 1.1.0)
