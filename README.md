@@ -104,6 +104,11 @@ following command to enable AOK:
     kato config set cloud_controller aok/enabled true
     kato restart cloud_controller
 
+If AOK is enabled before any users have been registered with the Cloud 
+Controller, then the adminstrator must change the password of the unix 
+`stackato` user. No automatic process will change the unix password, as would 
+happen if AOK were not enabled.
+
 User Management
 ---------------
 When using AOK with any strategy other than `builtin`, users in Stackato will be
