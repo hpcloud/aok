@@ -3,9 +3,12 @@ class ApplicationController < Sinatra::Base
   helpers ApplicationHelper, CurrentUserHelper
   set :logging, Logger::DEBUG
 
+  # The session is only used for the duration of the login process
+  # the expiration is set to 2 hours to allow for clock skew
+  # between clients and the server.
   use Rack::Session::ActiveRecord, {
     :sidbits => 1024, 
-    :expire_after => 900, #15 minutes
+    :expire_after => 2 * 60 * 60, #2 hours
     :httponly => true
   }
 
@@ -21,7 +24,7 @@ class ApplicationController < Sinatra::Base
     puts "Serving static files from #{settings.public_folder.inspect}"
   end
 
-  before do
+  before '*' do
     headers({
       'X-XRDS-Location' => url("/openid/idp_xrds", true, false)
     })
@@ -55,7 +58,7 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/?' do
-    "<h1>AOK!</h1>"
+    redirect("https://#{CCConfig[:external_uri]}")
   end
 
   protected
@@ -75,7 +78,9 @@ class ApplicationController < Sinatra::Base
 
   def log_env(en=nil)
     en ||= env
-    logger.error "ENV:\n\t" + en.collect.sort{|a,b|a.first<=>b.first}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
+    logger.error "="*80
+    logger.error "ENV:\n\t" + en.collect.sort{|a,b|a.first.downcase<=>b.first.downcase}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
+    logger.error "="*80
   end
 
 end

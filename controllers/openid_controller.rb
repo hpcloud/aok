@@ -23,7 +23,7 @@ class OpenidController < ApplicationController
     # no openid.mode was given
     unless oidreq
       logger.debug "No oidreq"
-      halt "This is an OpenID server endpoint!"
+      halt 400, "Invalid openid request"
     end
     oidresp = nil
 
@@ -98,7 +98,10 @@ class OpenidController < ApplicationController
       logger.info "No openid request was found in the session. 
       This can sometimes be caused by clock skew between the server
       and the user-agent causing the cookie to expire prematurely."
-      halt "This is an OpenID server endpoint!"
+
+      halt 400, "The login request could not be completed. Please ensure
+      that you have cookies enabled in your browser and that your
+      system clock is set to the correct time."
     end
 
     session[:last_oidreq] = nil
