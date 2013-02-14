@@ -137,8 +137,8 @@ task :export_passwords_to_cloud_controller => :config do
     users.each do |user|
       num_migrated += ActiveRecord::Base.connection.update_sql("
         update users
-        set crypted_password = #{ActiveRecord::Base.connection.quote(user[:password_digest])}
-        where email = #{ActiveRecord::Base.connection.quote(user[:email])}")
+        set crypted_password = #{ActiveRecord::Base.connection.quote(user['password_digest'])}
+        where email = #{ActiveRecord::Base.connection.quote(user['email'])}")
     end
   end
   if num_migrated.zero?
