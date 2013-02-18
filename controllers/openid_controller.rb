@@ -23,7 +23,7 @@ class OpenidController < ApplicationController
     # no openid.mode was given
     unless oidreq
       logger.debug "No oidreq"
-      halt 400, "Invalid openid request"
+      halt 200, "This is an OpenID endpoint. You're probably looking for <a href=\"https://#{CCConfig[:external_uri]}\">https://#{CCConfig[:external_uri]}</a>"
     end
     oidresp = nil
 
