@@ -31,6 +31,13 @@ namespace :db do
   end
 end
 
+desc "Clear expired sessions from the database"
+task :reap_sessions => :config do
+  ActiveRecord::Base.establish_connection(Aok::Config.get_database_config)
+  deleted = Session.delete(Session.where(["created_at < ?", Time.now - 1.day]))
+  puts "Reaped #{deleted} sessions"
+end
+
 desc "Reload AOK's configuration from the YAML config file, overwriting current config in Doozer."
 task :load_config do
   require 'kato/doozer'
@@ -43,6 +50,7 @@ end
 task :config do
   require 'active_record'
   require_relative "config/config"
+  require_relative 'models/session'
   puts "Using #{ENV['RACK_ENV'].inspect} environment"
 end
 
