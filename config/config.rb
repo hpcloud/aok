@@ -1,6 +1,6 @@
 require 'kato/logging'
 require 'kato/doozer'
-Kato::Logging.log_to_stderr = true
+Kato::Logging.logdev = STDERR
 %W{
   environment
   appconfig
