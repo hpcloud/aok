@@ -48,29 +48,3 @@ strategy:
     # familiar with these authentication methods, please just avoid them.
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
-
-
-
-
-# Database used by aok for sessions and to store users with 
-# the `builtin` strategy
-database_environment:
-  production:
-    database: aok
-    host: localhost
-    port: 5432
-    encoding: utf8
-    username: postgres
-    password: root
-    adapter: postgresql
-    timeout: 2000
-    template: template0 # Required for utf8 encoding
-  development:
-    adapter: sqlite3
-    database: db/aok.sqlite3
-    encoding: utf8
-    timeout: 10000
-  test:
-    adapter: sqlite3
-    database: db/test.sqlite3
-    encoding: utf8
