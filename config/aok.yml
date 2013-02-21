@@ -48,3 +48,12 @@ strategy:
     # familiar with these authentication methods, please just avoid them.
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
+
+# These are just overrides for the values in CC database_environment.
+database_environment:
+  production:
+    database: aok
+  development:
+    database: 'db/aok.sqlite3'
+  test:
+    database: 'db/aok.test.sqlite3'
