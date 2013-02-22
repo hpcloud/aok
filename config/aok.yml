@@ -51,6 +51,9 @@ strategy:
 
 
 
+# This only dictates what config field gets updated by kato when reconfiguring
+# stackato for cluster use. You almost certainly should not change this.
+rails_environment: production
 
 # Database used by aok for sessions and to store users with 
 # the `builtin` strategy
