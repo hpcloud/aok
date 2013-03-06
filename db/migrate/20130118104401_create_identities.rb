@@ -4,8 +4,6 @@ class CreateIdentities < ActiveRecord::Migration
 
     rename_table :users, :identities
 
-    # In AR 3.2 the id sequence is renamed automatically, but not in 3.0..
-    rename_table :users_id_seq, :identities_id_seq
     execute "ALTER TABLE identities ALTER COLUMN id SET DEFAULT nextval('public.identities_id_seq'::regclass)"
     execute "ALTER INDEX users_pkey RENAME TO identities_pkey"
 
