@@ -1,4 +1,6 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
-  validates_uniqueness_of :email
+  validates :email, 
+    :uniqueness => { :case_sensitive => false },
+    :length => { :maximum => 255 }
   
 end
