@@ -1,35 +1,69 @@
+
+###############################
+# GENERATED FILE. DO NOT EDIT #
+###############################
+
 source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
-gem 'sinatra', '~>1.3.3'
+gem 'vcap_common'       , '1.0.12', :path => '../vcap/common', :require => ['vcap/common', 'vcap/component', 'vcap/util']
+gem 'activemodel'       , '3.2.12'
+gem 'activerecord'      , '3.2.12', :require => 'active_record'
+gem 'activesupport'     , '3.2.12'
+gem 'addressable'       , '2.3.3'
+gem 'arel'              , '3.0.2'
+gem 'bcrypt-ruby'       , '3.0.1', :require => 'bcrypt'
+gem 'beefcake'          , '0.3.7'
+gem 'builder'           , '3.0.4'
+gem 'cookiejar'         , '0.3.0'
+gem 'daemons'           , '1.1.9'
+gem 'diff-lcs'          , '1.2.1'
+gem 'docopt'            , '0.5.0'
+gem 'em-http-request'   , '1.0.3'
+gem 'em-socksify'       , '0.2.1'
+gem 'eventmachine'      , '1.0.1'
+gem 'eventmachine-tail' , '0.6.4'
+gem 'ffi'               , '1.4.0'
+gem 'fraggle'           , '4.0.1'
+gem 'fraggle-block'     , '0.2.0'
+gem 'hashie'            , '1.2.0'
+gem 'http_parser.rb'    , '0.5.3'
+gem 'i18n'              , '0.6.4'
+gem 'ipaddress'         , '0.8.0'
+gem 'json_pure'         , '1.7.7'
+gem 'listen'            , '0.7.3'
+gem 'multi_json'        , '1.6.1'
+gem 'mustache'          , '0.99.4'
+gem 'nats'              , '0.4.26'
+gem 'net-ldap'          , '0.2.2'
+gem 'omniauth'          , '1.1.3'
+gem 'omniauth-identity' , '1.1.0'
+gem 'omniauth-ldap'     , '1.0.3'
+gem 'pg'                , '0.14.1'
+gem 'posix-spawn'       , '0.3.6'
+gem 'pyu-ruby-sasl'     , '0.0.3.3'
+gem 'rack'              , '1.5.2'
+gem 'rack-protection'   , '1.4.0'
+gem 'rack-test'         , '0.6.2'
+gem 'rake'              , '10.0.3'
+gem 'rb-inotify'        , '0.9.0'
+gem 'rerun'             , '0.8.0'
+gem 'rspec'             , '2.13.0'
+gem 'rspec-core'        , '2.13.0'
+gem 'rspec-expectations', '2.13.0'
+gem 'rspec-mocks'       , '2.13.0'
+gem 'ruby-openid'       , '2.2.3'
+gem 'ruby-termios'      , '0.9.6'
+gem 'rubyntlm'          , '0.1.1'
+gem 'sinatra'           , '1.3.5'
+gem 'sqlite3'           , '1.3.7'
+gem 'stackato-kato'     , '2.8.1', :require => ['kato/doozer']
+gem 'term-ansicolor'    , '1.0.7'
+gem 'thin'              , '1.5.0'
+gem 'tilt'              , '1.3.4'
+gem 'tzinfo'            , '0.3.36'
+gem 'vic'               , '1.0.0'
+gem 'xmlparser'         , '0.7.2.1'
+gem 'yajl-ruby'         , '1.1.0'
 
-group :development do
-  # Source reloading during development
-  gem 'rerun'
-  gem 'rb-inotify'
-end
-
-group :test do
-  gem 'rspec'
-  gem 'rack-test'
-end
-
-# OpenID support
-gem 'ruby-openid', '~>2.2.2'
-
-# cluster/config stuff
-gem 'stackato-kato', :require => ['kato/doozer']
-gem 'vcap_common', :require => ['vcap/common', 'vcap/component', 'vcap/util'], :path => '../vcap/common'
-gem 'thin'
-
-# ActiveRecord stuff
-gem 'rake'
-gem 'activerecord', '~> 3.2.12', :require => 'active_record'
-gem 'pg'
-gem 'bcrypt-ruby', :require => 'bcrypt'
-
-#Auth
-gem 'omniauth', '~>1.1.1'
-gem 'omniauth-identity', '~>1.1.0'
-gem 'omniauth-ldap', '~>1.0.2'
