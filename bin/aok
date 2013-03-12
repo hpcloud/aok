@@ -7,7 +7,7 @@ socket = '/tmp/aok.sock'
 server = Thin::Server.new(socket)
 
 ENV['RACK_ENV'] = 'production'
-server.app = Rack::Adapter.load(File.join(File.dirname(__FILE__), 'config.ru'))
+server.app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
 # The routers proxying to us handle killing inactive connections. Set an upper limit
 # just to be safe.
 server.timeout = 15 * 60 # 15 min
