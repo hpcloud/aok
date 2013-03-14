@@ -25,6 +25,16 @@ strategy:
     # form. Typically AD would be 'sAMAccountName' or 'UserPrincipalName',
     # while OpenLDAP is 'uid'.
     uid: 'sAMAccountName'
+    # email is the LDAP attribute containing the user's fully qualified
+    # email address. An email address attribute is necessary for AOK to 
+    # work properly with the cloud controller. This may be a scalar 
+    # attribute or an array of attributes to search. Tbe default is 
+    # shown. The first non-null attribute will be used (AOK will not 
+    # validate that this is an email address).
+    email: 
+     - mail
+     - email
+     - userPrincipalName
     # Next two are optional. Anonymous access will be used if omitted.
     bind_dn: 'default_bind_dn' #optional, default credentials for user lookup
     password: 'password' #optional, default credentials for user lookup

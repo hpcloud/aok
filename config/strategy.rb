@@ -83,6 +83,12 @@ module Aok
             end
             options[:name_proc] = proc
           end
+
+          config = OmniAuth::Strategies::LDAP.class_variable_get '@@config'
+          if options.key? :email
+            config['email'] = options[:email]
+          end
+
           ApplicationController.use OmniAuth::Strategies::LDAP, options
           ApplicationController.set :strategy, :ldap
         end
