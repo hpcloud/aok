@@ -20,7 +20,7 @@ DIRNAME=$(INSTALLROOT)/aok
 INSTROOT=$(DESTDIR)$(prefix)$(INSTALLROOT)
 INSTDIR=$(DESTDIR)$(prefix)$(DIRNAME)
 
-RSYNC_EXCLUDE=--exclude=.git --exclude=.gitignore --exclude=Makefile --exclude=.stackato-pkg --exclude=debian
+RSYNC_EXCLUDE=--exclude=.git --exclude=.gitignore --exclude=Makefile --exclude=.stackato-pkg --exclude=debian --exclude=etc
 
 all:
 	@ true
@@ -28,6 +28,7 @@ all:
 install:
 	mkdir -p $(INSTDIR)
 	rsync -ap . $(INSTDIR) $(RSYNC_EXCLUDE)
+	rsync -ap etc $(INSTROOT)
 
 uninstall:
 	rm -rf $(INSTDIR)

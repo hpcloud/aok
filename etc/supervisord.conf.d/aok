@@ -1,0 +1,29 @@
+
+[program:aok]
+directory=/s/aok
+command=/opt/rubies/current/bin/bundle exec bin/aok
+priority=2
+redirect_stderr=true
+stdout_logfile=/s/logs/aok.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=3
+autostart=false
+
+; ruby tunable defaults:
+;
+;   RUBY_GC_MALLOC_LIMIT=8000000
+;       This is the number of C data structures that can be allocated without
+;       triggering garbage collection. If this value is too low, then GC may run
+;       even if free slots are available.
+;   RUBY_HEAP_MIN_SLOTS=10000
+;       This is the initial number of heap slots.
+;   RUBY_FREE_MIN=4096
+;       If at least this many slots are not free after garbage collection, a new
+;       heap will be allocated.
+;   RUBY_HEAP_SLOTS_GROWTH_FACTOR=1.8
+;       Each time the heap is grown, ruby will add increment*growth_factor
+;       slots, where the initial increment is 10,000 slots and each growth count
+;       is saved as the new increment. Essentially:
+;       increment = (increment || 10000) * growth_factor
+
+environment=RUBY_GC_MALLOC_LIMIT=80000000,RUBY_HEAP_MIN_SLOTS=600000,RUBY_FREE_MIN=4096,RUBY_HEAP_SLOTS_GROWTH_FACTOR=1,RUBY_LOADED_FEATURES_SORTED=1,RUBY_CACHED_LOAD_PATH=1
