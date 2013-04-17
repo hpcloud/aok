@@ -14,9 +14,11 @@
 
 NAME=stackato-aok
 
-INSTALLROOT=/home/stackato/stackato
+INSTALLHOME=/home/stackato
+INSTALLROOT=$(INSTALLHOME)/stackato
 DIRNAME=$(INSTALLROOT)/aok
 
+INSTHOME=$(DESTDIR)$(prefix)$(INSTALLHOME)
 INSTROOT=$(DESTDIR)$(prefix)$(INSTALLROOT)
 INSTDIR=$(DESTDIR)$(prefix)$(DIRNAME)
 
@@ -28,7 +30,8 @@ all:
 install:
 	mkdir -p $(INSTDIR)
 	rsync -ap . $(INSTDIR) $(RSYNC_EXCLUDE)
-	rsync -ap etc $(INSTROOT)
+	if [ -d etc ] ; then rsync -ap etc $(INSTROOT) ; fi
+	chown -Rh stackato.stackato $(INSTHOME)
 
 uninstall:
 	rm -rf $(INSTDIR)
