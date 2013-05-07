@@ -1,0 +1,6 @@
+# Installed by package stackato-aok.
+---
+name: aok
+config_origin: /s/aok/config/aok.yml
+roles:
+  - controller
