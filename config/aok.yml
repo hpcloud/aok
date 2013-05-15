@@ -59,7 +59,11 @@ strategy:
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
 
-
+  #------------------------------------------------------------------------------
+  # 3) `google` Your "Google Apps for Business" domain
+  #------------------------------------------------------------------------------
+  google_apps:
+    domain: example.com # your company's email domain as used by google apps
 
 # This only dictates what config field gets updated by kato when reconfiguring
 # stackato for cluster use. You almost certainly should not change this.

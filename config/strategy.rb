@@ -15,6 +15,7 @@ module Aok
       STRATEGIES = %W{
         builtin
         ldap
+        google_apps
         developer
       }
 
@@ -42,7 +43,7 @@ module Aok
       class << self
         def initialize_strategy
           unless STRATEGIES.include? AppConfig[:strategy][:use]
-            abort "AOK cannot start. Strategy was #{strategy_config.inspect} -- not a valid strategy."
+            abort "AOK cannot start. Strategy was #{AppConfig[:strategy][:use].inspect} -- not a valid strategy."
           end
 
           method(AppConfig[:strategy][:use]).call
@@ -91,6 +92,21 @@ module Aok
 
           ApplicationController.use OmniAuth::Strategies::LDAP, options
           ApplicationController.set :strategy, :ldap
+        end
+
+        def google_apps
+          require 'omniauth-google-apps'
+          options = AppConfig[:strategy][:google_apps].merge(DEFAULT_OPTIONS)
+          [:domain].each do |option_key|
+            unless options.key?(option_key) && !options[option_key].empty?
+              abort "Google login requires that the `#{option_key}` configuration option is set."
+            end
+          end
+
+          ApplicationController.use OmniAuth::Builder do
+            provider :google_apps, :domain => options[:domain]
+          end
+          ApplicationController.set :strategy, :google_apps
         end
 
         def developer
