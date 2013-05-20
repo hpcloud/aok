@@ -5,7 +5,8 @@ class LoginsController < ApplicationController
     require_local
 
     unless Aok::Config::Strategy.direct_login_enabled?
-      halt 400, "Login with password is not enabled using this strategy."
+      # code below must match error number in CC's CloudError class
+      halt 400, "Login with password is not enabled using this strategy. Code 13444."
     end
   end
 
