@@ -1,9 +1,7 @@
+require "kato/config"
 begin
-  Kato::Doozer.client_name ||= "aok"
-  AppConfig = Kato::Doozer.walk("/proc/aok/config/**", { :symbolize_keys => true }).first
-
-  CCConfig = Kato::Doozer.walk("/proc/cloud_controller/config/**", { :symbolize_keys => true }).first
-
+  AppConfig = Kato::Config.get("aok").symbolize_keys
+  CCConfig = Kato::Config.get("cloud_controller").symbolize_keys
 rescue => ex
   $stderr.puts %[FATAL: Exception encountered while loading config: #{ex}\n#{ex.backtrace.join("\n")}]
   exit 1

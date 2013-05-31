@@ -67,7 +67,7 @@ gem 'ruby-termios'      ,    '0.9.6'
 gem 'rubyntlm'          ,    '0.1.1'
 gem 'sinatra'           ,    '1.3.6'
 gem 'sqlite3'           ,    '1.3.7'
-gem 'stackato-kato'     ,   '2.11.0', :require => ['kato/doozer']
+gem 'stackato-kato'     ,   '2.11.0'
 gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.5.1'
 gem 'tilt'              ,    '1.4.1'

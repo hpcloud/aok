@@ -44,7 +44,7 @@ Configuration
 
 Settings
 --------
-AOK's configuration is stored in Doozer, and is read once when AOK starts. After
+AOK's configuration is read once when AOK starts. After
 making changes to the configuration, it is necessary to restart AOK for the
 changes to take effect. AOK is part of the `cloud_controller` role, so AOK may
 be restarted with:
@@ -52,7 +52,7 @@ be restarted with:
     kato restart cloud_controller
 
 The easiest way to configure AOK is to edit the YAML
-file in `config/aok.yml` and then load the saved file in to doozer using the
+file in `config/aok.yml` and then load the saved file in using the
 following command, executed from AOK's root folder `/s/aok/`:
 
     bundle exec rake load_config
@@ -137,5 +137,5 @@ SSL Certificate
 ---------------
 AOK by default uses the same self-signed certificate as the Cloud Controller. To
 prevent log warnings about the certificate, the Cloud Controller is configured 
-to use a CA file on the VM to validate AOK's certificate. This is set in Doozer 
+to use a CA file on the VM to validate AOK's certificate. This is set 
 under the `aok/ca_file` key in the Cloud Controller's configuration.
