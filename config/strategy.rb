@@ -107,6 +107,8 @@ module Aok
             provider :google_apps, :domain => options[:domain]
           end
           ApplicationController.set :strategy, :google_apps
+
+          OpenID.fetcher.ca_file = "/etc/ssl/certs/ca-certificates.crt"
         end
 
         def developer

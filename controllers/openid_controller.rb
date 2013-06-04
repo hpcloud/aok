@@ -1,11 +1,8 @@
 %W{
-  pathname
-
   openid
   openid/consumer/discovery
   openid/extensions/sreg
   openid/extensions/pape
-  openid/store/filesystem
 }.each{|l| require l}
 
 class OpenidController < ApplicationController
@@ -72,8 +69,7 @@ class OpenidController < ApplicationController
   def server
     if @server.nil?
       server_url = url('/')
-      dir = Pathname.new('.').join('openid-store')
-      store = OpenID::Store::Filesystem.new(dir)
+      store = ActiveRecordStore.new
       @server = Server.new(store, server_url)
     end
     return @server
