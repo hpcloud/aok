@@ -1,6 +1,52 @@
 require 'logger'
 class ApplicationController < Sinatra::Base
   helpers ApplicationHelper, CurrentUserHelper
+
+
+
+  ##################################################################################
+  # Error handling
+  set :raise_errors, false
+  set :show_exceptions, false
+
+  # These are both to address the possibility of getting disconnected from
+  # the database. The second one is a result of a bug in rails:
+  # https://github.com/rails/rails/issues/10917
+  error(ActiveRecord::StatementInvalid) {handle_db_reconnect}
+  error(NoMethodError) {handle_db_reconnect}
+  def handle_db_reconnect
+    if (env['sinatra.error'].kind_of?(ActiveRecord::StatementInvalid) &&
+        env['sinatra.error'].message =~ /^PG::Error: connection is closed/) ||
+       (env['sinatra.error'].kind_of?(NoMethodError) &&
+        env['sinatra.error'].message =~ /error_field/)
+      if !@retried_already
+        @retried_already = true
+        logger.error "Verifying DB connection and retrying!"
+        ActiveRecord::Base.connection.verify!
+        begin
+          # reset some state and re-invoke route
+          @response.status = 200
+          @params.delete('splat')
+          @params.delete('captures')
+          invoke { route! }
+        rescue ::Exception => boom
+          handle_exception!(boom)
+        end
+      else
+        halt 500, "Internal server error"
+      end
+    else
+      halt 500, "Internal server error"
+    end
+  end
+
+  # end error handling
+  ##################################################################################
+
+  
+
+
+
   set :logging, Logger::DEBUG
 
   # The session is only used for the duration of the login process
