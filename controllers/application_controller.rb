@@ -46,6 +46,9 @@ class ApplicationController < Sinatra::Base
   
 
 
+  # IP Spoofing protection isn't that helpful and 
+  # causes a lot of warnings in the log
+  set :protection, :except => :ip_spoofing
 
   set :logging, Logger::DEBUG
 
@@ -124,9 +127,9 @@ class ApplicationController < Sinatra::Base
 
   def log_env(en=nil)
     en ||= env
-    logger.error "="*80
-    logger.error "ENV:\n\t" + en.collect.sort{|a,b|a.first.downcase<=>b.first.downcase}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
-    logger.error "="*80
+    logger.debug "="*80
+    logger.debug "ENV:\n\t" + en.collect.sort{|a,b|a.first.downcase<=>b.first.downcase}.collect{|k,v|"#{k.inspect} => #{v.inspect}"}.join("\n\t")
+    logger.debug "="*80
   end
 
 end
