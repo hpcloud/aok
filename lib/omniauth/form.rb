@@ -71,8 +71,14 @@ module OmniAuth
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>#{title}</title>
-        <link href="https://#{cc_url}/all-1.css" rel="stylesheet" />
-        <link href="https://#{cc_url}/theme/style.css" rel="stylesheet" />
+        <link href="//#{cc_url}/all-1.css" rel="stylesheet" />
+        <link href="//#{cc_url}/theme/style.css" rel="stylesheet" />
+        <script src="//#{cc_url}/theme/settings.js"></script>
+        <script type="text/javascript">
+          $CC_URL = "//#{cc_url}"
+        </script>
+        <script src="/jquery-1.10.1.min.js"></script>
+        <script src="/aok.js"></script>
         #{header_info}
       </head>
       <body class="login">
@@ -81,6 +87,7 @@ module OmniAuth
             <div class="login_logo">
               <div class="stackato_logo"></div>
               <h2>#{title}</h2>
+              
             </div>
             <form id="login_form" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
       HTML
