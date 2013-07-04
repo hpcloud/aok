@@ -19,7 +19,7 @@ end
 gem 'ruby-openid', '~>2.2.2'
 
 # cluster/config stuff
-gem 'stackato-kato', :require => ['kato/doozer']
+gem 'stackato-kato'
 gem 'vcap_common', :require => ['vcap/common', 'vcap/component', 'vcap/util'], :path => '../vcap/common'
 gem 'thin'
 

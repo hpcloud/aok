@@ -38,13 +38,13 @@ task :reap_sessions => :config do
   puts "Reaped #{deleted} sessions"
 end
 
-desc "Reload AOK's configuration from the YAML config file, overwriting current config in Doozer."
+desc "Reload AOK's configuration from the YAML config file, overwriting current config."
 task :load_config do
-  require 'kato/doozer'
+  require 'kato/config'
   require 'yaml'
   config_file = File.join(File.dirname(__FILE__), 'config', 'aok.yml')
   config = YAML.load_file(config_file)
-  Kato::Doozer.set_component_config("aok", config)
+  Kato::Config.set("aok", "/", config)
 end
 
 task :config do
@@ -61,7 +61,7 @@ database. This is not necessary if you want to use AOK with an external auth sys
 as LDAP."
 task :import_users_from_cloud_controller => :config do
   require 'kato/ui'
-  require 'kato/doozer'
+  require 'kato/config'
   unless ENV['FORCE'] == 'true'
     puts <<-END.gsub(/^[ ]+/, '')
       ****************************************************************************
@@ -82,7 +82,7 @@ task :import_users_from_cloud_controller => :config do
   end
   users = []
   Kato::UI.action "Migrating user accounts" do
-    cc_config, rev = Kato::Doozer.get_component_config('cloud_controller')
+    cc_config = Kato::Config.get('cloud_controller')
     ActiveRecord::Base.establish_connection(cc_config['database_environment']['production'])
     begin
       unless ActiveRecord::Base.connection.column_exists?(:users, :crypted_password)
@@ -124,7 +124,7 @@ desc "Export passwords to the cloud controller. This is for switching BACK to th
 cloud controller's built-in password login system after using AOK with the 'builtin'
 strategy."
 task :export_passwords_to_cloud_controller => :config do
-  require 'kato/doozer'
+  require 'kato/config'
 
   puts "Gathering passwords from AOK..."
   users = []
@@ -139,7 +139,7 @@ task :export_passwords_to_cloud_controller => :config do
   end
 
   num_migrated = 0
-  cc_config, rev = Kato::Doozer.get_component_config('cloud_controller')
+  cc_config = Kato::Config.get('cloud_controller')
   ActiveRecord::Base.establish_connection(cc_config['database_environment']['production'])
   ActiveRecord::Base.transaction do
     users.each do |user|

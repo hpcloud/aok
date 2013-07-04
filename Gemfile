@@ -11,58 +11,66 @@ ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 gem 'activemodel'       ,   '3.2.13'
 gem 'activerecord'      ,   '3.2.13', :require => 'active_record'
 gem 'activesupport'     ,   '3.2.13'
-gem 'addressable'       ,    '2.3.3'
+gem 'addressable'       ,    '2.3.4'
 gem 'arel'              ,    '3.0.2'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'beefcake'          ,    '0.3.7'
 gem 'builder'           ,    '3.0.4'
 gem 'cookiejar'         ,    '0.3.0'
 gem 'daemons'           ,    '1.1.9'
-gem 'diff-lcs'          ,    '1.2.1', :groups => [:test]
+gem 'diff-lcs'          ,    '1.2.4', :groups => [:test]
 gem 'docopt'            ,    '0.5.0'
+gem 'em-hiredis'        ,    '0.2.1'
 gem 'em-http-request'   ,    '1.0.3'
 gem 'em-socksify'       ,    '0.2.1'
 gem 'eventmachine'      ,    '1.0.1'
 gem 'eventmachine-tail' ,    '0.6.4'
-gem 'ffi'               ,    '1.4.0', :groups => [:development]
+gem 'ffi'               ,    '1.8.1', :groups => [:development]
 gem 'fraggle'           ,    '4.0.1'
 gem 'fraggle-block'     ,    '0.2.0'
-gem 'hashie'            ,    '1.2.0'
+gem 'hashie'            ,    '2.0.5'
+gem 'hiredis'           ,    '0.4.5'
 gem 'http_parser.rb'    ,    '0.5.3'
 gem 'i18n'              ,    '0.6.1'
 gem 'ipaddress'         ,    '0.8.0'
-gem 'json_pure'         ,    '1.7.7'
-gem 'listen'            ,    '0.7.3', :groups => [:development]
-gem 'multi_json'        ,    '1.7.1'
+gem 'json_pure'         ,    '1.8.0'
+gem 'listen'            ,    '1.1.4', :groups => [:development]
+gem 'multi_json'        ,    '1.7.4'
 gem 'mustache'          ,   '0.99.4'
 gem 'nats'              ,   '0.4.26'
 gem 'net-ldap'          ,    '0.2.2'
-gem 'omniauth'          ,    '1.1.3'
-gem 'omniauth-google-apps',  '0.0.2'
+gem 'omniauth'          ,    '1.1.4'
+gem 'omniauth-google-apps',    '0.0.2'
 gem 'omniauth-identity' ,    '1.1.0'
 gem 'omniauth-ldap'     ,    '1.0.3'
+gem 'omniauth-openid'   ,    '1.0.1'
 gem 'pg'                ,   '0.14.1'
 gem 'posix-spawn'       ,    '0.3.6'
 gem 'pyu-ruby-sasl'     ,  '0.0.3.3'
 gem 'rack'              ,    '1.5.2', :groups => [:default, :test]
+gem 'rack-openid'       ,    '1.3.1'
 gem 'rack-protection'   ,    '1.5.0'
 gem 'rack-test'         ,    '0.6.2', :groups => [:test]
-gem 'rake'              ,   '10.0.3'
+gem 'rake'              ,   '10.0.4'
+gem 'rb-fsevent'        ,    '0.9.3', :groups => [:development]
 gem 'rb-inotify'        ,    '0.9.0', :groups => [:development]
-gem 'rerun'             ,    '0.8.0', :groups => [:development]
+gem 'rb-kqueue'         ,    '0.2.0', :groups => [:development]
+gem 'redis'             ,    '3.0.4'
+gem 'rerun'             ,    '0.8.1', :groups => [:development]
 gem 'rspec'             ,   '2.13.0', :groups => [:test]
 gem 'rspec-core'        ,   '2.13.1', :groups => [:test]
 gem 'rspec-expectations',   '2.13.0', :groups => [:test]
-gem 'rspec-mocks'       ,   '2.13.0', :groups => [:test]
+gem 'rspec-mocks'       ,   '2.13.1', :groups => [:test]
 gem 'ruby-openid'       ,    '2.2.3'
+gem 'ruby-openid-apps-discovery',    '1.2.0'
 gem 'ruby-termios'      ,    '0.9.6'
 gem 'rubyntlm'          ,    '0.1.1'
 gem 'sinatra'           ,    '1.3.6'
 gem 'sqlite3'           ,    '1.3.7'
-gem 'stackato-kato'     ,    '2.8.1', :require => ['kato/doozer']
+gem 'stackato-kato'     ,   '2.11.0'
 gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.5.1'
-gem 'tilt'              ,    '1.3.6'
+gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.37'
 gem 'vcap_common'       ,   '1.0.12', :path => '../vcap/common', :require => ['vcap/common', 'vcap/component', 'vcap/util']
 gem 'vic'               ,    '1.0.0'

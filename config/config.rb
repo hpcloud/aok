@@ -1,5 +1,4 @@
 require 'kato/logging'
-require 'kato/doozer'
 Kato::Logging.logdev = STDERR
 %W{
   environment
