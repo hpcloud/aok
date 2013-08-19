@@ -3,8 +3,7 @@ puts "aok starting up at #{Time.now}"
 
 require 'thin'
 
-socket = '/tmp/aok.sock'
-server = Thin::Server.new(socket)
+server = Thin::Server.new('0.0.0.0', (ENV['PORT'] || 4567).to_i)
 
 ENV['RACK_ENV'] = 'production'
 server.app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))

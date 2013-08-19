@@ -72,7 +72,6 @@ gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.5.1'
 gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.37'
-gem 'vcap_common'       ,   '1.0.12', :path => '../vcap/common', :require => ['vcap/common', 'vcap/component', 'vcap/util']
 gem 'vic'               ,    '1.0.0'
 gem 'xmlparser'         ,  '0.7.2.1'
 gem 'yajl-ruby'         ,    '1.1.0'
