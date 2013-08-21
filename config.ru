@@ -8,7 +8,8 @@ maps = {
   '/'        => ApplicationController,
   '/openid'  => OpenidController,
   '/users'   => UsersController,
-  '/logins'  => LoginsController
+  '/logins'  => LoginsController,
+  '/uaa'     => UaaController
 }
 maps.each do |path, controller|
   map(path){ run controller}

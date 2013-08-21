@@ -20,6 +20,7 @@ require 'sinatra/base'
   controllers/openid_controller
   controllers/users_controller
   controllers/logins_controller
+  controllers/uaa_controller
 
   models/identity
   models/session

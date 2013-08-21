@@ -16,6 +16,7 @@ gem 'arel'              ,    '3.0.2'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'beefcake'          ,    '0.3.7'
 gem 'builder'           ,    '3.0.4'
+gem 'cf-uaa-lib'        ,    :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'cookiejar'         ,    '0.3.0'
 gem 'daemons'           ,    '1.1.9'
 gem 'diff-lcs'          ,    '1.2.4', :groups => [:test]
@@ -72,6 +73,7 @@ gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.5.1'
 gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.37'
+gem 'vcap_common'       , :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
 gem 'vic'               ,    '1.0.0'
 gem 'xmlparser'         ,  '0.7.2.1'
 gem 'yajl-ruby'         ,    '1.1.0'

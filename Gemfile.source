@@ -33,3 +33,7 @@ gem 'omniauth', '~>1.1.1'
 gem 'omniauth-identity', '~>1.1.0'
 gem 'omniauth-ldap', '~>1.0.2'
 gem 'omniauth-google-apps', '~>0.0.2'
+
+#UAA
+gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
+gem "cf-uaa-lib", "~> 1.3.7", :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
