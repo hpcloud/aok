@@ -78,7 +78,7 @@ database_environment:
     port: 5432
     encoding: utf8
     username: postgres
-    password: root
+    password: stackato
     adapter: postgresql
     timeout: 2000
     template: template0 # Required for utf8 encoding
@@ -91,3 +91,19 @@ database_environment:
     adapter: sqlite3
     database: db/test.sqlite3
     encoding: utf8
+
+oauth:
+  clients:
+    vmc:
+      authorized_grant_types: implicit
+      scope: cloud_controller.read,cloud_controller.write,password.write,openid
+      authorities: uaa.none
+      id: vmc
+      resource_ids: none
+      redirect_uri: http://uaa.cloudfoundry.com/redirect/vmc
+
+scim:
+  users:
+    - paul|wombat|paul@test.org|Paul|Smith|uaa.admin
+    - stefan|wallaby|stefan@test.org|Stefan|Schmidt
+    - vcap_tester@vmware.com|dr0wssaPH@ck|vcap_tester@vmware.com|VCAP|Tester
