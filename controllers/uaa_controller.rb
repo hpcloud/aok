@@ -2,13 +2,6 @@ require 'time'
 require 'uaa'
 class UaaController < ApplicationController
 
-  error Rack::OAuth2::Server::Authorize::BadRequest do
-    e = env['sinatra.error']
-    # need this to emulate the redirect response that UAA produces
-    e.protocol_params_location = :fragment
-    e.finish
-  end
-
   get '/?' do
     return 'Hello World'
   end

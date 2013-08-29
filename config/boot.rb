@@ -18,6 +18,7 @@ require 'sinatra/base'
 
   helpers/application_helper
   helpers/current_user_helper
+  helpers/error_handling_helper
 
   controllers/application_controller
   controllers/openid_controller

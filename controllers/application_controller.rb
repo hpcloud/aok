@@ -1,6 +1,6 @@
 require 'logger'
 class ApplicationController < Sinatra::Base
-  helpers ApplicationHelper, CurrentUserHelper
+  helpers ApplicationHelper, CurrentUserHelper, ErrorHandlingHelper
 
   set :raise_errors, true
   set :show_exceptions, false
@@ -30,11 +30,6 @@ class ApplicationController < Sinatra::Base
   require 'rack/oauth2/server/token/extension/jwt'
   use Rack::OAuth2::Server::Resource::Bearer, 'Rack::OAuth2 Sample Protected Resources' do |req|
     AccessToken.valid.find_by_token(req.access_token) || req.invalid_token!
-  end
-
-  error Aok::Errors::AokError do
-    e = env['sinatra.error']
-    return e.http_status, e.http_headers, e.body
   end
 
   configure do
