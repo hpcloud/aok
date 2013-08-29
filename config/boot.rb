@@ -4,6 +4,7 @@ Bundler.require(:default)
 require 'sinatra/base'
 
 %W{
+  lib/aok/errors
   lib/rack_port_monkeypatch
   lib/omniauth/strategies/identity
   lib/omniauth/form

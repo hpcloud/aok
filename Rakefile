@@ -160,3 +160,25 @@ end
 # require 'rspec/core/rake_task'
 # desc "run specs"
 # RSpec::Core::RakeTask.new
+
+namespace :test do
+  task :integration do
+    Dir.chdir '../uaa'
+    `rm -rf uaa/target/surefire-reports`
+    require 'pty'
+    cmd = "mvn test -P vcap"
+    begin
+      PTY.spawn( cmd ) do |stdin, stdout, pid|
+        begin
+          # Do stuff with the output here. Just printing to show it works
+          stdin.each { |line| print line }
+        rescue Errno::EIO
+          puts "Errno:EIO error, but this probably just means " +
+                "that the process has finished giving output"
+        end
+      end
+    rescue PTY::ChildExited
+      puts "The child process exited!"
+    end
+  end
+end

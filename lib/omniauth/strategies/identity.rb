@@ -21,6 +21,14 @@ module OmniAuth
       def other_phase
         call_app!
       end
+
+      def callback_phase
+        return fail!(:invalid_credentials) unless identity
+        # stash the identity we just validated
+        self.env['omniauth.identity'] = @identity
+        super
+      end
+
     end
   end
 end

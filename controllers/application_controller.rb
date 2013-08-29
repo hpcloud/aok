@@ -32,6 +32,10 @@ class ApplicationController < Sinatra::Base
     AccessToken.valid.find_by_token(req.access_token) || req.invalid_token!
   end
 
+  error Aok::Errors::AokError do
+    e = env['sinatra.error']
+    return e.http_status, e.http_headers, e.body
+  end
 
   configure do
     Aok::Config::Strategy.initialize_strategy
@@ -57,8 +61,13 @@ class ApplicationController < Sinatra::Base
 
   post '/auth/:provider/callback' do
     email = auth_hash[:info][:email]
-    user = Identity.new(:email => email)
+    user = env['omniauth.identity']
     set_current_user(user)
+
+    if env["aok.block"] # legacy login
+      env["aok.block"].call(user)
+      return
+    end
 
     if env["aok.no_openid"] # legacy login
       return 200, {'Content-Type' => 'application/json'}, {:email => email}.to_json
@@ -99,7 +108,7 @@ class ApplicationController < Sinatra::Base
     logger.debug "="*80
   end
 
-  def direct_login(username, password)
+  def direct_login(username, password, &block)
     # Take the credentials that were posted to us and simulate a form
     # submission on the configured omniauth strategy. We're basically
     # rewinding the Rack call stack, mapping the credentials we were
@@ -131,7 +140,8 @@ class ApplicationController < Sinatra::Base
       "REQUEST_URI" => path,
       "rack.input" => form_io,
       "CONTENT_TYPE" => "application/x-www-form-urlencoded",
-      "aok.no_openid" => true # just return a status code, no openid redirects
+      "aok.no_openid" => true, # just return a status code, no openid redirects
+      "aok.block" => block # call the block (if provided) with the login result
     )
     
     # Call the middleware, which will then call up in to the auth code

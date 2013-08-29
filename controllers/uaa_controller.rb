@@ -50,24 +50,26 @@ class UaaController < ApplicationController
     allow_approval = request.request_method == 'POST'
     respond *(Rack::OAuth2::Server::Authorize.new do |req, res|
       client = Client.find_by_identifier(req.client_id) || req.bad_request!
-      identity = find_identity || return
-      res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri)
-      scopes = validate_scope(req, client, identity)
-      if allow_approval
-        if params[:response_type]
-          case req.response_type
-          when :code
-            authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
-            res.code = authorization_code.token
-          when :token
-            res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
+      find_identity do |identity|
+        raise(Aok::Errors::Unauthorized.new) unless identity
+        res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri)
+        scopes = validate_scope(req, client, identity)
+        if allow_approval
+          if params[:response_type]
+            case req.response_type
+            when :code
+              authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
+              res.code = authorization_code.token
+            when :token
+              res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
+            end
+            res.approve!
+          else
+            req.access_denied!
           end
-          res.approve!
         else
-          req.access_denied!
+          @response_type = req.response_type
         end
-      else
-        @response_type = req.response_type
       end
     end.call(env))
   end    
@@ -85,7 +87,7 @@ class UaaController < ApplicationController
     end
   end  
 
-  def find_identity
+  def find_identity &block
     # cf-uaac passes creds as top-level, but UAA test suite uses json under :credentials
     if params[:credentials]
       creds = JSON.parse(params[:credentials])
@@ -95,14 +97,7 @@ class UaaController < ApplicationController
       username = params[:username]
       password = params[:password]
     end
-    identity = Identity.find_by_username(username)
-    
-    if identity && identity.authenticate(password)
-      return identity
-    end
-
-    halt(401, "User/password combination is incorrect")
-    false
+    direct_login(username, password, &block)
   end
 
   def validate_scope req, client, identity

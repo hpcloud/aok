@@ -5,6 +5,10 @@ module Aok
 
       class FailureEndpoint
         def self.call(the_env)
+          if the_env["aok.block"] # legacy login
+            the_env["aok.block"].call(nil)
+            return
+          end
           return 403 if the_env["aok.no_openid"] # legacy login
           OmniAuth::FailureEndpoint.call(the_env) # default behavior
         end

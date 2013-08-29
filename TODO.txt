@@ -1,0 +1,3 @@
+* license file for oauth2 stuff
+* make sure ensure_identities and ensure_clients doesn't do anything insecure in prod
+* session cookie secure
