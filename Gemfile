@@ -7,6 +7,7 @@
 source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
+
 gem 'activemodel'       ,   '3.2.13'
 gem 'activerecord'      ,   '3.2.13', :require => 'active_record'
 gem 'activesupport'     ,   '3.2.13'
@@ -89,7 +90,6 @@ gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.5.1'
 gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.37'
-gem 'vcap_common'       ,    '2.2.0', :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
 gem 'vic'               ,    '1.0.0'
 gem 'virtus'            ,    '0.5.5'
 gem 'vmstat'            ,    '2.0.0'
