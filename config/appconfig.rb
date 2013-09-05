@@ -11,4 +11,3 @@ unless AppConfig
   $stderr.puts %[FATAL: Unable to load config]
   exit 1
 end
-
