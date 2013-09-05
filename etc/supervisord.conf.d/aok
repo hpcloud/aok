@@ -1,6 +1,6 @@
 
 [program:aok]
-directory=/s/aok
+directory=/s/code/aok
 command=/opt/rubies/current/bin/bundle exec bin/aok
 priority=2
 redirect_stderr=true
