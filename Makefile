@@ -23,6 +23,7 @@ INSTROOT=$(DESTDIR)$(prefix)$(INSTALLROOT)
 INSTDIR=$(DESTDIR)$(prefix)$(DIRNAME)
 
 RSYNC_EXCLUDE=--exclude=.git* --exclude=Makefile --exclude=.stackato-pkg --exclude=debian --exclude=etc
+VM=$(VMNAME).local
 
 all:
 	@ true
@@ -41,3 +42,11 @@ clean:
 
 test:
 	rspec spec --pattern '**/*.rb'
+
+sync:
+	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
+	ssh stackato@$(VM) sup restart aok
+
+ssh:
+	ssh stackato@$(VM)
+

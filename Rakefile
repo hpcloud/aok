@@ -166,8 +166,9 @@ namespace :test do
     Dir.chdir '../uaa'
     `rm -rf uaa/target/surefire-reports`
     require 'pty'
-    cmd = "mvn test -P vcap"
+    cmd = "mvn test -P aok --projects uaa"
     begin
+      ENV['VCAP_BVT_TARGET']='stackato-andrew.local'
       PTY.spawn( cmd ) do |stdin, stdout, pid|
         begin
           # Do stuff with the output here. Just printing to show it works
@@ -180,5 +181,9 @@ namespace :test do
     rescue PTY::ChildExited
       puts "The child process exited!"
     end
+  end
+
+  task :results do
+    `xdg-open ../uaa/uaa/target/surefire-reports`
   end
 end

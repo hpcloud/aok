@@ -3,9 +3,9 @@
 #
 ###
 
-
-strategy: 
-  # Pick one of the following authetication strategies, and fill in all the
+port: 4567 # main port to run AOK on.
+strategy:
+  # Pick one of the following authetication strategies and fill in all the
   # parameters required by that strategy:
   use: builtin # or ldap
   #------------------------------------------------------------------------------
@@ -21,17 +21,17 @@ strategy:
     port: 389
     method: plain # other valid settings are: ssl, tls
     base: 'dc=example, dc=com'
-    # uid is the LDAP attribute name for the user name in the login 
+    # uid is the LDAP attribute name for the user name in the login
     # form. Typically AD would be 'sAMAccountName' or 'UserPrincipalName',
     # while OpenLDAP is 'uid'.
     uid: 'sAMAccountName'
     # email is the LDAP attribute containing the user's fully qualified
-    # email address. An email address attribute is necessary for AOK to 
-    # work properly with the cloud controller. This may be a scalar 
-    # attribute or an array of attributes to search. Tbe default is 
-    # shown. The first non-null attribute will be used (AOK will not 
+    # email address. An email address attribute is necessary for AOK to
+    # work properly with the cloud controller. This may be a scalar
+    # attribute or an array of attributes to search. Tbe default is
+    # shown. The first non-null attribute will be used (AOK will not
     # validate that this is an email address).
-    email: 
+    email:
      - mail
      - email
      - userPrincipalName
@@ -39,22 +39,22 @@ strategy:
     bind_dn: 'default_bind_dn' #optional, default credentials for user lookup
     password: 'password' #optional, default credentials for user lookup
 
-    # name_proc allows you to match the user name entered with the 
-    # format of the uid attributes. For example, value of 
-    # 'sAMAccountName' in AD contains only the windows user name. 
+    # name_proc allows you to match the user name entered with the
+    # format of the uid attributes. For example, value of
+    # 'sAMAccountName' in AD contains only the windows user name.
     # If your user prefers using email to login, a name_proc as below
-    # will trim the email string down to just the windows login name. 
-    # In summary, use name_proc to fill the gap between the submitted 
+    # will trim the email string down to just the windows login name.
+    # In summary, use name_proc to fill the gap between the submitted
     # username and LDAP uid attribute value. Must be valid ruby code.
     # It is possible to open security holes in Stackato through this
     # setting, since the provided code will be accepting arbitrary user
     # input. Administrators are urged to use this setting only when
-    # absolutely necessary, and to check the entered code thoroughly 
+    # absolutely necessary, and to check the entered code thoroughly
     # for possible security implications.
     # name_proc: "Proc.new {|name| name.gsub(/@.*$/,'')}" #optional
 
     # try_sasl and sasl_mechanisms are optional.
-    # Use them to initialize a SASL connection to server. If you are not 
+    # Use them to initialize a SASL connection to server. If you are not
     # familiar with these authentication methods, please just avoid them.
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
@@ -69,7 +69,7 @@ strategy:
 # stackato for cluster use. You almost certainly should not change this.
 rails_environment: production
 
-# Database used by aok for sessions and to store users with 
+# Database used by aok for sessions and to store users with
 # the `builtin` strategy
 database_environment:
   production:
@@ -100,7 +100,27 @@ oauth:
       authorities: uaa.none
       id: vmc
       resource_ids: none
-      redirect_uri: http://uaa.cloudfoundry.com/redirect/vmc
+      redirect_uri: https://uaa.cloudfoundry.com/redirect/vmc
+    admin:
+      authorized_grant_types: client_credentials
+      scope: clients.read,clients.write,clients.secret
+      authorities: uaa.admin,clients.read,clients.write,clients.secret
+      id: admin
+      secret: adminsecret
+      resource_ids:
+        - clients
+        - tokens
+  users:
+    default_authorities:
+        - openid
+        - scim.me
+        - cloud_controller.read
+        - cloud_controller.write
+        - password.write
+        - scim.userids
+        - uaa.user
+        - approvals.me
+
 
 scim:
   users:

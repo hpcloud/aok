@@ -3,10 +3,11 @@ puts "aok starting up at #{Time.now}"
 
 require 'thin'
 
-server = Thin::Server.new('0.0.0.0', (ENV['PORT'] || 4567).to_i)
+app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
+server = Thin::Server.new(CCConfig[:bind_address], AppConfig[:port])
 
 ENV['RACK_ENV'] = 'production'
-server.app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
+server.app = app
 # The routers proxying to us handle killing inactive connections. Set an upper limit
 # just to be safe.
 server.timeout = 15 * 60 # 15 min

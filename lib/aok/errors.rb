@@ -2,13 +2,13 @@ module Aok
   module Errors
 
     class AokError < RuntimeError
-      attr_accessor :error, :error_description
-      def http_status
-        500
-      end
+      attr_accessor :http_status, :http_headers, :error, :error_description
 
-      def http_headers
-        {
+      def initialize
+        @error = "unknown_error"
+        @error_description = "An unknown error occurred."
+        @http_status = 500
+        @http_headers = {
           'Content-Type' => 'application/json'
         }
       end
@@ -19,24 +19,21 @@ module Aok
           'error_description' => error_description
         }.to_json
       end
+
     end
 
     class Unauthorized < AokError
-      def initialize(desc='Bad credentials')
+      def initialize(desc='Bad credentials', type='Bearer', realm="oauth")
+        super()
+        @http_status = 401
         @error = 'unauthorized'
         @error_description = desc
-      end
-
-      def http_headers
-        super.merge({
+        @http_headers = http_headers.merge({
           'WWW-Authenticate' => 
-            %Q{Bearer realm="oauth", error="#{error}", error_description="#{error_description}"}
+            %Q{#{type} realm="#{realm}", error="#{error}", error_description="#{error_description}"}
         })
       end
 
-      def http_status
-        401
-      end
     end
   end
 

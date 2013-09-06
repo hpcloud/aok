@@ -1,4 +1,5 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
+  include Aok::ModelAuthoritiesMethods
   has_many :protected_resources
   has_many :access_tokens
   has_many :authorization_codes
@@ -7,7 +8,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   alias_attribute :first_name, :given_name
   alias_attribute :last_name, :family_name
 
-  validates :username, 
+  validates :username,
     :uniqueness => { :case_sensitive => false },
     :length => { :maximum => 255 }
 
@@ -19,5 +20,9 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   def email=(val)
     write_attribute :email, val.strip.downcase
   end
-  
+
+  def authorities_list_with_defaults
+    authorities_list | AppConfig[:oauth][:users][:default_authorities]
+  end
+
 end

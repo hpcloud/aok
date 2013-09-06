@@ -12,7 +12,7 @@ module Oauth2Token
       validates :token, :presence => true, :uniqueness => true
 
       scope :valid, lambda {
-        where(:expires_at.gte => Time.now.utc)
+        where(['expires_at >= ?', Time.now.utc])
       }
     end
   end

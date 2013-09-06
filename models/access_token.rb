@@ -33,27 +33,32 @@ class AccessToken < ActiveRecord::Base
     #     "password"
     #   ]
     # }
-
-    self.token = CF::UAA::TokenCoder.encode(
-      {
-        :aud => 'cloud_controller',
+    payload = {
+      :aud => 'cloud_controller', # TODO: set correctly
+      :iat => Time.now.to_i,
+      :exp => self.expires_at.to_i,
+      :client_id => client.identifier,
+      :scope => scopes
+    }
+    if identity
+      payload.merge!({
         :user_id => identity.id, # TODO: make this a guid
         :sub => identity.id, # TODO: make this a guid
-        :email => identity.email,
-        :iat => Time.now.to_i,
-        :exp => self.expires_at.to_i,
         :user_name => identity.username,
-        :client_id => client.identifier,
-        :scope => scopes
-      }, 
+        :email => identity.email,
+      })
+    end
+
+    self.token = CF::UAA::TokenCoder.encode(
+      payload,
       {
-        :skey => 'tokensecret'
+        :skey => 'tokensecret' # TODO: set correctly
       }
     )
 
     bearer_token = Rack::OAuth2::AccessToken::Bearer.new(
       :access_token => self.token,
-      :expires_in => self.expires_in
+      :expires_in => self.expires_in # TODO: set correctly
     )
     if with_refresh_token
       bearer_token.refresh_token = self.create_refresh_token(

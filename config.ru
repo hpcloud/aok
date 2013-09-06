@@ -14,4 +14,3 @@ maps = {
 maps.each do |path, controller|
   map(path){ run controller}
 end
-

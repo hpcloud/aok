@@ -5,6 +5,8 @@ require 'sinatra/base'
 
 %W{
   lib/aok/errors
+  lib/aok/security_context
+  lib/aok/model_authorities_methods
   lib/rack_port_monkeypatch
   lib/omniauth/strategies/identity
   lib/omniauth/form
