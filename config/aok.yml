@@ -94,6 +94,13 @@ database_environment:
 
 oauth:
   clients:
+    cf:
+      authorized_grant_types: password,implicit
+      scope: cloud_controller.read,cloud_controller.write,password.write,openid,cloud_controller.admin,scim.read,scim.write
+      authorities: uaa.none
+      id: cf
+      resource_ids: none
+      redirect_uri: https://uaa.cloudfoundry.com/redirect/cf
     vmc:
       authorized_grant_types: implicit
       scope: cloud_controller.read,cloud_controller.write,password.write,openid

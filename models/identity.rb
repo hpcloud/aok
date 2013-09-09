@@ -17,6 +17,8 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     self.username = username.strip if attribute_present?("username")
   end
 
+  auth_key 'username'
+
   def email=(val)
     write_attribute :email, val.strip.downcase
   end

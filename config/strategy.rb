@@ -27,14 +27,13 @@ module Aok
       # and the corresponding mapping of field names from id/secret if needed
       STRATEGIES_DIRECT = {
         :default => {
-          :id => :email,
+          :id => :username,
           :secret => :password
         },
         :builtin => {
           :id => :auth_key
         },
         :ldap => {
-          :id => :username
         },
         :developer => {
         }
@@ -61,14 +60,14 @@ module Aok
         def builtin
           require 'omniauth-identity'
           ApplicationController.use OmniAuth::Strategies::Identity, DEFAULT_OPTIONS.merge({
-            :fields => [:email]
+            :fields => [:username]
           })
           ApplicationController.set :strategy, :identity
         end
 
         def ldap
           require 'omniauth-ldap'
-          options = AppConfig[:strategy][:ldap].merge(DEFAULT_OPTIONS)
+          options = DEFAULT_OPTIONS.merge(AppConfig[:strategy][:ldap])
 
           if options.key? :name_proc
             proc = options[:name_proc]
@@ -100,7 +99,7 @@ module Aok
 
         def google_apps
           require 'omniauth-google-apps'
-          options = AppConfig[:strategy][:google_apps].merge(DEFAULT_OPTIONS)
+          options = DEFAULT_OPTIONS.merge(AppConfig[:strategy][:google_apps])
           [:domain].each do |option_key|
             unless options.key?(option_key) && !options[option_key].empty?
               abort "Google login requires that the `#{option_key}` configuration option is set."
@@ -116,7 +115,7 @@ module Aok
         end
 
         def developer
-          options = DEFAULT_OPTIONS.merge({:fields => [:email]})
+          options = DEFAULT_OPTIONS.merge({:fields => [:username]})
           puts "WARNING Developer strategy is wide-open access. Completely insecure!"
           ApplicationController.use OmniAuth::Strategies::Developer, options
           ApplicationController.set :strategy, :developer
