@@ -50,10 +50,12 @@ class ApplicationController < Sinatra::Base
 
   # Register with the router
   require 'nats/client'
-  def self.nats_message(subject, message)
+  def self.nats_message(subject, message, logger)
     NATS.start(:uri => CCConfig[:message_bus_uri], :max_reconnect_attempts => 999999) do
-      NATS.publish(subject, message)
-      NATS.stop
+      NATS.publish(subject, message) do
+        logger.debug "NATS server received message."
+        NATS.stop
+      end
     end
   end
   configure do
