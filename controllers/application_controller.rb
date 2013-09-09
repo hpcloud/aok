@@ -48,10 +48,12 @@ class ApplicationController < Sinatra::Base
 
   # Register with the router
   require 'nats/client'
-  def self.nats_message(subject, message)
+  def self.nats_message(subject, message, logger)
     NATS.start(:uri => CCConfig[:message_bus_uri], :max_reconnect_attempts => 999999) do
-      NATS.publish(subject, message)
-      NATS.stop
+      NATS.publish(subject, message) do
+        logger.debug "NATS server received message."
+        NATS.stop
+      end
     end
   end
   configure do
@@ -66,13 +68,13 @@ class ApplicationController < Sinatra::Base
       :uris => [CCConfig[:external_domain].sub(/^api/, 'aok')],
       :tags => { :component => "aok" }
     }.to_json
-    nats_message('router.register', router_config)
-    logger.debug "Published router config: #{router_config}"
+    logger.debug "Publishing router config: #{router_config}"
+    nats_message('router.register', router_config, logger)
 
     # TODO: This doesn't seem to work.
     at_exit do
-      nats_message('router.unregister', router_config)
-      logger.debug "Unregistered from router"
+      logger.debug "Unregistering from router..."
+      nats_message('router.unregister', router_config, logger)
     end
   end
 
