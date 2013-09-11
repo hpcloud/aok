@@ -78,7 +78,7 @@ database_environment:
     port: 5432
     encoding: utf8
     username: postgres
-    password: stackato
+    password: root
     adapter: postgresql
     timeout: 2000
     template: template0 # Required for utf8 encoding
