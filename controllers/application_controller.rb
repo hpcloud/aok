@@ -48,37 +48,11 @@ class ApplicationController < Sinatra::Base
   end
 
 
-  # Register with the router
-  require 'nats/client'
-  def self.nats_message(subject, message, logger)
-    NATS.start(:uri => CCConfig[:message_bus_uri], :max_reconnect_attempts => 999999) do
-      NATS.publish(subject, message) do
-        logger.debug "NATS server received message."
-        NATS.stop
-      end
-    end
-  end
   configure do
     Aok::Config::Strategy.initialize_strategy
     Aok::Config.initialize_database
     set :public_folder, File.expand_path('../../public', __FILE__)
     logger.debug "Serving static files from #{settings.public_folder.inspect}"
-
-    bind_address = Kato::Local::Node.get_local_node_id
-    router_config = {
-      :host => bind_address,
-      :port => AppConfig[:port],
-      :uris => [CCConfig[:external_domain].sub(/^api/, 'aok')],
-      :tags => { :component => "aok" }
-    }.to_json
-    logger.debug "Publishing router config: #{router_config}"
-    nats_message('router.register', router_config, logger)
-
-    # TODO: This doesn't seem to work.
-    at_exit do
-      logger.debug "Unregistering from router..."
-      nats_message('router.unregister', router_config, logger)
-    end
   end
 
   before '*' do

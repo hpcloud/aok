@@ -1,16 +1,54 @@
 #!/usr/bin/env ruby
 puts "aok starting up at #{Time.now}"
 
+require 'eventmachine'
 require 'thin'
 require 'kato/local/node'
 
 app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
 bind_address = Kato::Local::Node.get_local_node_id
-server = Thin::Server.new(bind_address, AppConfig[:port])
+require 'cf/registrar'
+require 'vcap/common'
+require 'vcap/component'
 
-ENV['RACK_ENV'] = 'production'
-server.app = app
-# The routers proxying to us handle killing inactive connections. Set an upper limit
-# just to be safe.
-server.timeout = 15 * 60 # 15 min
-server.start
+EM.run do
+  server = Thin::Server.new(bind_address, AppConfig[:port])
+
+  ENV['RACK_ENV'] = 'production'
+  server.app = app
+  # The routers proxying to us handle killing inactive connections. Set an upper limit
+  # just to be safe.
+  server.timeout = 15 * 60 # 15 min
+  server.threaded = true
+  server.start
+
+  def register_component(message_bus)
+    VCAP::Component.register(
+      :type => 'AOK',
+      :host => bind_address,
+      #:index => @config[:index],
+      :config => AppConfig,
+      :nats => message_bus,
+      :logger => ApplicationController.logger,
+      #:log_counter => @log_counter
+    )
+  end
+
+  def registrar
+    @registrar ||= Cf::Registrar.new(
+        :mbus => CCConfig[:message_bus_uri],
+        :host => bind_address,
+        :port => AppConfig[:port],
+        :uri => CCConfig[:external_domain].sub(/^api/, 'aok'),
+        :tags => {:component => "AOK"},
+        #:index => @config[:index]
+    )
+  end
+
+  require "cf_message_bus/message_bus"
+  message_bus = CfMessageBus::MessageBus.new(:uri => CCConfig[:message_bus_uri], :logger => ApplicationController.logger)
+  register_component(message_bus)
+  registrar.register_with_router
+
+
+end

@@ -18,6 +18,7 @@ gem 'backports'         ,    '3.3.3'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'beefcake'          ,    '0.3.7'
 gem 'builder'           ,    '3.0.4'
+gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/cloudfoundry/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'cookiejar'         ,    '0.3.0'
 gem 'daemons'           ,    '1.1.9'
@@ -90,6 +91,8 @@ gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.5.1'
 gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.37'
+gem 'vcap-concurrency'  ,    '0.1.0'
+gem 'vcap_common'       ,    '2.2.0', :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
 gem 'vic'               ,    '1.0.0'
 gem 'virtus'            ,    '0.5.5'
 gem 'vmstat'            ,    '2.0.0'
