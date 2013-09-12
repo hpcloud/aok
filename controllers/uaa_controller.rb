@@ -26,8 +26,7 @@ class UaaController < ApplicationController
       # TODO: this should return information about the configured strategy instead
       # of this generic info.
       { :timestamp => Time.now.xmlschema,
-        # TODO: move this commit to memory instead of reading the file
-        :commit_id => File.read(File.dirname(__FILE__) + '/../GITDESCRIBE-PKG').strip,
+        :commit_id => AppConfig[:commit_id],
         :prompts => {
           :username => ["text","Username"],
           :password => ["password","Password"]
