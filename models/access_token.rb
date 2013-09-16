@@ -38,12 +38,14 @@ class AccessToken < ActiveRecord::Base
       :iat => Time.now.to_i,
       :exp => self.expires_at.to_i,
       :client_id => client.identifier,
-      :scope => scopes
+      :scope => scopes,
+      :jti => SecureRandom.uuid # TODO: ensure unique, should probably
+                                # be stored as a separate db column
     }
     if identity
       payload.merge!({
-        :user_id => identity.id, # TODO: make this a guid
-        :sub => identity.id, # TODO: make this a guid
+        :user_id => identity.id.to_s, # TODO: make this a guid
+        :sub => identity.id.to_s, # TODO: make this a guid
         :user_name => identity.username,
         :email => identity.email,
       })
