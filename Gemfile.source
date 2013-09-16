@@ -2,7 +2,7 @@ source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
-gem 'sinatra', '~>1.3.3'
+gem 'sinatra', '~>1.3.3', :require => 'sinatra/base'
 
 group :development do
   # Source reloading during development
@@ -37,6 +37,6 @@ gem 'omniauth-google-apps', '~>0.0.2'
 #UAA
 gem "cf-uaa-lib", "~> 1.3.7", :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem "cf-message-bus", :git => "https://github.com/cloudfoundry/cf-message-bus.git"
-gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
+gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0", :require => ['cf/registrar','vcap/common','vcap/component']
 
 gem 'rack-oauth2', '~>1.0.5'

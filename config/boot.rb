@@ -1,7 +1,5 @@
 require 'bundler'
-
 Bundler.require(:default)
-require 'sinatra/base'
 
 %W{
   lib/aok/errors

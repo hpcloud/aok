@@ -7,9 +7,6 @@ require 'kato/local/node'
 
 app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
 bind_address = Kato::Local::Node.get_local_node_id
-require 'cf/registrar'
-require 'vcap/common'
-require 'vcap/component'
 
 EM.run do
   server = Thin::Server.new(bind_address, AppConfig[:port])
@@ -19,7 +16,6 @@ EM.run do
   # The routers proxying to us handle killing inactive connections. Set an upper limit
   # just to be safe.
   server.timeout = 15 * 60 # 15 min
-  server.threaded = true
   server.start
 
   def register_component(message_bus)
