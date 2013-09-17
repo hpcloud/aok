@@ -8,6 +8,7 @@ module Aok
       @authentication = Authentication.new
       @authentication.type = if auth.basic?
         basic_auth(auth)
+        :basic
       else
         nil
       end
@@ -25,11 +26,26 @@ module Aok
     def basic_auth(auth)
       return unless auth.credentials
       username, password = auth.credentials
-      key, client_config = AppConfig[:oauth][:clients].detect{|key, client|client[:id]==username}
-      return unless client_config && client_config[:secret]
-      return unless password == client_config[:secret]
+      logger.debug "Basic authentication attempt with username #{username.inspect} and password #{password.inspect}" #TODO: don't log password
+      client = Client.find_by_identifier username
+      unless client
+        logger.debug "Client #{username.inspect} not found"
+        return
+      end
+      unless client.secret
+        logger.debug "Client #{username.inspect} doesn't have a secret to authenticate"
+        return
+      end
+      unless password == client.secret
+        logger.debug "Password doesn't match client secret"
+        return
+      end
       @authentication.username = username
-      @authentication.client = Client.find_by_identifier(client_config[:id])
+      @authentication.client = client
+    end
+
+    def logger
+      ApplicationController.logger
     end
 
   end

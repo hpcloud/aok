@@ -44,7 +44,9 @@ class ApplicationController < Sinatra::Base
   require 'rack/oauth2'
   require 'rack/oauth2/server/token/extension/jwt'
   use Rack::OAuth2::Server::Resource::Bearer, 'AOK Protected Resources' do |req|
+    logger.debug "Looking up Access Token..."
     AccessToken.valid.find_by_token(req.access_token) || req.invalid_token!
+    logger.debug "Token found!"
   end
 
 

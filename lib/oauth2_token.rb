@@ -7,7 +7,6 @@ module Oauth2Token
       belongs_to :identity
       belongs_to :client
 
-      before_validation :setup, :on => :create
       validates :client, :expires_at, :presence => true
       validates :token, :presence => true, :uniqueness => true
 
@@ -26,10 +25,14 @@ module Oauth2Token
     self.save!
   end
 
+  def initialize *args
+    super *args
+    setup
+  end
+
   private
 
   def setup
-    self.token = SecureToken.generate
     self.expires_at ||= self.default_lifetime.from_now
   end
 end

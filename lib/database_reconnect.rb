@@ -1,4 +1,4 @@
-# This is a rack middleware to catch exceptions indicitive of 
+# This is a rack middleware to catch exceptions indicitive of
 # db connection issues and automatically attempt a reconnect
 # to the db.
 require 'active_record/errors'
@@ -6,7 +6,7 @@ class DatabaseReconnect
   def initialize(app)
     @app = app
   end
- 
+
   def call(env)
     tries ||= 1
     @app.call env

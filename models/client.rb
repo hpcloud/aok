@@ -5,7 +5,7 @@ class Client < ActiveRecord::Base
   belongs_to :identity
 
   before_validation :setup, :on => :create
-  validates :name, :identity, :secret, :presence => true #:website, :redirect_uri,
+  validates :name, :secret, :presence => true #:website, :redirect_uri, :identity,
   validates :identifier, :presence => true, :uniqueness => true
 
   def scope_list
@@ -23,8 +23,8 @@ class Client < ActiveRecord::Base
   private
 
   def setup
-    self.identifier = SecureToken.generate(16)
-    self.secret = SecureToken.generate
+    self.identifier ||= SecureToken.generate(16)
+    self.secret ||= SecureToken.generate
   end
 
 end
