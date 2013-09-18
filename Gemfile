@@ -20,6 +20,7 @@ gem 'beefcake'          ,    '0.3.7'
 gem 'builder'           ,    '3.0.4'
 gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/cloudfoundry/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
+gem 'colored'           ,      '1.2'
 gem 'cookiejar'         ,    '0.3.0'
 gem 'daemons'           ,    '1.1.9'
 gem 'descendants_tracker',    '0.0.1'
@@ -82,6 +83,7 @@ gem 'ruby-openid'       ,    '2.2.3'
 gem 'ruby-openid-apps-discovery',    '1.2.0'
 gem 'ruby-termios'      ,    '0.9.6'
 gem 'rubyntlm'          ,    '0.1.1'
+gem 'scim-query-filter-parser',    '0.0.1', :git => "https://github.com/ingydotnet/scim-query-filter-parser-rb.git"
 gem 'sinatra'           ,    '1.3.6', :require => 'sinatra/base'
 gem 'sqlite3'           ,    '1.3.7'
 gem 'squash_ruby'       ,    '1.2.0'
