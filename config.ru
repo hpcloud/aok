@@ -5,11 +5,12 @@ use DatabaseReconnect
 use Rack::ContentType
 
 maps = {
-  '/'          => ApplicationController,
-  '/openid'    => OpenidController,
-  '/uaa/Users' => UsersController,
-  '/logins'    => LoginsController,
-  '/uaa'       => UaaController
+  '/'           => ApplicationController,
+  '/openid'     => OpenidController,
+  '/uaa/Users'  => UsersController,
+  '/uaa/Groups' => GroupsController,
+  '/logins'     => LoginsController,
+  '/uaa'        => UaaController
 }
 maps.each do |path, controller|
   map(path){ run controller}

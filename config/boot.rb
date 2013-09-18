@@ -23,6 +23,7 @@ Bundler.require(:default)
   controllers/application_controller
   controllers/openid_controller
   controllers/users_controller
+  controllers/groups_controller
   controllers/logins_controller
   controllers/uaa_controller
 
