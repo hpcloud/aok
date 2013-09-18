@@ -70,4 +70,16 @@ class ClientsController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
+  # List Tokens for Client
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#list-tokens-for-client-get-oauthclientsclient_idtokens
+  get ':identifier/tokens' do
+    raise Aok::Errors::NotImplemented
+  end
+
+  # Revoke Token by Client
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#revoke-token-by-client-delete-oauthclientsclient_idtokensjti
+  delete ':identifier/tokens/:jti' do
+    raise Aok::Errors::NotImplemented
+  end
+
 end
