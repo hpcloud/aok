@@ -1,27 +1,9 @@
 require 'time'
 require 'uaa'
 class UaaController < ApplicationController
-  attr_reader :security_context
 
   not_found do
     return [404, 'Not Found']
-  end
-
-  before do
-    @security_context = Aok::SecurityContext.new(request)
-  end
-
-  helpers do
-    def authenticate!
-      return if security_context.authenticated?
-      raise Aok::Errors::Unauthorized.new(
-        "An Authentication object was not found in the SecurityContext", 'Basic', 'UAA/client'
-      )
-    end
-  end
-
-  get '/?' do
-    return 'Hello World'
   end
 
   #TODO: What should permissions be for this call?
@@ -79,9 +61,11 @@ class UaaController < ApplicationController
       }.to_json
   end
 
+  # TODO: This currently only supports an undocumented client access token grant using
+  # basic auth that is implemented in UAA and required by cf. Needs more investigation.
   post '/oauth/token' do
     Rack::OAuth2::Server::Token.new do |req, resp|
-      authenticate!
+      authenticate!(:basic)
       client = security_context.client
       scopes = validate_scope(req, client)
       validate_grant_type req, client
@@ -156,7 +140,6 @@ class UaaController < ApplicationController
       user_scopes = identity ? identity.authorities_list_with_defaults : nil
 
       scopes_to_grant = user_scopes ? (user_scopes & requested_scopes) : requested_scopes
-      logger.debug "scopes_to_grant = #{user_scopes} ? (#{user_scopes & requested_scopes}) : #{requested_scopes}"
       if scopes_to_grant.blank? && !client.authorities.blank?
         req.invalid_scope!("Invalid scope (empty) - this user is not allowed
           any of the requested scopes: #{requested_scopes.join(', ')} (either you requested

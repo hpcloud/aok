@@ -50,3 +50,5 @@ sync:
 ssh:
 	ssh stackato@$(VM)
 
+console:
+	bundle exec irb -r './config/boot'

@@ -34,21 +34,67 @@ class ApplicationController < Sinatra::Base
     $stdout.sync = true
   end
 
+  # OAuth2 Resource Server
+  require 'rack/oauth2'
+  require 'rack/oauth2/server/token/extension/jwt'
+  use Rack::OAuth2::Server::Resource::Bearer, 'AOK Protected Resources' do |req|
+    # TODO: Change or remove-- moved to security_context.rb
+    # logger.debug "Looking up Access Token..."
+    # AccessToken.valid.find_by_token(req.access_token) || req.invalid_token!
+    # logger.debug "Token found!"
+  end
+
+  attr_reader :security_context
+  before do
+    @security_context = Aok::SecurityContext.new(request)
+  end
+
+  helpers do
+    # authenticate(type=:oauth2)
+    def authenticate!(*args)
+      type = :oauth2
+      if !args.blank?
+        if [Symbol, String].include?(args.first.class)
+          type_string = args.shift.to_s.downcase
+          type = if type_string == 'basic'
+            :basic
+          elsif type_string =~ /^oauth2/
+            # TODO: flesh this out to differentiate user/client auth
+            :oauth2
+          else
+            nil
+          end
+        end
+      end
+      case type
+      when :basic
+        return if security_context.authenticated? && security_context.authentication.basic?
+        if security_context.authenticated?
+          logger.debug "Authentication was found, but not the expected type."
+        end
+        raise Aok::Errors::Unauthorized.new(
+          "An Authentication object was not found in the SecurityContext", 'Basic', 'UAA/client'
+        )
+      when :oauth2
+        return if security_context.authenticated? && security_context.authentication.oauth2?
+        if security_context.authenticated?
+          logger.debug "Authentication was found, but not the expected type."
+        end
+        raise Aok::Errors::Unauthorized.new(
+          "An Authentication object was not found in the SecurityContext", 'Bearer', 'UAA/client'
+        )
+      else
+        raise "Don't know how to handle #{type_string.inspect} authentication."
+      end
+    end
+  end
+
+
   helpers do
     def logger
       settings.logger
     end
   end
-
-  # OAuth2 Resource Server
-  require 'rack/oauth2'
-  require 'rack/oauth2/server/token/extension/jwt'
-  use Rack::OAuth2::Server::Resource::Bearer, 'AOK Protected Resources' do |req|
-    logger.debug "Looking up Access Token..."
-    AccessToken.valid.find_by_token(req.access_token) || req.invalid_token!
-    logger.debug "Token found!"
-  end
-
 
   configure do
     Aok::Config::Strategy.initialize_strategy
