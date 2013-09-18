@@ -46,6 +46,7 @@ class ApplicationController < Sinatra::Base
 
   attr_reader :security_context
   before do
+    content_type 'application/json'
     @security_context = Aok::SecurityContext.new(request)
   end
 
@@ -112,37 +113,6 @@ class ApplicationController < Sinatra::Base
   def self.get_and_post(*args, &block)
     get(*args, &block)
     post(*args, &block)
-  end
-
-  get '/auth' do
-    redirect "/auth/#{settings.strategy}"
-  end
-
-  post '/auth/:provider/callback' do
-    email = auth_hash[:info][:email]
-    user = env['omniauth.identity']
-    set_current_user(user)
-
-    if env["aok.block"] # legacy login
-      env["aok.block"].call(user)
-      return
-    end
-
-    if env["aok.no_openid"] # legacy login
-      return 200, {'Content-Type' => 'application/json'}, {:email => email}.to_json
-    end
-
-    redirect '/openid/complete'
-  end
-
-  get '/auth/failure' do
-    # legacy login failures handles by Aok::Config::Strategy::FailureEndpoint
-    clear_current_user
-    redirect '/openid/complete'
-  end
-
-  get '/?' do
-    redirect("https://#{CCConfig[:external_uri]}")
   end
 
   protected

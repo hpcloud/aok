@@ -21,6 +21,8 @@ Bundler.require(:default)
   helpers/error_handling_helper
 
   controllers/application_controller
+  controllers/root_controller
+  controllers/oauth_controller
   controllers/openid_controller
   controllers/users_controller
   controllers/user_tokens_controller

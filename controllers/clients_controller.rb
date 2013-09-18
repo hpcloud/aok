@@ -13,15 +13,13 @@ class ClientsController < ApplicationController
     #authenticate!  #TODO FIXME
     client = Client.find_by_identifier params[:identifier]
     return 404 unless client
-    return 200,
-      {"Content-Type" => "application/json"},
-      {
-        :client_id => client.identifier,
-        :scope => client.scope,
-        :resource_ids => client.scope.split(',').collect{|s|s.split('.').last}.join(','), #TODO: verify what this is supposed to be
-        :authorities => client.authorities,
-        :authorized_grant_types => client.authorized_grant_types
-      }.to_json
+    return {
+      :client_id => client.identifier,
+      :scope => client.scope,
+      :resource_ids => client.scope.split(',').collect{|s|s.split('.').last}.join(','), #TODO: verify what this is supposed to be
+      :authorities => client.authorities,
+      :authorized_grant_types => client.authorized_grant_types
+    }.to_json
   end
 
   # Register Client
@@ -41,7 +39,6 @@ class ClientsController < ApplicationController
     c.authorities = cd['authorities'].join(',')
     c.save!
     return 201,
-      {"Content-Type" => "application/json"},
       {
         :client_id => c.identifier,
         :scope => c.scope,
