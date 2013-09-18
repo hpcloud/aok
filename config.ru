@@ -10,6 +10,7 @@ maps = {
   '/uaa/Users'         => UsersController,
   '/uaa/Groups'        => GroupsController,
   '/uaa/oauth/clients' => ClientsController,
+  '/uaa/oauth/users'   => UserTokensController,
   '/logins'            => LoginsController,
   '/uaa'               => UaaController
 }
