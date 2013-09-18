@@ -29,11 +29,20 @@ module Aok
         @error = 'unauthorized'
         @error_description = desc
         @http_headers = http_headers.merge({
-          'WWW-Authenticate' => 
+          'WWW-Authenticate' =>
             %Q{#{type} realm="#{realm}", error="#{error}", error_description="#{error_description}"}
         })
       end
 
+    end
+
+    class NotImplemented < AokError
+      def initialize(desc='You have reached a stub API endpoint that has not yet been implemented in AOK.')
+        super()
+        @http_status = 501
+        @error = 'Not Implemented'
+        @error_description = desc
+      end
     end
   end
 
