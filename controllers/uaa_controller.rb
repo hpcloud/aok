@@ -6,47 +6,6 @@ class UaaController < ApplicationController
     return [404, 'Not Found']
   end
 
-  #TODO: What should permissions be for this call?
-  post "/oauth/clients" do
-    cd = read_json_body
-    logger.debug "Client detail passed to POST /oauth/clients: #{cd.inspect}"
-    #authenticate! #TODO FIXME
-    c = Client.new
-    #TODO: instead of joining these here, use a helper method in the
-    #authorities module to properly assign list values
-    c.scope = cd['scope'].join(',')
-    c.identifier = c.name = cd['client_id']
-    c.secret = cd['client_secret']
-    c.authorized_grant_types = cd['authorized_grant_types'].join(',')
-    c.authorities = cd['authorities'].join(',')
-    c.save!
-    return 201,
-      {"Content-Type" => "application/json"},
-      {
-        :client_id => c.identifier,
-        :scope => c.scope,
-        :resource_ids => c.scope.split(',').collect{|s|s.split('.').last}.join(','), #TODO: verify what this is supposed to be
-        :authorities => c.authorities,
-        :authorized_grant_types => c.authorized_grant_types
-      }.to_json
-  end
-
-  # TODO: what should permissions be for this call?
-  get "/oauth/clients/:identifier" do
-    #authenticate!  #TODO FIXME
-    client = Client.find_by_identifier params[:identifier]
-    return 404 unless client
-    return 200,
-      {"Content-Type" => "application/json"},
-      {
-        :client_id => client.identifier,
-        :scope => client.scope,
-        :resource_ids => client.scope.split(',').collect{|s|s.split('.').last}.join(','), #TODO: verify what this is supposed to be
-        :authorities => client.authorities,
-        :authorized_grant_types => client.authorized_grant_types
-      }.to_json
-  end
-
   get '/login' do
     return 200,
       {"Content-Type" => "application/json"},
