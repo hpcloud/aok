@@ -11,5 +11,5 @@ class UserTokensController < ApplicationController
   delete ':username/tokens/:jti' do
     raise Aok::Errors::NotImplemented
   end
-  
+
 end

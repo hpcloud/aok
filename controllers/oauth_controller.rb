@@ -1,5 +1,9 @@
 class OauthController < ApplicationController
 
+  # Client Obtains Token
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#client-obtains-token-post-oauthtoken
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-endpoint-post-oauthtoken
+  #
   # TODO: This currently only supports an undocumented client access token grant using
   # basic auth that is implemented in UAA and required by cf. Needs more investigation.
   post '/token' do
@@ -15,34 +19,67 @@ class OauthController < ApplicationController
     end.call(env)
   end
 
-  get_and_post '/authorize' do
-    allow_approval = request.request_method == 'POST'
+  # Note: UAA has overloaded this endpoint
+  #
+  # Browser Requests Code
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#browser-requests-code-get-oauthauthorize
+  #
+  # Implicit Grant for Browsers
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#implicit-grant-for-browsers-get-oauthauthorize
+  get '/authorize', :provides => :html do
+    raise Aok::Errors::NotImplemented
+  end
+
+  # Non-Browser Requests Code
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#non-browser-requests-code-get-oauthauthorize
+  get '/authorize', :provides => :json do
+    raise Aok::Errors::NotImplemented
+  end
+
+  # Implicit Grant with Credentials
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#implicit-grant-with-credentials-post-oauthauthorize
+  #
+  # UAA defines the following overload also, which we will probably not implement in AOK
+  # Trusted Authentication from Login Server
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#trusted-authentication-from-login-server
+  post '/authorize', :provides => :json do
     oauth_resp = Rack::OAuth2::Server::Authorize.new do |req, res|
       client = Client.find_by_identifier(req.client_id) || req.bad_request!('Client not found')
       find_identity do |identity|
         raise(Aok::Errors::Unauthorized.new) unless identity
         res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri)
         scopes = validate_scope(req, client, identity)
-        if allow_approval
-          if params[:response_type]
-            case req.response_type
-            # when :code
-            #   authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
-            #   res.code = authorization_code.token
-            when :token
-              res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
-            end
-            res.approve!
+        if params[:response_type]
+          case req.response_type
+          # when :code
+          #   authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
+          #   res.code = authorization_code.token
+          when :token
+            res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
           else
-            req.access_denied!
+            raise "Unsupported response_type #{req.response_type.inspect}"
           end
+          res.approve!
         else
-          @response_type = req.response_type
+          req.access_denied!
         end
       end
     end.call(env)
 
     respond *oauth_resp
+  end
+
+  # Oauth2 Authorization
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-authorization-post-oauthauthorizeuser_oauth_approvaltrue
+  # Query string must be ?user_oauth_approval=true
+  post '/authorize', :provides => :html do
+    raise Aok::Errors::NotImplemented
+  end
+
+  # OAuth2 Authorization Confirmation
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-authorization-confirmation-get-oauthauthorizeconfirm_access
+  get '/authorize/confirm_access', :provides => :html do
+    raise Aok::Errors::NotImplemented
   end
 
   helpers do

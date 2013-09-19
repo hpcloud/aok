@@ -33,8 +33,26 @@ class UaaController < ApplicationController
     }.to_json
   end
 
+  # Converting UserIds to Names
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#converting-userids-to-names
+  # Note: This will probably not be implemented in AOK
+  get '/ids/Users' do
+    raise Aok::Errors::NotImplemented
+  end
+
+  # Query the strength of a password
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-the-strength-of-a-password-post-passwordscore
+  post '/password/score' do
+    raise Aok::Errors::NotImplemented
+  end
+
+  # UAA has overloaded this endpoint
+  #
   # Internal Login Form
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#internal-login-form-get-login
+  #
+  # External Hosted Login Form (OpenID)
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#external-hosted-login-form-openid-get-login
   get '/login', :provides => :html do
     raise Aok::Errors::NotImplemented
   end
@@ -72,6 +90,7 @@ class UaaController < ApplicationController
   end
 
   # Simple Health Check
+  # Undocumented in UAA
   get '/healthz', :provides => 'text/plain' do
     "ok\n"
   end
