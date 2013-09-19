@@ -50,6 +50,33 @@ class ApplicationController < Sinatra::Base
     @security_context = Aok::SecurityContext.new(request)
   end
 
+  # You might think that this should be in RootController, but you would
+  # be wrong. Because of the Rack hacking we go through, we don't end up
+  # routing this request to RootController and have to define it here.
+  post '/auth/:provider/callback' do
+    logger.debug "Reached Omniauth success callback"
+    email = auth_hash[:info][:email]
+    user = env['omniauth.identity']
+    set_current_user(user)
+
+    if env["aok.block"] # legacy login
+      env["aok.block"].call(user)
+      return
+    end
+
+    if env["aok.no_openid"] # legacy login
+      return {:email => email}.to_json
+    end
+
+    redirect '/openid/complete'
+  end
+
+  get '/auth/failure' do
+    # legacy login failures handles by Aok::Config::Strategy::FailureEndpoint
+    clear_current_user
+    redirect '/openid/complete'
+  end
+
   helpers do
     # authenticate(type=:oauth2)
     def authenticate!(*args)
