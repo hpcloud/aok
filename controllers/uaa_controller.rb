@@ -22,6 +22,7 @@ class UaaController < ApplicationController
 
   # Login Information API
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#login-information-api-get-login
+  # TODO: return real information determined from the current configured strategy
   get '/login', :provides => :json do
     return {
       :timestamp => Time.now.xmlschema,

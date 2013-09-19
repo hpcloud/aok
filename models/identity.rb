@@ -12,12 +12,29 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     :uniqueness => { :case_sensitive => false },
     :length => { :maximum => 255 }
 
+  validates :guid,
+    :uniqueness => { :case_sensitive => true },
+    :length => { :maximum => 255 },
+    :presence => true
+
   before_validation do
     self.email = email.strip.downcase if attribute_present?("email")
     self.username = username.strip if attribute_present?("username")
+    self.guid ||= SecureRandom.uuid
+
+    # TODO: Under some circumstances, password is not a required attribute of
+    # an Identity. How should we validate that a password is present when we need one?
+    if !self.password_digest
+      self.password = self.password_confirmation = SecureRandom.urlsafe_base64(64)
+    end
   end
 
   auth_key 'username'
+
+  # Used by Omniauth
+  def uid
+    guid ? guid.to_s : nil
+  end
 
   def email=(val)
     write_attribute :email, val.strip.downcase

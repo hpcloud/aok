@@ -76,6 +76,11 @@ class OauthController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
+  # This endpoint is used in the integration tests
+  post '/authorize', :provides => 'application/x-www-form-urlencoded' do
+    raise Aok::Errors::NotImplemented
+  end
+
   # OAuth2 Authorization Confirmation
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-authorization-confirmation-get-oauthauthorizeconfirm_access
   get '/authorize/confirm_access', :provides => :html do
