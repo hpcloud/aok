@@ -168,7 +168,7 @@ namespace :test do
     require 'pty'
     cmd = "mvn test -P aok --projects uaa"
     begin
-      ENV['VCAP_BVT_TARGET']='stackato-andrew.local'
+      ENV['VCAP_BVT_TARGET']="#{ENV["VMNAME"]}.local"
       PTY.spawn( cmd ) do |stdin, stdout, pid|
         begin
           # Do stuff with the output here. Just printing to show it works
