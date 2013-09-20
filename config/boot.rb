@@ -38,10 +38,5 @@ Bundler.require(:default)
 
 }.each{|lib|require File.expand_path('../../'+lib, __FILE__)}
 
-#FIXME remove when ruby-openid gem updated with this fix
-# https://github.com/openid/ruby-openid/pull/53
-require_relative '../lib/ruby_openid_google_apps_monkeypatch'
-
-
 require_relative 'ensure_identities'
 require_relative 'ensure_clients'

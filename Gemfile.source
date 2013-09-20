@@ -16,7 +16,7 @@ group :test do
 end
 
 # OpenID support
-gem 'ruby-openid', '~>2.2.2'
+gem 'ruby-openid', '~>2.3.0'
 
 # cluster/config stuff
 gem 'stackato-kato'
@@ -42,4 +42,4 @@ gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :t
 gem 'rack-oauth2', '~>1.0.5'
 
 # SCIM
-gem 'scim-query-filter-parser', :git => "https://github.com/ingydotnet/scim-query-filter-parser-rb.git"
+gem 'scim-query-filter-parser', '~>0.0.2'
