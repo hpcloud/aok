@@ -47,6 +47,9 @@ sync:
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
 	ssh stackato@$(VM) sup restart aok
 
+sync-only:
+	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
+
 ssh:
 	ssh stackato@$(VM)
 

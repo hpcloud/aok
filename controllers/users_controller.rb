@@ -20,8 +20,25 @@ class UsersController < ApplicationController
 
   # Query for information
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-for-information-get-users
+  # http://www.simplecloud.info/specs/draft-scim-api-01.html#query-resources
+  # http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-12
+  # apidock.com/rails/ActiveRecord/Base
   get '/?' do
-    raise Aok::Errors::NotImplemented
+    # params
+    response = {
+      'schemas' => ["urn:scim:schemas:core:1.0"],
+      'totalResults' => 0,
+      'Resources' => [],
+    }
+    Identity.all.each do |user|
+      response['Resources'].push({
+        'id' => user.guid,
+        'userName' => user.username,
+      })
+    end
+    response['totalResults'] = response['Resources'].size
+
+    return response.to_json
   end
 
   # Delete a User
