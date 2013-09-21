@@ -2,9 +2,11 @@
 puts "aok starting up at #{Time.now}"
 
 require 'thin'
+require 'kato/local/node'
 
 app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
-server = Thin::Server.new(CCConfig[:bind_address], AppConfig[:port])
+bind_address = Kato::Local::Node.get_local_node_id
+server = Thin::Server.new(bind_address, AppConfig[:port])
 
 ENV['RACK_ENV'] = 'production'
 server.app = app

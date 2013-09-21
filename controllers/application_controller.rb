@@ -1,4 +1,6 @@
 require 'logger'
+require 'kato/local/node'
+
 class ApplicationController < Sinatra::Base
   helpers ApplicationHelper, CurrentUserHelper, ErrorHandlingHelper
 
@@ -62,8 +64,9 @@ class ApplicationController < Sinatra::Base
     set :public_folder, File.expand_path('../../public', __FILE__)
     logger.debug "Serving static files from #{settings.public_folder.inspect}"
 
+    bind_address = Kato::Local::Node.get_local_node_id
     router_config = {
-      :host => CCConfig[:bind_address],
+      :host => bind_address,
       :port => AppConfig[:port],
       :uris => [CCConfig[:external_domain].sub(/^api/, 'aok')],
       :tags => { :component => "aok" }
