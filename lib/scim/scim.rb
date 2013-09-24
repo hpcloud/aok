@@ -1,11 +1,13 @@
+# XXX Why is this code called scim/scim.rb?
+
+# XXX Does require belong up here?
 require 'scim/query/filter/parser'
 
 module Aok
   module Scim
-
-    # ActiveRecordQueryBuilder.build_query() takes a filter string as an
-    # argument and returns something suitable for passing to
-    # ActiveRecord.where().
+    # Instance method `build_query()` takes a filter string as an argument and
+    # returns something suitable for passing to `ActiveRecord.where()`. See
+    # test/scim-to-arq.rb for examples.
     class ActiveRecordQueryBuilder
       OpMapping = {
         'ge' => '>=',
@@ -13,33 +15,32 @@ module Aok
         'le' => '<=',
         'lt' => '<',
       }
-      # Maps SCIM User schema fields to the Identity model
+      # Maps SCIM User schema fields to the Identity model:
       FieldMapping = {
+        # XXX Doublecheck these:
         'emails' => 'email',
         'id' => 'guid',
         'meta.lastModified' => 'updated_at',
         'name.familyName' => 'family_name',
         'name.givenName' => 'given_name',
+        # XXX should probably be user_name:
         'userName' => 'username',
+        'userType' => 'user_type',
       }
 
       def build_query(filter)
         @rpn = SCIM::Query::Filter::Parser.new.parse(filter).rpn
-        @query = ['']
-        eval_expr
+        finalize eval_expr
       end
 
       def eval_expr
         if %w(eq co sw pr gt ge lt le and or).include? @rpn.last
-          op = @rpn.pop
-          if operator = OpMapping[op]
-            expr = self.method("eval_compare").call(operator)
+          function = @rpn.pop
+          if operator = OpMapping[function]
+            self.eval_compare(operator)
           else
-            expr = self.method("eval_#{op}").call
+            self.method("eval_#{function}").call
           end
-          @query[0] += ' ' if @query[0] != ''
-          @query[0] += expr.shift
-          @query.concat expr
         else
           @rpn.pop
         end
@@ -70,22 +71,37 @@ module Aok
         ["#{left} #{operator} ?", "#{dequote(right)}"]
       end
 
+      def eval_and
+        left, right = binary_args
+        ["(#{left.shift} AND #{right.shift})"].concat(left).concat(right)
+      end
+
+      def eval_or
+        left, right = binary_args
+        ["(#{left.shift} OR #{right.shift})"].concat(left).concat(right)
+      end
+
       def unary_arg
         left = eval_expr
-        FieldMapping[left] || left
+        return FieldMapping[left] || left
       end
 
       def binary_args
         right = eval_expr
         left = eval_expr
-        left = FieldMapping[left] || left
-        return left, right
+        return FieldMapping[left] || left, right
       end
 
       def dequote str
         str =~ /^"(.*)"$/ or
           fail 'String not quoted: '#{str}'"
         return $1
+      end
+
+      def finalize query
+        # Remove any outer parens:
+        query[0].sub!(/^\((.*)\)$/, '\1')
+        return query
       end
     end
   end

@@ -51,9 +51,9 @@ $test_scim_to_arq_data = YAML.load(<<'EOS')
 - scim: meta.lastModified le "2011-05-13T04:42:34Z"
   arq: ['updated_at <= ?', '2011-05-13T04:42:34Z']
 
-# - scim: title pr and userType eq "Employee"
-#   arq: ['title IS NOT NULL and LOWER(user_type) = ?', employee]
-# 
-# - scim: userType eq "Employee" and (emails co "example.com" or emails co "example.org")
-#   arq: ['LOWER(user_type) = ? AND (LOWER(email) LIKE ? OR LOWER(email) LIKE ?)', employee, "%example.com%", "%example.org%"]
+- scim: title pr and userType eq "Employee"
+  arq: ['title IS NOT NULL AND LOWER(user_type) = ?', employee]
+
+- scim: userType eq "Employee" and (emails co "example.com" or emails co "example.org")
+  arq: ['LOWER(user_type) = ? AND (LOWER(email) LIKE ? OR LOWER(email) LIKE ?)', employee, "%example.com%", "%example.org%"]
 EOS

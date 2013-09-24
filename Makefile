@@ -46,7 +46,7 @@ test:
 	    echo "# Testing: $$t"; \
 	    ruby -Ilib $$t; \
 	done
-	# rspec spec --pattern '**/*.rb'
+	@# rspec spec --pattern '**/*.rb'
 
 sync:
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
