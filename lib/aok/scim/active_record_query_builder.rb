@@ -1,8 +1,3 @@
-# XXX Why is this code called scim/scim.rb?
-
-# XXX Does require belong up here?
-require 'scim/query/filter/parser'
-
 module Aok
   module Scim
     # Instance method `build_query()` takes a filter string as an argument and
@@ -93,9 +88,11 @@ module Aok
       end
 
       def dequote str
-        str =~ /^"(.*)"$/ or
-          fail 'String not quoted: '#{str}'"
-        return $1
+        val = JSON.parse(str)
+        unless [String, Numeric, TrueClass, FalseClass].any?{|klass| val.kind_of?(klass)}
+          raise "Invalid data type for SCIM operand #{val.inspect}"
+        end
+        return val
       end
 
       def finalize query

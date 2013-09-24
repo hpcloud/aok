@@ -4,9 +4,9 @@ module Aok
     class AokError < RuntimeError
       attr_accessor :http_status, :http_headers, :error, :error_description
 
-      def initialize
-        @error = "unknown_error"
-        @error_description = "An unknown error occurred."
+      def initialize(error="unknown_error", desc="An unknown error occurred.")
+        @error = error
+        @error_description = desc
         @http_status = 500
         @http_headers = {
           'Content-Type' => 'application/json'
@@ -42,6 +42,12 @@ module Aok
         @http_status = 501
         @error = 'Not Implemented'
         @error_description = desc
+      end
+    end
+
+    class ScimFilterError < AokError
+      def initialize(desc='Invalid SCIM filter')
+        super('scim_filter_error', desc)
       end
     end
   end

@@ -42,4 +42,4 @@ gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :t
 gem 'rack-oauth2', '~>1.0.5'
 
 # SCIM
-gem 'scim-query-filter-parser', '~>0.0.2'
+gem 'scim-query-filter-parser', '~>0.0.3', :require => 'scim/query/filter/parser'

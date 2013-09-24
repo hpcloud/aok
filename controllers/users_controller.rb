@@ -3,7 +3,17 @@ class UsersController < ApplicationController
   # Create a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
   post '/?' do
-    raise Aok::Errors::NotImplemented
+    # TODO: Authentication, Validation, robustification
+    json = read_json_body
+    i = Identity.new
+    i.family_name = json['name']['familyName'] rescue nil
+    i.given_name = json['name']['givenName'] rescue nil
+    i.username = json['userName']
+
+    # TODO: support multiple emails
+    i.email = json['emails'].first['value'] rescue nil
+
+    i.save!
   end
 
   # Update a User
@@ -22,23 +32,38 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-for-information-get-users
   # http://www.simplecloud.info/specs/draft-scim-api-01.html#query-resources
   # http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-12
-  # apidock.com/rails/ActiveRecord/Base
+  # TODO: support pagination, etc..
+  # TODO: authentication
   get '/?' do
-    # params
-    response = {
-      'schemas' => ["urn:scim:schemas:core:1.0"],
-      'totalResults' => 0,
-      'Resources' => [],
-    }
-    Identity.all.each do |user|
-      response['Resources'].push({
-        'id' => user.guid,
-        'userName' => user.username,
+    begin
+      filter = Aok::Scim::ActiveRecordQueryBuilder.new.build_query(params[:filter])
+    rescue
+      raise Aok::Errors::ScimFilterError.new($!.message)
+    end
+    identities = Identity.where(filter)
+    resources = []
+    identities.each do |identity|
+      resources.push({
+        "id" => identity.guid,
+        "userName" => identity.username,
+        "emails" => [
+          {"value" => identity.email}
+        ],
+        "name" => {
+          "givenName" => identity.given_name,
+          "familyName" => identity.family_name
+        },
+        "groups" => []
       })
     end
-    response['totalResults'] = response['Resources'].size
 
-    return response.to_json
+    return {
+      'schemas' => ["urn:scim:schemas:core:1.0"],
+      'totalResults' => 0,
+      'resources' => resources,
+      'totalResults' => resources.size
+    }.to_json
+
   end
 
   # Delete a User
