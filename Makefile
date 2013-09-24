@@ -38,10 +38,15 @@ uninstall:
 	rm -rf $(INSTDIR)
 
 clean:
-	@ true
+	@true
 
+.PHONY: test
 test:
-	rspec spec --pattern '**/*.rb'
+	@for t in test/*.rb; do \
+	    echo "# Testing: $$t"; \
+	    ruby -Ilib $$t; \
+	done
+	# rspec spec --pattern '**/*.rb'
 
 sync:
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
