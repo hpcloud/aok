@@ -31,7 +31,7 @@ module Aok
           :secret => :password
         },
         :builtin => {
-          :id => :auth_key
+          :id => :username
         },
         :ldap => {
         },
@@ -40,7 +40,8 @@ module Aok
       }
 
       DEFAULT_OPTIONS = {
-        :title => "Sign In"
+        :title => "Sign In",
+        :callback_path => '/uaa/login.do'
       }
 
       class << self
@@ -59,9 +60,7 @@ module Aok
 
         def builtin
           require 'omniauth-identity'
-          ApplicationController.use OmniAuth::Strategies::Identity, DEFAULT_OPTIONS.merge({
-            :fields => [:username]
-          })
+          ApplicationController.use OmniAuth::Strategies::Identity, DEFAULT_OPTIONS
           ApplicationController.set :strategy, :identity
         end
 

@@ -13,7 +13,6 @@ maps = {
   '/uaa/oauth/clients' => ClientsController,
   '/uaa/oauth/users'   => UserTokensController,
   '/uaa/oauth'         => OauthController,
-  '/uaa'               => UaaController
 }
 maps.each do |path, controller|
   map(path){ run controller}

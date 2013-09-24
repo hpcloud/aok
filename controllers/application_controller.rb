@@ -50,27 +50,6 @@ class ApplicationController < Sinatra::Base
     @security_context = Aok::SecurityContext.new(request)
   end
 
-  # You might think that this should be in RootController, but you would
-  # be wrong. Because of the Rack hacking we go through, we don't end up
-  # routing this request to RootController and have to define it here.
-  post '/auth/:provider/callback' do
-    logger.debug "Reached Omniauth success callback"
-    email = auth_hash[:info][:email]
-    user = env['omniauth.identity']
-    set_current_user(user)
-
-    if env["aok.block"] # legacy login
-      env["aok.block"].call(user)
-      return
-    end
-
-    if env["aok.no_openid"] # legacy login
-      return {:email => email}.to_json
-    end
-
-    redirect '/openid/complete'
-  end
-
   get '/auth/failure' do
     # legacy login failures handles by Aok::Config::Strategy::FailureEndpoint
     clear_current_user
@@ -184,9 +163,10 @@ class ApplicationController < Sinatra::Base
       klass = OmniAuth::Strategies.const_get("#{OmniAuth::Utils.camelize(strategy)}")
       middleware = ApplicationController.middleware.find{|m| m.first == klass}
       middleware_options = middleware[1].first
+      instance = klass.new(self, middleware_options)
 
       # Fake out Rack to think we're on the auth callback with our synthesized form body
-      path = "/auth/#{strategy}/callback"
+      path = instance.callback_path
 
       session # need this to ensure env['rack.session'] is set, needed by omniauth
 
@@ -203,7 +183,7 @@ class ApplicationController < Sinatra::Base
 
       # Call the middleware, which will then call up in to the auth code
       # in ApplicationController. The results can be returned directly.
-      klass.new(self, middleware_options).call!(env)
+      instance.call!(env)
     end
   end
 

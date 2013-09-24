@@ -1,4 +1,7 @@
 class OauthController < ApplicationController
+  # This is needed in order to process direct_login in this controller
+  include LoginEndpoint
+
 
   # Client Obtains Token
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#client-obtains-token-post-oauthtoken
@@ -11,8 +14,13 @@ class OauthController < ApplicationController
       authenticate!(:basic)
       client = security_context.client
       scopes = validate_scope(req, client)
-      validate_grant_type req, client
-      token = AccessToken.new(:client => client, :scopes => scopes)
+      grant_type = validate_grant_type req, client
+      token = case grant_type
+      when :client_credentials
+        AccessToken.new(:client => client, :scopes => scopes)
+      else
+        raise "Unsupported grant_type #{grant_type.inspect}"
+      end
       resp.access_token = token.to_bearer_token
       token.save!
 
@@ -27,6 +35,7 @@ class OauthController < ApplicationController
   # Implicit Grant for Browsers
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#implicit-grant-for-browsers-get-oauthauthorize
   get '/authorize', :provides => :html do
+    require_user
     raise Aok::Errors::NotImplemented
   end
 
@@ -66,7 +75,7 @@ class OauthController < ApplicationController
       end
     end.call(env)
 
-    respond *oauth_resp
+    respond(*oauth_resp)
   end
 
   # Oauth2 Authorization
@@ -167,6 +176,7 @@ class OauthController < ApplicationController
       unless client.valid_grant_type?(req.grant_type)
         req.invalid_grant_type!
       end
+      return req.grant_type
     end
 
   end

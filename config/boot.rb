@@ -21,6 +21,7 @@ Bundler.require(:default)
   helpers/error_handling_helper
 
   controllers/application_controller
+  controllers/login_endpoint
   controllers/root_controller
   controllers/oauth_controller
   controllers/openid_controller
@@ -29,7 +30,6 @@ Bundler.require(:default)
   controllers/groups_controller
   controllers/clients_controller
   controllers/logins_controller
-  controllers/uaa_controller
 
   models/identity
   models/session
