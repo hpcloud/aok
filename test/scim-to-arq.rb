@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-$:.unshift 'lib', '../../../R/scim-query-filter-parser-rb/lib'
-
 require 'test/unit'
 require 'scim/scim'
 require 'yaml'
