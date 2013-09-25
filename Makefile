@@ -1,7 +1,7 @@
 #
 # Makefile for stackato-aok
 #
-# Used solely by packaging systems.
+# Also used by packaging systems.
 # Must support targets "all", "install", "uninstall".
 #
 # During the packaging install phase, the native packager will
@@ -12,21 +12,42 @@
 # is not intended to be relocatable.
 #
 
-NAME=stackato-aok
+# Packaging specific variables
+NAME = stackato-aok
 
-INSTALLHOME=/home/stackato
-INSTALLROOT=$(INSTALLHOME)/stackato
-DIRNAME=$(INSTALLROOT)/code/aok
+INSTALLHOME = /home/stackato
+INSTALLROOT = $(INSTALLHOME)/stackato
+DIRNAME = $(INSTALLROOT)/code/aok
 
-INSTHOME=$(DESTDIR)$(prefix)$(INSTALLHOME)
-INSTROOT=$(DESTDIR)$(prefix)$(INSTALLROOT)
-INSTDIR=$(DESTDIR)$(prefix)$(DIRNAME)
+INSTHOME = $(DESTDIR)$(prefix)$(INSTALLHOME)
+INSTROOT = $(DESTDIR)$(prefix)$(INSTALLROOT)
+INSTDIR = $(DESTDIR)$(prefix)$(DIRNAME)
 
-RSYNC_EXCLUDE=--exclude=.git* --exclude=Makefile --exclude=.stackato-pkg --exclude=debian --exclude=etc
+
+# Development variables
+RSYNC_EXCLUDE = \
+	--exclude=.git* \
+	--exclude=Makefile \
+	--exclude=.stackato-pkg \
+	--exclude=debian \
+	--exclude=etc \
+	--exclude=ext \
+
 VM=$(VMNAME).local
 
-all:
-	@ true
+EXTERNAL_REPOS = \
+	ext/test-simple-bash \
+	ext/json-bash \
+
+default: help
+
+help:
+	@echo 'Make targets:'
+	@echo ''
+	@echo 'sync 		Push local code to VM and restart AOK'
+	@echo 'ssh		SSH into Stackato VM'
+	@echo 'test-api 	Run AOK API tests'
+	@echo ''
 
 install:
 	mkdir -p $(INSTDIR)
@@ -38,7 +59,7 @@ uninstall:
 	rm -rf $(INSTDIR)
 
 clean:
-	@true
+	rm -fr ext/
 
 .PHONY: test
 test:
@@ -48,12 +69,17 @@ test:
 	done
 	@# rspec spec --pattern '**/*.rb'
 
-sync: vmname
-	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
-	ssh stackato@$(VM) sup restart aok
+test-api: vmname $(EXTERNAL_REPOS)
+	prove $(PROVEOPT) test/api/
 
-sync-only: vmname
+sync: vmname rsync restart
+
+rsync: vmname
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
+
+start stop restart:
+	ssh stackato@$(VM) sup $@ aok
+
 
 ssh: vmname
 	ssh stackato@$(VM)
@@ -69,3 +95,9 @@ ifndef VMNAME
 	@echo
 	@exit 1
 endif
+
+ext/test-simple-bash:
+	git clone git@github.com:ingydotnet/test-simple-bash $@
+
+ext/json-bash:
+	git clone git@github.com:ingydotnet/json-bash $@
