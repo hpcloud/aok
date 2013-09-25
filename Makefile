@@ -48,15 +48,24 @@ test:
 	done
 	@# rspec spec --pattern '**/*.rb'
 
-sync:
+sync: vmname
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
 	ssh stackato@$(VM) sup restart aok
 
-sync-only:
+sync-only: vmname
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
 
-ssh:
+ssh: vmname
 	ssh stackato@$(VM)
 
 console:
 	bundle exec irb -r './config/boot'
+
+vmname:
+ifndef VMNAME
+	@echo "You need to set VMNAME. Something like this:"
+	@echo
+	@echo "export VMNAME=stackato-g4jx"
+	@echo
+	@exit 1
+endif
