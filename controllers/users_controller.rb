@@ -36,7 +36,11 @@ class UsersController < ApplicationController
   # TODO: authentication
   get '/?' do
     begin
-      filter = Aok::Scim::ActiveRecordQueryBuilder.new.build_query(params[:filter])
+      filter = if params[:filter]
+        Aok::Scim::ActiveRecordQueryBuilder.new.build_query(params[:filter])
+      else
+        true
+      end
     rescue
       raise Aok::Errors::ScimFilterError.new($!.message)
     end
