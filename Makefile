@@ -1,38 +1,3 @@
-#
-# Makefile for stackato-aok
-#
-# Also used by packaging systems.
-# Must support targets "all", "install", "uninstall".
-#
-# During the packaging install phase, the native packager will
-# set either DESTDIR or prefix to the directory which serves as
-# a root for collecting the package files.
-#
-# The resulting package installs in /home/stackato/stackato,
-# is not intended to be relocatable.
-#
-
-# Packaging specific variables
-NAME = stackato-aok
-
-INSTALLHOME = /home/stackato
-INSTALLROOT = $(INSTALLHOME)/stackato
-DIRNAME = $(INSTALLROOT)/code/aok
-
-INSTHOME = $(DESTDIR)$(prefix)$(INSTALLHOME)
-INSTROOT = $(DESTDIR)$(prefix)$(INSTALLROOT)
-INSTDIR = $(DESTDIR)$(prefix)$(DIRNAME)
-
-
-# Development variables
-RSYNC_EXCLUDE = \
-	--exclude=.git* \
-	--exclude=Makefile \
-	--exclude=.stackato-pkg \
-	--exclude=debian \
-	--exclude=etc \
-	--exclude=ext \
-
 VM=$(VMNAME).local
 
 EXTERNAL_REPOS = \
@@ -40,6 +5,12 @@ EXTERNAL_REPOS = \
 	ext/json-bash \
 
 default: help
+
+include pkg.mk
+
+RSYNC_EXCLUDE = $(RSYNC_EXCLUDE) \
+	--exclude=ext \
+
 
 help:
 	@echo 'Make targets:'
@@ -49,16 +20,7 @@ help:
 	@echo 'test-api 	Run AOK API tests'
 	@echo ''
 
-install:
-	mkdir -p $(INSTDIR)
-	rsync -ap . $(INSTDIR) $(RSYNC_EXCLUDE)
-	if [ -d etc ] ; then rsync -ap etc $(INSTROOT) ; fi
-	chown -Rh stackato.stackato $(INSTHOME)
-
-uninstall:
-	rm -rf $(INSTDIR)
-
-clean:
+clean::
 	rm -fr ext/
 
 .PHONY: test
@@ -72,14 +34,13 @@ test:
 test-api: vmname $(EXTERNAL_REPOS)
 	prove $(PROVEOPT) test/api/
 
-sync: vmname rsync restart
+sync: rsync restart
 
 rsync: vmname
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
 
-start stop restart:
+start stop restart: vmname
 	ssh stackato@$(VM) sup $@ aok
-
 
 ssh: vmname
 	ssh stackato@$(VM)
