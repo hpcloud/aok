@@ -14,15 +14,13 @@ module Aok
       }
       # Maps SCIM User schema fields to the Identity model:
       FieldMapping = {
-        # XXX Doublecheck these:
         'emails' => 'email',
         'id' => 'guid',
-        'meta.lastModified' => 'updated_at',
-        'name.familyName' => 'family_name',
-        'name.givenName' => 'given_name',
-        # XXX should probably be user_name:
-        'userName' => 'username',
-        'userType' => 'user_type',
+        'meta.lastmodified' => 'updated_at',
+        'name.familyname' => 'family_name',
+        'name.givenname' => 'given_name',
+        'username' => 'username',
+        'usertype' => 'user_type',
       }
 
       def build_query(filter)
