@@ -34,6 +34,9 @@ test:
 test-api: vmname $(EXTERNAL_REPOS)
 	prove $(PROVEOPT) test/api/
 
+# Alias:
+api-test: test-api
+
 sync: rsync restart
 
 rsync: vmname
