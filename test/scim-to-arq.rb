@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'test/unit'
-require 'scim/scim'
+require 'aok/scim/active_record_query_builder'
 require 'yaml'
 require 'json'
 
