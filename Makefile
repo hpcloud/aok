@@ -8,7 +8,7 @@ default: help
 
 include pkg.mk
 
-RSYNC_EXCLUDE = $(RSYNC_EXCLUDE) \
+RSYNC_EXCLUDE := $(RSYNC_EXCLUDE) \
 	--exclude=ext \
 
 
