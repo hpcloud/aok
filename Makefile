@@ -39,11 +39,19 @@ api-test: test-api
 
 sync: rsync restart
 
+aok: rsync stop-all migrate
+
 rsync: vmname
 	rsync -avzL ./ stackato@$(VM):/s/code/aok/ $(RSYNC_EXCLUDE)
 
 start stop restart: vmname
 	ssh stackato@$(VM) sup $@ aok
+
+stop-all: stop
+	@true
+
+migrate:
+	ssh stackato@$(VM) '(cd /s/code/aok; bundle exec rake db:drop db:create db:migrate)'
 
 ssh: vmname
 	ssh stackato@$(VM)
