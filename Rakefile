@@ -183,6 +183,36 @@ namespace :test do
     end
   end
 
+  # If you change the tests and then run them, you'll still get the old tests
+  # because maven downloads the identity-common jar from springsecurity.org
+  # for some dumb reason. This builds the jar locally and copies it to the
+  # cache location maven expects. I could learn maven and make it do the right
+  # thing, but then I would have to learn maven.
+  task :rebuild do
+    Dir.chdir '../uaa/common'
+    require 'pty'
+    cmd = "mvn package"
+    begin
+      ENV['VCAP_BVT_TARGET']="#{ENV["VMNAME"]}.local"
+      PTY.spawn( cmd ) do |stdin, stdout, pid|
+        begin
+          # Do stuff with the output here. Just printing to show it works
+          stdin.each { |line| print line }
+        rescue Errno::EIO
+          puts "Errno:EIO error, but this probably just means " +
+                "that the process has finished giving output"
+        end
+      end
+    rescue PTY::ChildExited
+      puts "The child process exited!"
+    end
+    require 'fileutils'
+    target = "#{ENV['HOME']}/.m2/repository/org/cloudfoundry/identity/cloudfoundry-identity-common/1.4.3/cloudfoundry-identity-common-1.4.3.jar"
+    FileUtils.cp 'target/cloudfoundry-identity-common-1.4.3.jar', target
+    `sha1sum #{target} > #{target}.sha1`
+    puts `ls -ltr #{target}`
+  end
+
   task :results do
     `xdg-open ../uaa/uaa/target/surefire-reports`
   end
