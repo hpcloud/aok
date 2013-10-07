@@ -6,9 +6,9 @@ require 'thin'
 require 'kato/local/node'
 
 app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
-bind_address = Kato::Local::Node.get_local_node_id
 
 EM.run do
+  bind_address = Kato::Local::Node.get_local_node_id
   server = Thin::Server.new(bind_address, AppConfig[:port])
 
   ENV['RACK_ENV'] = 'production'
@@ -21,7 +21,7 @@ EM.run do
   def register_component(message_bus)
     VCAP::Component.register(
       :type => 'AOK',
-      :host => bind_address,
+      :host => Kato::Local::Node.get_local_node_id,
       #:index => @config[:index],
       :config => AppConfig,
       :nats => message_bus,
@@ -33,7 +33,7 @@ EM.run do
   def registrar
     @registrar ||= Cf::Registrar.new(
         :mbus => CCConfig[:message_bus_uri],
-        :host => bind_address,
+        :host => Kato::Local::Node.get_local_node_id,
         :port => AppConfig[:port],
         :uri => CCConfig[:external_domain].sub(/^api/, 'aok'),
         :tags => {:component => "AOK"},
