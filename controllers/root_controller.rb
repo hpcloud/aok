@@ -3,7 +3,7 @@ require 'uaa'
 class RootController < ApplicationController
 
   get '/?' do
-    redirect to('/uaa')
+    redirect to('/uaa/')
   end
 
   get '/uaa/?', :provides => :html do
@@ -11,25 +11,25 @@ class RootController < ApplicationController
     erb 'login.html'.intern
   end
 
-  get '/auth' do
+  get '/auth/?' do
     redirect "/auth/#{settings.strategy}"
   end
 
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
-  post '/uaa/check_token' do
+  post '/uaa/check_token/?' do
     raise Aok::Errors::NotImplemented
   end
 
   # OpenID Check ID Endpoint
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#openid-check-id-endpoint-post-check_id
-  post '/uaa/check_id' do
+  post '/uaa/check_id/?' do
     raise Aok::Errors::NotImplemented
   end
 
   # OpenID User Info Endpoint
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#openid-user-info-endpoint-get-userinfo
-  get '/uaa/userinfo' do
+  get '/uaa/userinfo/?' do
     raise Aok::Errors::NotImplemented
   end
 
@@ -40,14 +40,14 @@ class RootController < ApplicationController
   #
   # External Hosted Login Form (OpenID)
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#external-hosted-login-form-openid-get-login
-  get '/uaa/login', :provides => :html do
+  get '/uaa/login/?', :provides => :html do
     require_user
   end
 
   # Login Information API
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#login-information-api-get-login
   # TODO: return real information determined from the current configured strategy
-  get '/uaa/login', :provides => :json do
+  get '/uaa/login/?', :provides => :json do
     return {
       :timestamp => AppConfig[:timestamp].xmlschema,
       :commit_id => AppConfig[:commit_id],
@@ -61,13 +61,13 @@ class RootController < ApplicationController
   # Converting UserIds to Names
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#converting-userids-to-names
   # Note: This will probably not be implemented in AOK
-  get '/uaa/ids/Users' do
+  get '/uaa/ids/Users/?' do
     raise Aok::Errors::NotImplemented
   end
 
   # Query the strength of a password
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-the-strength-of-a-password-post-passwordscore
-  post '/uaa/password/score' do
+  post '/uaa/password/score/?' do
     raise Aok::Errors::NotImplemented
   end
 
