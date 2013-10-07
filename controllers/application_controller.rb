@@ -13,6 +13,8 @@ class ApplicationController < Sinatra::Base
 
   set :logging, Logger::DEBUG
 
+  set :views, File.absolute_path(File.dirname(__FILE__) + '/../views')
+
   # The session is only used for the duration of the login process
   # the expiration is set to 2 hours to allow for clock skew
   # between clients and the server.

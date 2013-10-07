@@ -17,6 +17,6 @@ module CurrentUserHelper
   end
 
   def require_user
-    halt(redirect("/auth/#{settings.strategy}")) unless current_user
+    halt(redirect("/auth/#{settings.strategy}?origin=#{request.path}")) unless current_user
   end
 end

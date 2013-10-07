@@ -17,7 +17,13 @@ module LoginEndpoint
         return {:email => email}.to_json
       end
 
-      redirect '/openid/complete', 302
+      destination = request.env['omniauth.origin']
+      logger.debug "Found stored origin for redirect: #{destination.inspect}"
+      unless destination =~ /^\/uaa/
+        # Redirects within AOK only
+        destination = '/uaa'
+      end
+      redirect to(destination), 302
     end
   end
 end

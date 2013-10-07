@@ -3,17 +3,17 @@ require 'uaa'
 class RootController < ApplicationController
 
   get '/?' do
-    redirect("https://#{CCConfig[:external_uri]}")
+    redirect to('/uaa')
+  end
+
+  get '/uaa/?', :provides => :html do
+    require_user
+    erb 'login.html'.intern
   end
 
   get '/auth' do
     redirect "/auth/#{settings.strategy}"
   end
-
-
-
-
-
 
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
@@ -33,12 +33,23 @@ class RootController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
+  # UAA has overloaded this endpoint
+  #
+  # Internal Login Form
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#internal-login-form-get-login
+  #
+  # External Hosted Login Form (OpenID)
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#external-hosted-login-form-openid-get-login
+  get '/uaa/login', :provides => :html do
+    require_user
+  end
+
   # Login Information API
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#login-information-api-get-login
   # TODO: return real information determined from the current configured strategy
   get '/uaa/login', :provides => :json do
     return {
-      :timestamp => Time.now.xmlschema,
+      :timestamp => AppConfig[:timestamp].xmlschema,
       :commit_id => AppConfig[:commit_id],
       :prompts => {
         :username => ["text","Username"],
@@ -58,17 +69,6 @@ class RootController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-the-strength-of-a-password-post-passwordscore
   post '/uaa/password/score' do
     raise Aok::Errors::NotImplemented
-  end
-
-  # UAA has overloaded this endpoint
-  #
-  # Internal Login Form
-  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#internal-login-form-get-login
-  #
-  # External Hosted Login Form (OpenID)
-  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#external-hosted-login-form-openid-get-login
-  get '/uaa/login', :provides => :html do
-    redirect "/auth/#{settings.strategy}"
   end
 
   # Internal Login
