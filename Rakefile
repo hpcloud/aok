@@ -113,6 +113,6 @@ namespace :test do
 
   desc "Open a window with the integration test results (linux only)"
   task :results do
-    `xdg-open ../uaa/uaa/target/surefire-reports`
+    `sub -n ../uaa/uaa/target/surefire-reports`
   end
 end
