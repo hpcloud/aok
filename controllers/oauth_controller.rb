@@ -36,13 +36,16 @@ class OauthController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#implicit-grant-for-browsers-get-oauthauthorize
   get '/authorize', :provides => :html do
     require_user
-    raise Aok::Errors::NotImplemented
+    oauth_authorize(current_user)
   end
 
   # Non-Browser Requests Code
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#non-browser-requests-code-get-oauthauthorize
   get '/authorize', :provides => :json do
-    raise Aok::Errors::NotImplemented
+    raise Aok::Errors::NoGettingCredentials if params[:credentials]
+
+    require_user
+    oauth_authorize(current_user)
   end
 
   # Implicit Grant with Credentials
@@ -51,42 +54,14 @@ class OauthController < ApplicationController
   # UAA defines the following overload also, which we will probably not implement in AOK
   # Trusted Authentication from Login Server
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#trusted-authentication-from-login-server
-  post '/authorize', :provides => :json do
-    oauth_resp = Rack::OAuth2::Server::Authorize.new do |req, res|
-      client = Client.find_by_identifier(req.client_id) || req.bad_request!('Client not found')
-      find_identity do |identity|
-        raise(Aok::Errors::Unauthorized.new) unless identity
-        res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri)
-        scopes = validate_scope(req, client, identity)
-        if params[:response_type]
-          case req.response_type
-          # when :code
-          #   authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
-          #   res.code = authorization_code.token
-          when :token
-            res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
-          else
-            raise "Unsupported response_type #{req.response_type.inspect}"
-          end
-          res.approve!
-        else
-          req.access_denied!
-        end
-      end
-    end.call(env)
-
-    respond(*oauth_resp)
+  post '/authorize', :provides => %W{application/x-www-form-urlencoded json} do
+    oauth_authorize
   end
 
   # Oauth2 Authorization
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-authorization-post-oauthauthorizeuser_oauth_approvaltrue
   # Query string must be ?user_oauth_approval=true
   post '/authorize', :provides => :html do
-    raise Aok::Errors::NotImplemented
-  end
-
-  # This endpoint is used in the integration tests
-  post '/authorize', :provides => 'application/x-www-form-urlencoded' do
     raise Aok::Errors::NotImplemented
   end
 
@@ -177,6 +152,41 @@ class OauthController < ApplicationController
         req.invalid_grant_type!
       end
       return req.grant_type
+    end
+
+    def oauth_authorize(identity=nil)
+      oauth_resp = Rack::OAuth2::Server::Authorize.new do |req, res|
+        client = Client.find_by_identifier(req.client_id) || req.bad_request!('Client not found')
+        core = Proc.new do
+          raise(Aok::Errors::Unauthorized.new) unless identity
+          res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri)
+          scopes = validate_scope(req, client, identity)
+          if params[:response_type]
+            case req.response_type
+            # when :code
+            #   authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
+            #   res.code = authorization_code.token
+            when :token
+              res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
+            else
+              raise "Unsupported response_type #{req.response_type.inspect}"
+            end
+            res.approve!
+          else
+            req.access_denied!
+          end
+        end
+        if identity
+          core.call
+        else
+          find_identity do |i|
+            identity = i
+            core.call
+          end
+        end
+      end.call(env)
+
+      respond(*oauth_resp)
     end
 
   end

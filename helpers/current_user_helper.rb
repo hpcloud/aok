@@ -17,6 +17,9 @@ module CurrentUserHelper
   end
 
   def require_user
-    halt(redirect("/auth/#{settings.strategy}?origin=#{request.path}")) unless current_user
+    unless current_user
+      session[:foo] = 'bar' # set cookie required by UAA integration tests
+      halt(redirect("/auth/#{settings.strategy}?origin=#{CGI.escape(request.fullpath)}"))
+    end
   end
 end

@@ -50,6 +50,13 @@ module Aok
         super('scim_filter_error', desc)
       end
     end
+
+    class NoGettingCredentials < Unauthorized
+      def initialize(desc="Credentials must be sent by (one of methods): [POST]")
+        super desc
+      end
+    end
+
   end
 
 end

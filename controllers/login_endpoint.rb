@@ -17,9 +17,10 @@ module LoginEndpoint
         return {:email => email}.to_json
       end
 
-      destination = request.env['omniauth.origin']
+      destination = CGI.unescape request.env['omniauth.origin']
       logger.debug "Found stored origin for redirect: #{destination.inspect}"
       unless destination =~ /^\/uaa/
+        logger.debug "Don't like the looks of that redirect; overwriting..."
         # Redirects within AOK only
         destination = '/uaa'
       end
