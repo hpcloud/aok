@@ -1,5 +1,19 @@
 class UsersController < ApplicationController
 
+  # XXX Test only method.
+  # Reset -- delete all users
+  get '/RESET/' do
+    Identity.delete_all
+    return
+  end
+
+  get '/SETUP/' do
+    Identity.new(
+      :given_name => 'Ingy',
+      :family_name => 'dot Net',
+    ).save!
+  end
+
   # Create a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
   post '/?' do
@@ -20,6 +34,15 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-user-put-usersid
   put '/:id' do
     raise Aok::Errors::NotImplemented
+  end
+
+  # Delete a User
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-user-delete-usersid
+  delete '/:id' do
+    # authenticate! :oauth2
+    guid=params[:id] # TODO validate this
+    user = Identity.find_by_guid(guid)
+    Identity.delete(user.id)
   end
 
   # Change Password
