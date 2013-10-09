@@ -39,5 +39,4 @@ Bundler.require(:default)
 
 }.each{|lib|require File.expand_path('../../'+lib, __FILE__)}
 
-require_relative 'ensure_identities'
 require_relative 'ensure_clients'
