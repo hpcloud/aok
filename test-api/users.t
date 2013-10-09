@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 # ToDo:
-# - move ./test/api/ ./test-api/
 # - split up into smaller tests
 # - Support done-testing
 # - escape query strings
@@ -9,7 +8,7 @@
 
 plan=9
 
-source test/api/setup.bash $plan
+source `dirname $0`/setup.bash $plan
 
 # Stock user info:
 {

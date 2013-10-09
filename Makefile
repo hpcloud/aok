@@ -1,5 +1,8 @@
 VM=$(VMNAME).local
 
+# EXTERNAL_VERSION=0.0.1
+	#ext/$(EXTERNAL_VERSION) \
+
 EXTERNAL_REPOS = \
 	ext/test-simple-bash \
 	ext/json-bash \
@@ -34,8 +37,9 @@ test:
 	done
 	@# rspec spec --pattern '**/*.rb'
 
+.PHONY: test-api
 test-api: vmname $(EXTERNAL_REPOS)
-	prove $(PROVEOPT) test/api/
+	prove $(PROVEOPT) test-api/
 
 # Alias:
 api-test: test-api
@@ -70,6 +74,12 @@ ifndef VMNAME
 	@echo
 	@exit 1
 endif
+
+ext/$(EXTERNAL_VERSION):
+	rm -fr ext/test-simple-bash
+	rm -fr ext/json.bash
+	mkdir -p ext
+	touch $@
 
 ext/test-simple-bash:
 	git clone git@github.com:ingydotnet/test-simple-bash $@
