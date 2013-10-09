@@ -33,7 +33,13 @@ module Aok
             %Q{#{type} realm="#{realm}", error="#{error}", error_description="#{error_description}"}
         })
       end
+    end
 
+    class InvalidToken < Unauthorized
+      def initialize(reason='could not decode')
+        super("Invalid token (#{reason})")
+        @error = 'invalid_token'
+      end
     end
 
     class NotImplemented < AokError

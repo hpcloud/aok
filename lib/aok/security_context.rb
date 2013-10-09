@@ -64,7 +64,7 @@ module Aok
 
     def token_auth
       unless authentication.token = AccessToken.valid.find_by_token(access_token)
-        raise Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(:invalid_token)
+        raise Aok::Errors::InvalidToken
       end
       authentication.identity = authentication.token.identity
       authentication.client = authentication.token.client

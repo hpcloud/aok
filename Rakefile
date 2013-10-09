@@ -28,6 +28,10 @@ namespace :db do
     ActiveRecord::Base.establish_connection config
     ActiveRecord::Base.connection.drop_database(db_name)
   end
+
+  desc "Delete and recreate the database"
+  task :recreate => [:drop, :create, :migrate] do
+  end
 end
 
 desc "Clear expired sessions from the database"
@@ -111,8 +115,10 @@ namespace :test do
     puts `ls -ltr #{target}`
   end
 
-  desc "Open a window with the integration test results (linux only)"
+  desc "Open a window with the integration test results failures (linux only)"
   task :results do
-    `sub -n ../uaa/uaa/target/surefire-reports`
+    dir = '../uaa/uaa/target/surefire-reports'
+    `grep  -L "<failure" #{dir}/* | xargs rm`
+    `sub -n #{dir}`
   end
 end

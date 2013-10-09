@@ -6,23 +6,30 @@ class OauthController < ApplicationController
   # Client Obtains Token
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#client-obtains-token-post-oauthtoken
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-endpoint-post-oauthtoken
-  #
-  # TODO: This currently only supports an undocumented client access token grant using
-  # basic auth that is implemented in UAA and required by cf. Needs more investigation.
   post '/token' do
     Rack::OAuth2::Server::Token.new do |req, resp|
       authenticate!(:basic)
       client = security_context.client
       scopes = validate_scope(req, client)
       grant_type = validate_grant_type req, client
-      token = case grant_type
+      case grant_type
       when :client_credentials
-        AccessToken.new(:client => client, :scopes => scopes)
+        resp.access_token = AccessToken.create!(:client => client, :scopes => scopes).to_bearer_token
+      when :password
+        identity = Identity.authenticate(req.username, req.password) || req.invalid_grant!
+        resp.access_token = AccessToken.create!(:client => client, :scopes => scopes, :identity => identity).to_bearer_token(:with_refresh_token)
+      when :authorization_code
+        code = AuthorizationCode.valid.find_by_token(req.code)
+        req.invalid_grant! if code.blank? || code.redirect_uri != req.redirect_uri
+        resp.access_token = code.access_token(scopes).to_bearer_token(:with_refresh_token)
+      when :refresh_token
+        refresh_token = client.refresh_tokens.valid.find_by_token(req.refresh_token)
+        req.invalid_grant! unless refresh_token
+        resp.access_token = refresh_token.access_tokens.create.to_bearer_token
       else
-        raise "Unsupported grant_type #{grant_type.inspect}"
+        logger.debug "Unsupported grant_type #{grant_type.inspect}"
+        req.unsupported_grant_type!
       end
-      resp.access_token = token.to_bearer_token
-      token.save!
 
     end.call(env)
   end
@@ -139,6 +146,8 @@ class OauthController < ApplicationController
         case req.grant_type
         when :client_credentials
           client.authorities_list
+        when :password, :authorization_code
+          client.scope_list
         else
           raise "unknown grant type #{req.grant_type.inspect}"
         end
@@ -159,13 +168,16 @@ class OauthController < ApplicationController
         client = Client.find_by_identifier(req.client_id) || req.bad_request!('Client not found')
         core = Proc.new do
           raise(Aok::Errors::Unauthorized.new) unless identity
-          res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri)
+          # TODO: The next line allows clients without pre-registered redirect_uri, which is allowed
+          # by the oauth2 spec, but not directly supported by rack-oauth2, and probably not a good idea
+          # It's allowed here because the UAA java integration tests rely on this behavior.
+          res.redirect_uri = @redirect_uri = req.verify_redirect_uri!(client.redirect_uri || req.redirect_uri)
           scopes = validate_scope(req, client, identity)
           if params[:response_type]
             case req.response_type
-            # when :code
-            #   authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
-            #   res.code = authorization_code.token
+            when :code
+              authorization_code = identity.authorization_codes.create(:client => client, :redirect_uri => res.redirect_uri)
+              res.code = authorization_code.token
             when :token
               res.access_token = identity.access_tokens.create(:client => client, :scopes => scopes).to_bearer_token
             else

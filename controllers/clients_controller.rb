@@ -37,6 +37,11 @@ class ClientsController < ApplicationController
     c.secret = cd['client_secret']
     c.authorized_grant_types = cd['authorized_grant_types'].join(',')
     c.authorities = cd['authorities'].join(',')
+    # TODO: what are the resource ids for?
+    #c.resource_ids = cd['resource_ids'].join(',')
+    #c.redirect_uri = cd['redirect_uri']
+    #c.access_token_validity = cd['access_token_validity']
+    #c.refresh_token_validity = cd['refresh_token_validity']
     c.save!
     return 201,
       {

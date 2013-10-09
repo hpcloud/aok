@@ -8,7 +8,7 @@ class RootController < ApplicationController
 
   get '/uaa/?', :provides => :html do
     require_user
-    erb 'login.html'.intern
+    erb 'logged_in.html'.intern
   end
 
   get '/auth/?' do
@@ -18,7 +18,13 @@ class RootController < ApplicationController
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
   post '/uaa/check_token/?' do
-    raise Aok::Errors::NotImplemented
+    authenticate!(:basic)
+    CF::UAA::TokenCoder.decode(
+      params[:token],
+      {
+        :skey => AppConfig[:jwt][:token][:signing_key]
+      }
+    ).to_json
   end
 
   # OpenID Check ID Endpoint
@@ -44,6 +50,14 @@ class RootController < ApplicationController
     require_user
   end
 
+  # Undocumented API used in the UAA integration tests
+  put '/uaa/approvals', :provides => :json do
+    authenticate!
+    log_env
+    logger.debug "Approvals body: #{read_json_body}"
+    raise Aok::Errors::NotImplemented
+  end
+
   # Login Information API
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#login-information-api-get-login
   # TODO: return real information determined from the current configured strategy
@@ -55,6 +69,32 @@ class RootController < ApplicationController
         :username => ["text","Username"],
         :password => ["password","Password"]
       }
+    }.to_json
+  end
+
+  # Undocumented API used in the UAA unit tests
+  get '/uaa/info/?', :provides => :json do
+    return {
+       # "app" => {
+       #    "version" => "1.4.3",
+       #    "name" => "UAA",
+       #    "artifact" => "cloudfoundry-identity-uaa",
+       #    "description" => "User Account and Authentication Service"
+       # },
+       "timestamp" => AppConfig[:timestamp].xmlschema,
+       "prompts" => [
+          {
+             "text" => "Username",
+             "name" => "username",
+             "type" => "text"
+          },
+          {
+             "text" => "Password",
+             "name" => "password",
+             "type" => "password"
+          }
+       ],
+       "commit_id" => AppConfig[:commit_id]
     }.to_json
   end
 
@@ -83,14 +123,15 @@ class RootController < ApplicationController
 
   # Get the Token Signing Key
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#get-the-token-signing-key-get-token_key
-  get '/uaa/token_key' do
+  # It seems like insanity to have this endpoint with any symmetric-key signature
+  get '/uaa/token_key/?' do
     raise Aok::Errors::NotImplemented
   end
 
   # Basic Metrics
   # Note: This endpoint appears to be broken in UAA
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#basic-metrics-get-varz
-  get '/uaa/varz' do
+  get '/uaa/varz/?' do
     raise Aok::Errors::NotImplemented
   end
 
@@ -103,7 +144,7 @@ class RootController < ApplicationController
 
   # Simple Health Check
   # Undocumented in UAA
-  get '/uaa/healthz', :provides => 'text/plain' do
+  get '/uaa/healthz/?', :provides => 'text/plain' do
     "ok\n"
   end
 

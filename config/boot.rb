@@ -36,6 +36,8 @@ Bundler.require(:default)
   models/session
   models/client
   models/access_token
+  models/authorization_code
+  models/refresh_token
 
 }.each{|lib|require File.expand_path('../../'+lib, __FILE__)}
 

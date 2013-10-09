@@ -134,3 +134,9 @@ scim:
 #     - paul|wombat|paul@test.org|Paul|Smith|uaa.admin
 #     - stefan|wallaby|stefan@test.org|Stefan|Schmidt
 #     - vcap_tester@vmware.com|dr0wssaPH@ck|vcap_tester@vmware.com|VCAP|Tester
+
+
+jwt:
+  token:
+    signing_key: changeme
+    verification_key: changeme

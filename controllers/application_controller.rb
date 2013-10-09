@@ -40,10 +40,7 @@ class ApplicationController < Sinatra::Base
   require 'rack/oauth2'
   require 'rack/oauth2/server/token/extension/jwt'
   use Rack::OAuth2::Server::Resource::Bearer, 'AOK Protected Resources' do |req|
-    # TODO: Change or remove-- moved to security_context.rb
-    # logger.debug "Looking up Access Token..."
-    # AccessToken.valid.find_by_token(req.access_token) || req.invalid_token!
-    # logger.debug "Token found!"
+    req.access_token # populates the environment used in SecurityContext
   end
 
   attr_reader :security_context
