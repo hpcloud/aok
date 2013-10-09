@@ -1,6 +1,10 @@
 module ErrorHandlingHelper
   def self.included(base)
 
+    base.error 404 do
+      content_type 'text/plain'
+      [404, 'Not Found']
+    end
 
     base.error Aok::Errors::AokError do
       e = env['sinatra.error']

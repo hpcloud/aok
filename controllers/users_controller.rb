@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 
   # Create a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
+  # http://www.simplecloud.info/specs/draft-scim-core-schema-01.html#user-resource
   post '/?' do
     # TODO: Authentication, Validation, robustification
     json = read_json_body
@@ -24,6 +25,7 @@ class UsersController < ApplicationController
     i.family_name = json['name']['familyName'] rescue nil
     i.given_name = json['name']['givenName'] rescue nil
     i.username = json['userName']
+    i.password = i.password_confirmation = json['password'] rescue nil
 
     # TODO: support multiple emails
     i.email = json['emails'].first['value'] rescue nil
