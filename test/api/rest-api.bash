@@ -6,6 +6,7 @@ api-delete() { api-call DELETE "$@"; }
 api-call() {
     rm -f HEAD STDOUT STDERR
     local action="$1" url="$2" data="$3"
+    url="$(url-encode "$url")"
     format-curl-command
     "${curl_command[@]}"
 }
@@ -55,6 +56,10 @@ api-status() {
             echo ${BASH_REMATCH[1]}
         fi
     fi
+}
+
+url-encode() {
+    echo "${1// /+}"
 }
 
 # normalize() {

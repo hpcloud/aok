@@ -1,18 +1,19 @@
 class UsersController < ApplicationController
 
-  # XXX Test only method.
-  # Reset -- delete all users
-  get '/RESET/' do
-    Identity.delete_all
-    return
-  end
+        # XXX Test only methods:
+        # Reset -- delete all users
+        get '/RESET/' do
+          Identity.delete_all
+          return
+        end
 
-  get '/SETUP/' do
-    Identity.new(
-      :given_name => 'Ingy',
-      :family_name => 'dot Net',
-    ).save!
-  end
+        get '/SETUP/' do
+          Identity.new(
+            :given_name => 'Ingy',
+            :family_name => 'dot Net',
+          ).save!
+        end
+        # TODO Move these to test-only class.
 
   # Create a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
@@ -28,6 +29,13 @@ class UsersController < ApplicationController
     i.email = json['emails'].first['value'] rescue nil
 
     i.save!
+  end
+
+  # Get a specific User by guid
+  # This isn't actually in the spec, but should probably return the same JSON
+  # aas create User.
+  get '/:id' do
+    raise Aok::Errors::NotImplemented
   end
 
   # Update a User
@@ -65,6 +73,7 @@ class UsersController < ApplicationController
         true
       end
     rescue
+      # XXX This error doesn't show up in logs
       raise Aok::Errors::ScimFilterError.new($!.message)
     end
     identities = Identity.where(filter)
