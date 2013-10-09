@@ -21,6 +21,9 @@ help:
 	@echo ''
 
 clean::
+	rm HEAD STDOUT STDERR
+
+distclean: clean
 	rm -fr ext/
 
 .PHONY: test
