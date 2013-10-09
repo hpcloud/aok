@@ -1,7 +1,6 @@
 VM=$(VMNAME).local
 
-# EXTERNAL_VERSION=0.0.1
-	#ext/$(EXTERNAL_VERSION) \
+EXTERNAL_VERSION=0.0.1
 
 EXTERNAL_REPOS = \
 	ext/test-simple-bash \
@@ -76,15 +75,14 @@ ifndef VMNAME
 endif
 
 ext/$(EXTERNAL_VERSION):
-	rm -fr ext/test-simple-bash
-	rm -fr ext/json.bash
+	rm -fr ext
 	mkdir -p ext
 	touch $@
 
-ext/test-simple-bash:
+ext/test-simple-bash: ext/$(EXTERNAL_VERSION)
 	git clone git@github.com:ingydotnet/test-simple-bash $@
 
-ext/json-bash:
+ext/json-bash: ext/$(EXTERNAL_VERSION)
 	git clone git@github.com:ingydotnet/json-bash $@
 
 export:
