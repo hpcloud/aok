@@ -229,6 +229,7 @@ GEM
     vmstat (2.0.0)
     xmlparser (0.7.2.1)
     yajl-ruby (1.1.0)
+    zxcvbn-ruby (0.0.2)
 
 PLATFORMS
   ruby
@@ -326,3 +327,4 @@ DEPENDENCIES
   vmstat (= 2.0.0)
   xmlparser (= 0.7.2.1)
   yajl-ruby (= 1.1.0)
+  zxcvbn-ruby (= 0.0.2)

@@ -100,4 +100,5 @@ gem 'virtus'            ,    '0.5.5'
 gem 'vmstat'            ,    '2.0.0'
 gem 'xmlparser'         ,  '0.7.2.1'
 gem 'yajl-ruby'         ,    '1.1.0'
+gem 'zxcvbn-ruby'       ,    '0.0.2', :require => 'zxcvbn'
 

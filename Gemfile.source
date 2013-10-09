@@ -43,3 +43,6 @@ gem 'rack-oauth2', '~>1.0.5'
 
 # SCIM
 gem 'scim-query-filter-parser', '~>0.0.3', :require => 'scim/query/filter/parser'
+
+# password strength
+gem "zxcvbn-ruby", :require => 'zxcvbn'

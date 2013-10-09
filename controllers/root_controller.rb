@@ -1,6 +1,8 @@
 require 'time'
 require 'uaa'
 class RootController < ApplicationController
+  # TODO: Move to config
+  MIMIMUM_PASSWORD_SCORE = 0
 
   get '/?' do
     redirect to('/uaa/')
@@ -108,7 +110,12 @@ class RootController < ApplicationController
   # Query the strength of a password
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-the-strength-of-a-password-post-passwordscore
   post '/uaa/password/score/?' do
-    raise Aok::Errors::NotImplemented
+    userdata = params[:userData] ? params[:userData].split(',') : []
+    score = Zxcvbn.test(params[:password], userdata).score
+    return {
+      :score => score,
+      :requiredScore => MIMIMUM_PASSWORD_SCORE
+    }.to_json
   end
 
   # Internal Login
