@@ -21,7 +21,7 @@ help:
 	@echo ''
 
 clean::
-	rm HEAD STDOUT STDERR
+	rm -f HEAD STDOUT STDERR
 
 distclean: clean
 	rm -fr ext/
