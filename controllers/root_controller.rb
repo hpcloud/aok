@@ -36,9 +36,15 @@ class RootController < ApplicationController
   end
 
   # OpenID User Info Endpoint
+  # Really not sure what the point of this is
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#openid-user-info-endpoint-get-userinfo
-  get '/uaa/userinfo/?' do
-    raise Aok::Errors::NotImplemented
+  get '/uaa/userinfo/?', :provides => :json do
+    authenticate!
+    i = security_context.identity
+    return {
+      :user_id => i.username,
+      :email => i.email
+    }.to_json
   end
 
   # UAA has overloaded this endpoint

@@ -34,6 +34,10 @@ module Aok
       authentication.client
     end
 
+    def identity
+      authentication.identity
+    end
+
     def oauth2?
       !!access_token
     end
