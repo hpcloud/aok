@@ -73,3 +73,6 @@ ext/test-simple-bash:
 
 ext/json-bash:
 	git clone git@github.com:ingydotnet/json-bash $@
+
+export:
+	@echo export VMNAME=$(VMNAME)
