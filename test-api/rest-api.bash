@@ -58,6 +58,7 @@ api-status() {
     fi
 }
 
+# XXX finish encoding logic…
 url-encode() {
     echo "${1// /+}"
 }

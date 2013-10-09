@@ -9,3 +9,8 @@ is() {
         rm -f /tmp/{got,want}-$$
     fi
 }
+
+done_testing() {
+    TestSimple_plan=$TestSimple_run
+    echo 1..$TestSimple_run
+}

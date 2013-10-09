@@ -1,0 +1,3 @@
+# ToDo:
+- get correct git repos in Makefile. use a version file.
+  - EXTERNAL_VERSION in Makefile

@@ -8,7 +8,9 @@ PATH="$(dirname "${BASH_SOURCE[0]}"):$(
 
 AOK_API_URL="http://aok.$VMNAME.local/uaa"
 
-source test-simple.bash tests $1
+source test-simple.bash
 source test-more.bash
 source rest-api.bash
 source json.bash
+
+source `dirname $0`/users-data.sh
