@@ -8,6 +8,8 @@ source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
+gem 'pry'
+
 gem 'activemodel'       ,   '3.2.13'
 gem 'activerecord'      ,   '3.2.13', :require => 'active_record'
 gem 'activesupport'     ,   '3.2.13'
