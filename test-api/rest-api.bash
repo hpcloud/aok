@@ -13,8 +13,8 @@ api-call() {
 format-curl-command() {
     curl_command=(curl)
     curl_command+=(
-        -H "accept: application/json"
-        -H "content-type: application/json"
+        --header "accept: application/json"
+        --header "content-type: application/json"
         --silent
         --request $action
         --dump-header HEAD

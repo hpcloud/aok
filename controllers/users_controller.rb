@@ -37,7 +37,27 @@ class UsersController < ApplicationController
   # This isn't actually in the spec, but should probably return the same JSON
   # aas create User.
   get '/:id' do
-    raise Aok::Errors::NotImplemented
+    id = params[:id]
+    user = Identity.find_by_guid(id)
+    user_data = {
+      'schemas' => ['urn:scim:schemas:core:1.0'],
+      'externalId' => user.username,
+      'meta' => {
+        'version' => 0,
+        'created' => user.created_at,
+        'lastModified' => user.updated_at,
+      },
+    }
+
+    f = user.family_name
+    g = user.given_name
+    if f or g
+      n = user_data['name'] = {}
+      n['familyName'] = f if f
+      n['givenName'] = g if g
+    end
+    user_data['userName'] = user.username
+    user_data.to_json
   end
 
   # Update a User

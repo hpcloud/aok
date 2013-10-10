@@ -2,7 +2,12 @@
 #
 User_ingy='{
     "userName":"ingy",
-    "emails":[{"value":"ingy@activestate.com"}]
+    "emails":[{"value":"ingy@activestate.com"}],
+    "name":{
+      "givenName":"Ingy",
+      "familyName":"döt Net"
+    },
+    "password":"zxcvbn"
 }'
 
 User_aocole='{
