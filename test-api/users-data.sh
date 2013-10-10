@@ -19,3 +19,14 @@ User_ziggy='{
     "userName":"ziggy",
     "emails":[{"value":"ziggy@activestate.com"}]
 }'
+
+User_ted='{
+    "userName":"ted",
+    "emails":[{"value":"ted@activestate.com"}],
+    "name":{
+      "givenName":"Theodore",
+      "familyName":"Marshall"
+    },
+    "password":"lalalala"
+}'
+

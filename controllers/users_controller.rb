@@ -21,16 +21,17 @@ class UsersController < ApplicationController
   post '/?' do
     # TODO: Authentication, Validation, robustification
     json = read_json_body
-    i = Identity.new
-    i.family_name = json['name']['familyName'] rescue nil
-    i.given_name = json['name']['givenName'] rescue nil
-    i.username = json['userName']
-    i.password = i.password_confirmation = json['password'] rescue nil
+    user = Identity.new
+    user.family_name = json['name']['familyName'] rescue nil
+    user.given_name = json['name']['givenName'] rescue nil
+    user.username = json['userName']
+    user.password = user.password_confirmation = json['password'] rescue nil
 
     # TODO: support multiple emails
-    i.email = json['emails'].first['value'] rescue nil
+    user.email = json['emails'].first['value'] rescue nil
+    user.save!
 
-    i.save!
+    scim_user_response user
   end
 
   # Get a specific User by guid
@@ -39,6 +40,10 @@ class UsersController < ApplicationController
   get '/:id' do
     id = params[:id]
     user = Identity.find_by_guid(id)
+    scim_user_response user
+  end
+
+  def scim_user_response user
     user_data = {
       'schemas' => ['urn:scim:schemas:core:1.0'],
       'externalId' => user.username,

@@ -16,14 +16,9 @@ source `dirname $0`/setup.bash
     is "$(api-output-get '/userName')" ingy \
         'userName is ingy'
     is "$(api-output-get '/name/givenName')" Ingy \
-        'userName is Ingy'
+        'givenName is Ingy'
     is "$(api-output-get '/name/familyName')" 'döt Net' \
-        'userName is döt Net'
+        'familyName is döt Net'
 }
-
-#     is "$(api-output-get '/totalResults')" 1 \
-#         'Total returned users is 1'
-#     is "$(api-output-get '/resources/0/userName')" ingy \
-#         'Got the correct user'
 
 done_testing

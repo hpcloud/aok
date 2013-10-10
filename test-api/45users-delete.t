@@ -10,8 +10,8 @@ source `dirname $0`/setup.bash
     # is "$(api-status)" 200 'XXX - Delete user works'
 
     api-get /Users
-    is "$(api-output-get '/totalResults')" 2 \
-        'Total users is 2'
+    is "$(api-output-get '/totalResults')" 3 \
+        'Total users is 3'
 
     api-post /Users "$User_ingy"
 }

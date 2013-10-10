@@ -17,9 +17,6 @@ source `dirname $0`/setup.bash
     api-post /Users "$User_ingy"
     is "$(api-status)" 200 \
         'Create user worked'
-    is "$(api-output)" "" \
-        'XXX - No JSON output for create User'
-    # TODO test for correct JSON fields
 
     api-get /Users
     is "$(api-output-get '/totalResults')" 1 \
