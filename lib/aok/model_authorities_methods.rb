@@ -1,9 +1,5 @@
 module Aok
   module ModelAuthoritiesMethods
-    def authorities_list
-      parse_list authorities
-    end
-
     private
     def parse_list list
       list = list.to_s

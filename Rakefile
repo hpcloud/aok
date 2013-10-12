@@ -32,6 +32,27 @@ namespace :db do
   desc "Delete and recreate the database"
   task :recreate => [:drop, :create, :migrate] do
   end
+
+  namespace :migration do
+    desc "Create a migration"
+    task :create, :name do |t, args|
+      require 'active_support'
+      require 'active_support/core_ext/string/inflections'
+      File.open("./db/migrate/#{Time.now.strftime("%Y%m%d%H%M%S")}_#{args[:name].underscore}.rb", 'w+') do |f|
+        f.write <<-EOS.gsub(/^ {10}/,'')
+          class #{args[:name].camelize} < ActiveRecord::Migration
+            def self.up
+
+            end
+
+            def self.down
+
+            end
+          end
+        EOS
+      end
+    end
+  end
 end
 
 desc "Clear expired sessions from the database"
@@ -118,7 +139,7 @@ namespace :test do
   desc "Open a window with the integration test results failures (linux only)"
   task :results do
     dir = '../uaa/uaa/target/surefire-reports'
-    `grep  -L "<failure" #{dir}/* | xargs rm`
+    `grep  -L -E "<(failure|error|skipped)" #{dir}/* | xargs rm`
     `sub -n #{dir}`
   end
 end

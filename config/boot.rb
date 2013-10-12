@@ -35,10 +35,15 @@ Bundler.require(:default)
   models/identity
   models/session
   models/client
+  models/group
   models/access_token
   models/authorization_code
   models/refresh_token
 
 }.each{|lib|require File.expand_path('../../'+lib, __FILE__)}
 
-require_relative 'ensure_clients'
+%W{
+  ensure_clients
+  ensure_groups
+  ensure_identities
+}.each{|lib| require_relative lib}

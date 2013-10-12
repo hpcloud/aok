@@ -7,7 +7,6 @@ class AddFieldsToIdentities < ActiveRecord::Migration
     execute "UPDATE identities SET username=email;"
     change_column :identities, :username, :citext, :unique => true, :null => false
     remove_index :identities, :email
-    add_column :identities, :authorities, :string, :default => 'uaa.user'
     add_column :identities, :guid, :string, :unique => true, :null => false
   end
 end

@@ -4,6 +4,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   has_many :access_tokens
   has_many :authorization_codes
   has_many :clients
+  has_and_belongs_to_many :groups
 
   alias_attribute :first_name, :given_name
   alias_attribute :last_name, :family_name
@@ -40,8 +41,12 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     write_attribute :email, val.strip.downcase
   end
 
+  def authorities_list
+    groups.collect(&:name).uniq
+  end
+
   def authorities_list_with_defaults
-    authorities_list | AppConfig[:oauth][:users][:default_authorities]
+    (authorities_list | AppConfig[:oauth][:users][:default_authorities])
   end
 
 end
