@@ -4,10 +4,10 @@ module Aok
     class AokError < RuntimeError
       attr_accessor :http_status, :http_headers, :error, :error_description
 
-      def initialize(error="unknown_error", desc="An unknown error occurred.")
+      def initialize(error="unknown_error", desc="An unknown error occurred.", code=500)
         @error = error
         @error_description = desc
-        @http_status = 500
+        @http_status = code
         @http_headers = {
           'Content-Type' => 'application/json'
         }
