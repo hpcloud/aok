@@ -12,42 +12,34 @@ class GroupsController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-group-post-group
   post '/?' do
     # authenticate! #TODO enforce permissions on this call
-    group_details = read_json_body
-    group = Group.new
-    set_group_details group, group_details
-    logger.debug group_details.inspect
-    logger.debug group.inspect
+    group = make_group read_json_body
     if group.save
-      return 201, scim_group_response(group)
+      return 201, group_hash(group).to_json
     else
       handle_save_error group
     end
   end
 
   # Update a Group
-  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-put-groupid
-  put '/:id' do
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-patch-groupid
+  patch '/:id' do
     raise Aok::Errors::NotImplemented
   end
 
   # Query for Information
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-for-information-get-groups
   get '/?' do
+    filter = true
     begin
-      filter = if params[:filter]
-        Aok::Scim::ActiveRecordQueryBuilder.new.build_query(params[:filter])
-      else
-        true
+      if params[:filter]
+        filter = Aok::Scim::ActiveRecordQueryBuilder \
+          .new.build_query(params[:filter])
       end
     rescue
       raise Aok::Errors::ScimFilterError.new($!.message)
     end
-    groups = Group.where(filter)
-    resources = []
-    groups.each do |group|
-      resources.push({
-        "id" => group.id,
-      })
+    resources = Group.where(filter).collect do |group|
+      group_hash group
     end
 
     return {
@@ -63,25 +55,18 @@ class GroupsController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
-  def set_group_details group, group_details
-    group.name = group_details['displayName']
+
+  def make_group hash
+    group = Group.new
+    group.name = hash['displayName']
+    return group
   end
 
-  def scim_group_response group
-    group_data = {
-      'schemas' => ['urn:scim:schemas:core:1.0'],
-      'externalId' => group.name,
-      'displayName' => group.name,
-      'id' => group.guid,
-      'members' => group.identities, #.collect {|i| ,
-      'meta' => {
-        'version' => 0,
-        'created' => group.created_at.utc.strftime(UAA_DATE_FORMAT),
-        'lastModified' => group.updated_at.utc.strftime(UAA_DATE_FORMAT),
-      },
+  def group_hash group
+    {
+      :id => group.guid,
+      :displayName => group.name,
     }
-
-    group_data.to_json
   end
 
   def handle_save_error group

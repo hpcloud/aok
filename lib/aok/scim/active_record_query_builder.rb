@@ -21,6 +21,7 @@ module Aok
         'name.givenname' => 'given_name',
         'username' => 'username',
         'usertype' => 'user_type',
+        'displayname' => 'name',
       }
 
       def build_query(filter)
