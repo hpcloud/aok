@@ -17,6 +17,32 @@ class RootController < ApplicationController
     redirect "/auth/#{settings.strategy}"
   end
 
+  # Undocumented API used in the integration tests
+  get '/uaa/clientinfo', :provides => :json do
+    client = security_context.client
+    unless client
+      logger.debug "Client not found for clientinfo request."
+      return [
+        401,
+        {"Content-Type" => 'application/json'},
+        {
+          "error" => "unauthorized",
+          "error_description" => "Client authentication failed."
+        }.to_json
+      ]
+    end
+    if client.secret
+      authenticate! :basic
+    elsif client.valid_grant_type? 'implicit'
+      # no auth needed
+    else
+      authenticate!
+    end
+    return {
+      "client_id" => client.identifier
+    }.to_json
+  end
+
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
   post '/uaa/check_token/?' do

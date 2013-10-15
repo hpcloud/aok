@@ -1,3 +1,4 @@
+UAA_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%LZ"
 class UsersController < ApplicationController
 
         # XXX Test only methods:
@@ -19,18 +20,14 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
   # http://www.simplecloud.info/specs/draft-scim-core-schema-01.html#user-resource
   post '/?' do
+    authenticate! #TODO enforce permissions on this call
     # TODO: Authentication, Validation, robustification
-    json = read_json_body
+    user_details = read_json_body
     user = Identity.new
-    user.family_name = json['name']['familyName'] rescue nil
-    user.given_name = json['name']['givenName'] rescue nil
-    user.username = json['userName']
-    user.password = user.password_confirmation = json['password'] rescue nil
-
-    # TODO: support multiple emails
-    user.email = json['emails'].first['value'] rescue nil
+    set_user_details user, user_details, :allow_password
     user.save!
 
+    status 201
     scim_user_response user
   end
 
@@ -38,52 +35,43 @@ class UsersController < ApplicationController
   # This isn't actually in the spec, but should probably return the same JSON
   # aas create User.
   get '/:id' do
+    authenticate! #TODO enforce permissions on this call
     id = params[:id]
     user = Identity.find_by_guid(id)
     scim_user_response user
   end
 
-  def scim_user_response user
-    user_data = {
-      'schemas' => ['urn:scim:schemas:core:1.0'],
-      'externalId' => user.username,
-      'meta' => {
-        'version' => 0,
-        'created' => user.created_at,
-        'lastModified' => user.updated_at,
-      },
-    }
-
-    f = user.family_name
-    g = user.given_name
-    if f or g
-      n = user_data['name'] = {}
-      n['familyName'] = f if f
-      n['givenName'] = g if g
-    end
-    user_data['userName'] = user.username
-    user_data.to_json
-  end
-
   # Update a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-user-put-usersid
   put '/:id' do
-    raise Aok::Errors::NotImplemented
-  end
+    authenticate! #TODO enforce permissions on this call
+    user_details = read_json_body
+    user = Identity.find_by_guid params[:id]
+    return 404 unless user
+    set_user_details user, user_details
+    user.save!
 
-  # Delete a User
-  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-user-delete-usersid
-  delete '/:id' do
-    # authenticate! :oauth2
-    guid=params[:id] # TODO validate this
-    user = Identity.find_by_guid(guid)
-    Identity.delete(user.id)
+    status 200
+    scim_user_response user
   end
 
   # Change Password
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#change-password-put-usersidpassword
   put '/:id/password' do
-    raise Aok::Errors::NotImplemented
+    authenticate! #TODO enforce permissions on this call
+    password_details = read_json_body
+    user = Identity.find_by_guid params[:id]
+    return 404 unless user
+
+    # TODO: user changing own password should require oldPassword,
+    # admin changing passwords should not.
+    # if !user.authenticate(password_details['oldPassword'])
+    #   raise Aok::Errors::AokError.new 'unauthorized', 'oldPassword is incorrect', 401
+    # end
+
+    user.password = user.password_confirmation = password_details['password']
+    user.save!
+    return scim_user_response(user)
   end
 
   # Query for information
@@ -132,9 +120,50 @@ class UsersController < ApplicationController
   # Delete a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-user-delete-usersid
   delete '/:id' do
-    raise Aok::Errors::NotImplemented
+    authenticate! #TODO enforce permissions on this call
+    user = Identity.find_by_guid params[:id]
+    return 404 unless user
+    user.destroy
+    return 200
   end
 
+  def set_user_details user, user_details, allow_password=false
+    if user_details['name']
+      user.family_name = user_details['name']['familyName']
+      user.given_name = user_details['name']['givenName']
+    end
+    user.username = user_details['userName']
+    user.password =
+      user.password_confirmation =
+      user_details['password'] if allow_password
+
+    # TODO: support multiple emails
+    user.email = user_details['emails'].first['value']
+    return user
+  end
+
+  def scim_user_response user
+    user_data = {
+      'schemas' => ['urn:scim:schemas:core:1.0'],
+      'externalId' => user.username,
+      'id' => user.guid,
+      'meta' => {
+        'version' => 0,
+        'created' => user.created_at.utc.strftime(UAA_DATE_FORMAT),
+        'lastModified' => user.updated_at.utc.strftime(UAA_DATE_FORMAT),
+      },
+    }
+
+    f = user.family_name
+    g = user.given_name
+    if f or g
+      n = user_data['name'] = {}
+      n['familyName'] = f if f
+      n['givenName'] = g if g
+    end
+    user_data['userName'] = user.username
+    user_data.to_json
+  end
 
   def user_xrds
     types = [
