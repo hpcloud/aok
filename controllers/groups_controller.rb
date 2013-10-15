@@ -31,7 +31,21 @@ class GroupsController < ApplicationController
   # Update a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-patch-groupid
   patch '/:id' do
-    raise Aok::Errors::NotImplemented
+    # authenticate! #TODO enforce permissions on this call
+    # XXX check that user is not already in group
+    group = Group.find_by_guid(params[:id])
+    array = read_json_body.collect do |user|
+      user_guid = user['value']
+      Identity.find_by_guid(user_guid)
+    end
+
+    group.identities.concat(array)
+
+    if group.save
+      return 200, group_hash(group).to_json
+    else
+      handle_save_error group
+    end
   end
 
   # Query for Information
@@ -63,17 +77,31 @@ class GroupsController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
-
   def make_group hash
     group = Group.new
     group.name = hash['displayName']
     return group
   end
 
+  def patch_group array
+    patch = {
+      "schemas" => ["urn:scim:schemas:core:1.0"],
+      "members" => array,
+    }
+  end
+
   def group_hash group
     {
       :id => group.guid,
       :displayName => group.name,
+      :members => group.identities.collect do |user|
+        {
+          :type => 'USER',
+          # XXX this is harcoded. need to fix.
+          :authorities => ["READ"],
+          :value => user.guid,
+        }
+      end,
     }
   end
 

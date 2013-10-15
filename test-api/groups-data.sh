@@ -8,3 +8,7 @@ Group_dev='{
     "displayName":"aok.dev",
     "members":[]
 }'
+Group_koolkidz='{
+    "displayName":"aok.koolkidz",
+    "members":[]
+}'
