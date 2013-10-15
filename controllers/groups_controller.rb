@@ -20,6 +20,14 @@ class GroupsController < ApplicationController
     end
   end
 
+  # Get a specific Group by guid
+  get '/:id' do
+    # authenticate! #TODO enforce permissions on this call
+    id = params[:id]
+    group = Group.find_by_guid(id)
+    group_hash(group).to_json
+  end
+
   # Update a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-patch-groupid
   patch '/:id' do
