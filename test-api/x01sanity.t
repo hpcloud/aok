@@ -15,7 +15,7 @@ source `dirname $0`/setup.bash
 # Test adding a user:
 {
   api-post /Users "$User_ingy"
-  is "$(api-status)" 200 \
+  is "$(api-status)" 201 \
     'Create user worked'
 
   api-get /Users

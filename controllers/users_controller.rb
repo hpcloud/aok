@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
   # http://www.simplecloud.info/specs/draft-scim-core-schema-01.html#user-resource
   post '/?' do
-    authenticate! #TODO enforce permissions on this call
+    # authenticate! #TODO enforce permissions on this call
     # TODO: Authentication, Validation, robustification
     user_details = read_json_body
     user = Identity.new
