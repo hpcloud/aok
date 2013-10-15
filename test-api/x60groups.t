@@ -1,8 +1,7 @@
 #!/bin/bash -e
 
-echo '1..0 # SKIP Groups not ready to test.'
-exit 0
+source test-api/setup.bash
 
-plan=1
-source test/api/setup.bash $plan
+plan skip_all '1..0 # SKIP Groups not ready to test.'
 
+# vim: set sw=2:

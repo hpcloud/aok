@@ -1,9 +1,11 @@
 VM=$(VMNAME).local
 
-EXTERNAL_VERSION=0.0.1
+EXTERNAL_VERSION=0.0.2
 
 EXTERNAL_REPOS = \
-	ext/test-simple-bash \
+	ext/test-more-bash \
+	ext/test-tap-bash \
+	ext/bpan-bash \
 	ext/json-bash \
 
 default: help
@@ -79,11 +81,8 @@ ext/$(EXTERNAL_VERSION):
 	mkdir -p ext
 	touch $@
 
-ext/test-simple-bash: ext/$(EXTERNAL_VERSION)
-	git clone git@github.com:ingydotnet/test-simple-bash $@
-
-ext/json-bash: ext/$(EXTERNAL_VERSION)
-	git clone git@github.com:ingydotnet/json-bash $@
+$(EXTERNAL_REPOS): ext/$(EXTERNAL_VERSION)
+	git clone git@github.com:ingydotnet/$(@:ext/%=%) $@
 
 export:
 	@echo export VMNAME=$(VMNAME)

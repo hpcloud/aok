@@ -1,16 +1,16 @@
 # Setup environment for API Tap tests:
 
-# Get test resources into path:
-PATH="$(dirname "${BASH_SOURCE[0]}"):$(
-    IFS=':'; shopt -s nullglob;
-    p=(ext/*-bash/{lib,bin}); echo "${p[*]}"
-):$PATH"
+INC="$(set -- $PWD/test-api $PWD/ext/*/{bin,lib}; IFS=':'; echo "$*")"
+PATH="$INC:$PATH"
 
 AOK_API_URL="http://aok.$VMNAME.local/uaa"
+TEST_TAP_BAIL_OUT_ON_ERROR=1
 
-source test-simple.bash
-source test-more.bash
+source bpan
+bpan:include test/more
 source rest-api.bash
 source json.bash
 
 source `dirname $0`/users-data.sh
+
+# vim: set sw=2:
