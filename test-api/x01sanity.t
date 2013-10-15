@@ -5,11 +5,18 @@ source `dirname $0`/setup.bash
 # First reset the user db:
 {
   api-get /Users/RESET/
-  is "$(api-status)" 200 'RESET works'
+  is "$(api-status)" 200 '/Users/RESET works'
+
+  api-get /Groups/RESET/
+  is "$(api-status)" 200 '/Groups/RESET works'
 
   api-get /Users
   is "$(api-output-get '/totalResults')" 0 \
     'Verify no users after RESET'
+
+  api-get /Groups
+  is "$(api-output-get '/totalResults')" 0 \
+    'Verify no groups after RESET'
 }
 
 # Test adding a user:

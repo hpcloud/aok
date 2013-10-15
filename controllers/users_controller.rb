@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   # This isn't actually in the spec, but should probably return the same JSON
   # aas create User.
   get '/:id' do
-    authenticate! #TODO enforce permissions on this call
+    # authenticate! #TODO enforce permissions on this call
     id = params[:id]
     user = Identity.find_by_guid(id)
     scim_user_response user
@@ -112,7 +112,7 @@ class UsersController < ApplicationController
   # Delete a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-user-delete-usersid
   delete '/:id' do
-    authenticate! #TODO enforce permissions on this call
+    # authenticate! #TODO enforce permissions on this call
     user = Identity.find_by_guid params[:id]
     return 404 unless user
     user.destroy

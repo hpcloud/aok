@@ -5,3 +5,7 @@ openid-store/
 
 ext/
 vendor/
+
+HEAD
+STDOUT
+STDERR

@@ -1,4 +1,3 @@
-# Make generic user db:
 {
     api-get /Users/RESET/
     api-post /Users "$User_ingy"

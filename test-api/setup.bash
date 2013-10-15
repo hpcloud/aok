@@ -5,6 +5,7 @@ PATH="$INC:$PATH"
 
 AOK_API_URL="http://aok.$VMNAME.local/uaa"
 TEST_TAP_BAIL_OUT_ON_ERROR=1
+TEST_TAP_ERROR_ON_FAILURE=1
 
 source bpan
 bpan:include test/more
