@@ -7,13 +7,6 @@ class UsersController < ApplicationController
           Identity.delete_all
           return
         end
-
-        get '/SETUP/' do
-          Identity.new(
-            :given_name => 'Ingy',
-            :family_name => 'dot Net',
-          ).save!
-        end
         # TODO Move these to test-only class.
 
   # Create a User
@@ -110,7 +103,6 @@ class UsersController < ApplicationController
 
     return {
       'schemas' => ["urn:scim:schemas:core:1.0"],
-      'totalResults' => 0,
       'resources' => resources,
       'totalResults' => resources.size
     }.to_json
