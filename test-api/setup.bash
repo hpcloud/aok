@@ -13,5 +13,6 @@ source rest-api.bash
 source json.bash
 
 source `dirname $0`/users-data.sh
+source `dirname $0`/groups-data.sh
 
 # vim: set sw=2:

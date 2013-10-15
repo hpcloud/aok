@@ -33,6 +33,20 @@ source `dirname $0`/setup.bash
     'userName set correctly'
 }
 
+# Test adding a group:
+{
+  api-post /Groups "$Group_admin"
+  is "$(api-status)" 201 \
+    'Create group worked'
+
+  api-get /Groups
+  is "$(api-output-get '/totalResults')" 1 \
+    'Total groups is 1'
+
+  is "$(api-output-get '/resources/0/displayName')" aok.admin \
+    'displayName set correctly'
+}
+
 done_testing
 
 # vim: set sw=2:

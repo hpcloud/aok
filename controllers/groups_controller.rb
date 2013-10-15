@@ -1,7 +1,7 @@
 class GroupsController < ApplicationController
 
         # XXX Test only methods:
-        # Reset -- delete all users
+        # Reset -- delete all groups
         get '/RESET/' do
           Group.delete_all
           return
@@ -11,7 +11,17 @@ class GroupsController < ApplicationController
   # Create a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-group-post-group
   post '/?' do
-    raise Aok::Errors::NotImplemented
+    # authenticate! #TODO enforce permissions on this call
+    group_details = read_json_body
+    group = Group.new
+    set_group_details group, group_details
+    logger.debug group_details.inspect
+    logger.debug group.inspect
+    if group.save
+      return 201, scim_group_response(group)
+    else
+      handle_save_error group
+    end
   end
 
   # Update a Group
@@ -53,4 +63,32 @@ class GroupsController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
+  def set_group_details group, group_details
+    group.name = group_details['displayName']
+  end
+
+  def scim_group_response group
+    group_data = {
+      'schemas' => ['urn:scim:schemas:core:1.0'],
+      'externalId' => group.name,
+      'displayName' => group.name,
+      'id' => group.guid,
+      'members' => group.identities, #.collect {|i| ,
+      'meta' => {
+        'version' => 0,
+        'created' => group.created_at.utc.strftime(UAA_DATE_FORMAT),
+        'lastModified' => group.updated_at.utc.strftime(UAA_DATE_FORMAT),
+      },
+    }
+
+    group_data.to_json
+  end
+
+  def handle_save_error group
+    status((group.errors[:identifier] && group.errors[:identifier].any?{|e|e =~ /taken/}) ? 409 : 400)
+    return  {
+      :error => "invalid_#{group.class.name.underscore}",
+      :error_description => group.errors.full_messages.join('. ')
+    }.to_json
+  end
 end
