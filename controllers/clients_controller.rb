@@ -15,7 +15,7 @@ class ClientsController < ApplicationController
   get "/:identifier" do
     authenticate!  #TODO
     client = Client.find_by_identifier params[:identifier]
-    return 404 unless client
+    raise Aok::Errors::NotFound.new("Client not found.") unless client
     return client_hash(client).to_json
   end
 
@@ -74,7 +74,7 @@ class ClientsController < ApplicationController
     authenticate! #TODO FIXME
     cd = read_json_body
     client = Client.find_by_identifier params[:identifier]
-    return 404 unless client
+    raise Aok::Errors::NotFound.new("Client not found.") unless client
     set_client_details client, cd
     if client.save
       return 200, client_hash(client).to_json
@@ -88,7 +88,7 @@ class ClientsController < ApplicationController
   delete '/:identifier' do
     authenticate!  #TODO
     client = Client.find_by_identifier params[:identifier]
-    return 404 unless client
+    raise Aok::Errors::NotFound.new("Client not found.") unless client
     client.destroy
     return
   end
@@ -99,7 +99,7 @@ class ClientsController < ApplicationController
     authenticate! #TODO FIXME
     secret_details = read_json_body
     client = Client.find_by_identifier params[:identifier]
-    return 404 unless client
+    raise Aok::Errors::NotFound.new("Client not found.") unless client
     # TODO: Gotta make the client secret a hash in the db
     if secret_details['oldSecret'] != client.secret
       raise Aok::Errors::AokError.new 'unauthorized', 'oldSecret is incorrect', 401

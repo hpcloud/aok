@@ -51,6 +51,29 @@ module Aok
       end
     end
 
+    class NotFound < AokError
+      def initialize(desc='Not found.')
+        super()
+        @http_status = 404
+        @error = 'not_found'
+        @error_description = desc
+      end
+    end
+
+    class ScimNotFound < NotFound
+      def initialize(desc='Not found.')
+        super(desc)
+        @error = 'scim_resource_not_found'
+      end
+
+      def body
+        {
+          'error' => error,
+          'message' => error_description
+        }.to_json
+      end
+    end
+
     class ScimFilterError < AokError
       def initialize(desc='Invalid SCIM filter')
         super('scim_filter_error', desc)

@@ -2,6 +2,7 @@ require 'bundler'
 Bundler.require(:default)
 
 %W{
+  lib/constants
   lib/aok/errors
   lib/aok/security_context
   lib/aok/model_authorities_methods

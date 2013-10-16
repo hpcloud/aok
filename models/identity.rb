@@ -18,6 +18,15 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     :length => { :maximum => 255 },
     :presence => true
 
+  validates :email, :presence => true
+
+  before_create do
+    if self.groups.empty?
+      groups = Group.find_all_by_name AppConfig[:oauth][:users][:default_authorities]
+      self.groups = groups
+    end
+  end
+
   before_validation do
     self.email = email.strip.downcase if attribute_present?("email")
     self.username = username.strip if attribute_present?("username")
@@ -35,6 +44,11 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   # Used by Omniauth
   def uid
     guid ? guid.to_s : nil
+  end
+
+  def version
+    raise "Version will only be accurate on persisted objects." if changed?
+    Identity.where(id: id).select(:xmin).first.xmin.to_i
   end
 
   def email=(val)
