@@ -8,8 +8,6 @@ source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
-gem 'pry'
-
 gem 'activemodel'       ,   '3.2.13'
 gem 'activerecord'      ,   '3.2.13', :require => 'active_record'
 gem 'activesupport'     ,   '3.2.13'
@@ -22,6 +20,7 @@ gem 'beefcake'          ,    '0.3.7'
 gem 'builder'           ,    '3.0.4'
 gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/cloudfoundry/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
+gem 'coderay'           ,    '1.0.9'
 gem 'colored'           ,      '1.2'
 gem 'cookiejar'         ,    '0.3.0'
 gem 'daemons'           ,    '1.1.9'
@@ -48,6 +47,7 @@ gem 'json'              ,    '1.8.0'
 gem 'json_pure'         ,    '1.8.0'
 gem 'listen'            ,    '1.1.4', :groups => [:development]
 gem 'membrane'          ,    '0.0.2'
+gem 'method_source'     ,    '0.8.2'
 gem 'mime-types'        ,     '1.24'
 gem 'msgpack'           ,    '0.5.5'
 gem 'multi_json'        ,    '1.7.4'
@@ -63,6 +63,7 @@ gem 'omniauth-ldap'     ,    '1.0.3'
 gem 'omniauth-openid'   ,    '1.0.1'
 gem 'pg'                ,   '0.14.1'
 gem 'posix-spawn'       ,    '0.3.6'
+gem 'pry'               , '0.9.12.2'
 gem 'pyu-ruby-sasl'     ,  '0.0.3.3'
 gem 'rack'              ,    '1.5.2', :groups => [:default, :test]
 gem 'rack-accept'       ,    '0.4.5'
@@ -81,12 +82,13 @@ gem 'rspec'             ,   '2.13.0', :groups => [:test]
 gem 'rspec-core'        ,   '2.13.1', :groups => [:test]
 gem 'rspec-expectations',   '2.13.0', :groups => [:test]
 gem 'rspec-mocks'       ,   '2.13.1', :groups => [:test]
-gem 'ruby-openid'       ,    '2.2.3'
+gem 'ruby-openid'       ,    '2.3.0'
 gem 'ruby-openid-apps-discovery',    '1.2.0'
 gem 'ruby-termios'      ,    '0.9.6'
 gem 'rubyntlm'          ,    '0.1.1'
 gem 'scim-query-filter-parser',    '0.0.4', :require => 'scim/query/filter/parser'
 gem 'sinatra'           ,    '1.3.6', :require => 'sinatra/base'
+gem 'slop'              ,    '3.4.6'
 gem 'sqlite3'           ,    '1.3.7'
 gem 'squash_ruby'       ,    '1.2.0'
 gem 'stackato-kato'     ,   '2.11.0'
@@ -96,7 +98,7 @@ gem 'thin'              ,    '1.5.1'
 gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.37'
 gem 'vcap-concurrency'  ,    '0.1.0'
-gem 'vcap_common'       ,    '2.2.0', :require => ['cf/registrar','vcap/common','vcap/component'], :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
+gem 'vcap_common'       ,    '2.2.0', :require => ['cf/registrar','vcap/common','vcap/component', 'json_message'], :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
 gem 'vic'               ,    '1.0.0'
 gem 'virtus'            ,    '0.5.5'
 gem 'vmstat'            ,    '2.0.0'

@@ -37,7 +37,7 @@ gem 'omniauth-google-apps', '~>0.0.2'
 # CF
 gem "cf-uaa-lib", "~> 1.3.7", :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem "cf-message-bus", :git => "https://github.com/cloudfoundry/cf-message-bus.git"
-gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0", :require => ['cf/registrar','vcap/common','vcap/component']
+gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0", :require => ['cf/registrar','vcap/common','vcap/component', 'json_message']
 
 gem 'rack-oauth2', '~>1.0.5'
 
