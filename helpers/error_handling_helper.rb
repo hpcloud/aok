@@ -1,14 +1,14 @@
 module ErrorHandlingHelper
   def self.included(base)
 
-    base.error Aok::Errors::AokError do
-      e = env['sinatra.error']
-      return e.http_status, e.http_headers, e.body
-    end
-
     base.error Sinatra::NotFound do
       content_type 'text/plain'
       [404, 'Not Found']
+    end
+
+    base.error Aok::Errors::AokError do
+      e = env['sinatra.error']
+      return e.http_status, e.http_headers, e.body
     end
 
     base.error Rack::OAuth2::Server::Authorize::BadRequest do
