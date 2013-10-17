@@ -14,6 +14,7 @@ class GroupsController < ApplicationController
     # authenticate! #TODO enforce permissions on this call
     group = make_group read_json_body
     if group.save
+      group = Group.find(group.id) # reload version
       return 201, group_hash(group).to_json
     else
       handle_save_error group
@@ -42,6 +43,7 @@ class GroupsController < ApplicationController
     group.identities.concat(array)
 
     if group.save
+      group = Group.find(group.id) # reload version
       return 200, group_hash(group).to_json
     else
       handle_save_error group
@@ -92,6 +94,10 @@ class GroupsController < ApplicationController
 
   def group_hash group
     {
+      :schemas => ["urn:scim:schemas:core:1.0"],
+      :meta => {
+        :version => group.version
+      },
       :id => group.guid,
       :displayName => group.name,
       :members => group.identities.collect do |user|

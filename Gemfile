@@ -8,9 +8,9 @@ source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
-gem 'activemodel'       ,   '3.2.13'
-gem 'activerecord'      ,   '3.2.13', :require => 'active_record'
-gem 'activesupport'     ,   '3.2.13'
+gem 'activemodel'       ,   '3.2.15'
+gem 'activerecord'      ,   '3.2.15', :require => 'active_record'
+gem 'activesupport'     ,   '3.2.15'
 gem 'addressable'       ,    '2.3.4'
 gem 'arel'              ,    '3.0.2'
 gem 'attr_required'     ,    '0.0.5'
@@ -41,7 +41,7 @@ gem 'hashie'            ,    '2.0.5'
 gem 'hiredis'           ,    '0.4.5'
 gem 'http_parser.rb'    ,    '0.5.3'
 gem 'httpclient'        ,  '2.3.4.1'
-gem 'i18n'              ,    '0.6.1'
+gem 'i18n'              ,    '0.6.4'
 gem 'ipaddress'         ,    '0.8.0'
 gem 'json'              ,    '1.8.0'
 gem 'json_pure'         ,    '1.8.0'

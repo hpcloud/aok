@@ -18,6 +18,7 @@ class UsersController < ApplicationController
     user = Identity.new
     set_user_details user, user_details, :allow_password
     if user.save
+      user = Identity.find(user.id) #reload version
       return 201, scim_user_response(user)
     else
       handle_save_error user
@@ -45,6 +46,7 @@ class UsersController < ApplicationController
     raise Aok::Errors::ScimNotFound.new("User #{params[:id]} does not exist") unless user
     set_user_details user, user_details
     if user.save
+      user = Identity.find(user.id) #reload version
       return scim_user_response(user)
     else
       handle_save_error user
@@ -67,6 +69,7 @@ class UsersController < ApplicationController
 
     user.password = user.password_confirmation = password_details['password']
     if user.save
+      user = Identity.find(user.id) #reload version
       return scim_user_response(user)
     else
       handle_save_error user

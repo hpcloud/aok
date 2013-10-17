@@ -1,4 +1,5 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
+  default_scope  { select('*, identities.xmin') }
   include Aok::ModelAuthoritiesMethods
   has_many :protected_resources
   has_many :access_tokens
@@ -48,7 +49,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   def version
     raise "Version will only be accurate on persisted objects." if changed?
-    Identity.where(id: id).select(:xmin).first.xmin.to_i
+    xmin.to_i
   end
 
   def email=(val)
