@@ -85,6 +85,7 @@ class UsersController < ApplicationController
   # TODO: support sortBy query param
   # TODO: support startIndex query param
   # TODO: support count query param
+  ItemsPerPage=10
   get '/?' do
     begin
       filter = if params[:filter]
@@ -97,16 +98,24 @@ class UsersController < ApplicationController
       raise Aok::Errors::ScimFilterError.new($!.message)
     end
     identities = Identity.where(filter)
+    startIndex = params[:startIndex] || 1
     resources = []
-    identities.each do |identity|
-      resources.push(user_hash(identity))
+    identities.each_with_index do |identity, index|
+      if index + 1 >= startIndex
+        resources.push(user_hash(identity))
+      end
+      break if index - startIndex + 2 >= ItemsPerPage
     end
 
-    return {
+    response = {
+      'totalResults' => identities.size,
+      'itemsPerPage' => ItemsPerPage,
+      'startIndex' => startIndex,
       'schemas' => ["urn:scim:schemas:core:1.0"],
       'resources' => resources,
-      'totalResults' => resources.size
-    }.to_json
+    }
+
+    response.to_json
 
   end
 
