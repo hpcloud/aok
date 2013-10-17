@@ -11,7 +11,7 @@ class GroupsController < ApplicationController
   # Create a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-group-post-group
   post '/?' do
-    # authenticate! #TODO enforce permissions on this call
+    # authenticate!
     group = make_group read_json_body
     if group.save
       group = Group.find(group.id) # reload version
@@ -23,7 +23,7 @@ class GroupsController < ApplicationController
 
   # Get a specific Group by guid
   get '/:id' do
-    # authenticate! #TODO enforce permissions on this call
+    # authenticate!
     id = params[:id]
     group = Group.find_by_guid(id)
     group_hash(group).to_json
@@ -32,7 +32,7 @@ class GroupsController < ApplicationController
   # Update a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-patch-groupid
   patch '/:id' do
-    # authenticate! #TODO enforce permissions on this call
+    # authenticate!
     # XXX check that user is not already in group
     group = Group.find_by_guid(params[:id])
     array = read_json_body.collect do |user|
@@ -76,7 +76,13 @@ class GroupsController < ApplicationController
   # Delete a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-group-delete-groupid
   delete '/:id' do
-    raise Aok::Errors::NotImplemented
+    # authenticate!
+    id = params[:id]
+    group = Group.find_by_guid(id)
+    raise Aok::Errors::ScimNotFound.new("Group #{id} does not exist") \
+      unless group
+    group.destroy
+    return 200
   end
 
   def make_group hash

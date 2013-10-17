@@ -7,7 +7,7 @@ source `dirname $0`/setup.bash
   api-get '/Users?filter=username eq "ingy"'
   guid="$(api-output-get '/resources/0/id')"
   api-delete "/Users/$guid"
-  # is "$(api-status)" 200 'XXX - Delete user works'
+  is "$(api-status)" 200 'Delete user works'
 
   api-get /Users
   is "$(api-output-get '/totalResults')" 3 \
@@ -16,6 +16,6 @@ source `dirname $0`/setup.bash
   api-post /Users "$User_ingy"
 }
 
-done_testing
+done_testing 2
 
 # vim: set sw=2:

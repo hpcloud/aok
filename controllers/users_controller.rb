@@ -114,8 +114,10 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-user-delete-usersid
   delete '/:id' do
     # authenticate! #TODO enforce permissions on this call
-    user = Identity.find_by_guid params[:id]
-    raise Aok::Errors::ScimNotFound.new("User #{params[:id]} does not exist") unless user
+    id = params[:id]
+    user = Identity.find_by_guid(id)
+    raise Aok::Errors::ScimNotFound.new("User #{id} does not exist") \
+      unless user
     user.destroy
     return 200
   end
