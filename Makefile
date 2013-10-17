@@ -1,6 +1,6 @@
 VM=$(VMNAME).local
 
-EXTERNAL_VERSION=0.0.3
+EXTERNAL_VERSION=0.0.4
 
 EXTERNAL_REPOS = \
 	ext/test-more-bash \
