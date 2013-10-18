@@ -171,7 +171,7 @@ class UsersController < ApplicationController
     user_data["emails"] = [
       {"value" => user.email}
     ]
-    user_data['groups'] = user.groups.collect do |group|
+    user_data['groups'] = user.ascendant_groups.collect do |group|
       {
         'display' => group.name,
         'value' => group.guid

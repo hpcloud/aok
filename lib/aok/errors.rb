@@ -76,7 +76,20 @@ module Aok
 
     class ScimFilterError < AokError
       def initialize(desc='Invalid SCIM filter')
-        super('scim_filter_error', desc)
+        super('scim_filter_error', desc, 400)
+      end
+    end
+
+    class ScimGroupInvalid < AokError
+      def initialize(desc='Invalid group')
+        super('scim_resource_invalid', desc, 400)
+      end
+
+      def body
+        {
+          'error' => error,
+          'message' => error_description
+        }.to_json
       end
     end
 

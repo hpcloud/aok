@@ -88,11 +88,32 @@ class GroupsController < ApplicationController
   def make_group hash
     group = Group.new
     group.name = hash['displayName']
+    logger.debug "make_group hash: #{hash.inspect}"
+    if hash['members']
+      hash['members'].each do |member_hash|
+        case member_hash['type']
+        when 'GROUP'
+          g = Group.find_by_guid member_hash['value']
+          if g.nil?
+            raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
+          end
+          group.groups << g
+        when 'USER'
+          i = Identity.find_by_guid member_hash['value']
+          if i.nil?
+            raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
+          end
+          group.identities << i
+        else
+          raise Aok::Errors::ScimGroupInvalid.new("Invalid group: Group member type #{member_hash['type'].inspect} not supported.")
+        end
+      end
+    end
     return group
   end
 
   def patch_group array
-    patch = {
+    {
       "schemas" => ["urn:scim:schemas:core:1.0"],
       "members" => array,
     }
@@ -109,9 +130,12 @@ class GroupsController < ApplicationController
       :members => group.identities.collect do |user|
         {
           :type => 'USER',
-          # XXX this is harcoded. need to fix.
-          :authorities => ["READ"],
           :value => user.guid,
+        }
+      end + group.groups.collect do |g|
+        {
+          :type => 'GROUP',
+          :value => g.guid
         }
       end,
     }
