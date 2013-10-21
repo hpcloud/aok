@@ -21,6 +21,15 @@ want1=\
 /schemas/0	"urn:scim:schemas:core:1.0"'
 is "$got1" "$want1" 'header stuff matches'
 
-done_testing 1
+# api-get /Users?startIndex=11
+# got1="$(api-output-linear | head -n4)"
+# want1=\
+# '/totalResults	13
+# /itemsPerPage	10
+# /startIndex	11
+# /schemas/0	"urn:scim:schemas:core:1.0"'
+# is "$got1" "$want1" 'header stuff matches'
 
-# vim: set sw=2 ft=sh:
+api-output-linear
+
+done_testing 1

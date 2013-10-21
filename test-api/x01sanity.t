@@ -47,6 +47,4 @@ source `dirname $0`/setup.bash
     'displayName set correctly'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 10

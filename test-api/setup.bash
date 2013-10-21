@@ -1,14 +1,14 @@
 # Setup environment for API Tap tests:
 
-BPAN_PATH="$(set -- $PWD/test-api $PWD/ext/*/{bin,lib}; IFS=':'; echo "$*")"
-PATH="$BPAN_PATH:$PATH"
+BPANLIB="$(set -- $PWD/test-api $PWD/ext/*/{bin,lib}; IFS=':'; echo "$*")"
+PATH="$BPANLIB:$PATH"
 
 AOK_API_URL="http://aok.$VMNAME.local/uaa"
 
-source bpan --import include
-include test/more
-include rest-api
-include json
+source bpan :std
+use Test::More
+use REST-API
+use JSON
 
 BAIL_ON_FAIL
 
@@ -25,5 +25,3 @@ teardown() {
   fi
   return $rc
 }
-
-# vim: set sw=2:

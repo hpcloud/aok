@@ -15,6 +15,4 @@ source `dirname $0`/setup.bash
     'displayName is aok.admin'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 2

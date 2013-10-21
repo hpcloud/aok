@@ -2,7 +2,6 @@
 
 source `dirname $0`/setup.bash
 
-
 # Create a user and check result
 {
   api-post /Users "$User_ted"
@@ -19,6 +18,4 @@ source `dirname $0`/setup.bash
     'familyName is Marshall'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 5

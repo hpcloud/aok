@@ -2,7 +2,6 @@
 
 source `dirname $0`/setup.bash
 
-
 {
   api-get '/Users?filter=username eq "ingy"'
   ingy_guid="$(api-output-get /resources/0/id)"
@@ -37,6 +36,4 @@ source `dirname $0`/setup.bash
 #     'First user in group is aocole'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 2

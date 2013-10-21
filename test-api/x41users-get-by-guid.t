@@ -21,6 +21,4 @@ source `dirname $0`/setup.bash
     'familyName is döt Net'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 5

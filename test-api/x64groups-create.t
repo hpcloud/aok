@@ -2,7 +2,6 @@
 
 source `dirname $0`/setup.bash
 
-
 # Create a group and check result
 {
   api-post /Groups "$Group_koolkidz"
@@ -13,6 +12,4 @@ source `dirname $0`/setup.bash
     'displayName is koolkidz'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 2

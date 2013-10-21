@@ -11,6 +11,4 @@ source `dirname $0`/setup.bash
     'Got the correct group'
 }
 
-done_testing
-
-# vim: set sw=2:
+done_testing 2

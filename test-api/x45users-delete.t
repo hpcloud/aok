@@ -17,5 +17,3 @@ source `dirname $0`/setup.bash
 }
 
 done_testing 2
-
-# vim: set sw=2:
