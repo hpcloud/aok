@@ -14,7 +14,7 @@ class DatabaseReconnect
     # These are both to address the possibility of getting disconnected from
     # the database. The second one is a result of a bug in rails:
     # https://github.com/rails/rails/issues/10917
-    if e.message =~ /^PG::Error: connection is closed/ ||
+    if e.message =~ /^PG::Error: connection (is closed|not open)/i ||
        (e.kind_of?(NoMethodError) && e.message =~ /error_field/)
       if tries > 0
         tries -= 1

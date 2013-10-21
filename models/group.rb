@@ -2,7 +2,6 @@
 # authorities that an Identity has, and in turn affects what scopes they
 # may be granted on oauth2 tokens.
 class Group < ActiveRecord::Base
-  default_scope  { select('*, groups.xmin') }
   has_and_belongs_to_many :identities
   has_and_belongs_to_many :groups,
     :foreign_key => "group_a_id",
@@ -16,6 +15,8 @@ class Group < ActiveRecord::Base
   before_validation do
     self.guid ||= SecureRandom.uuid
   end
+
+  set_locking_column :version
 
   validates :name,
     :uniqueness => { :case_sensitive => false },
@@ -43,11 +44,6 @@ class Group < ActiveRecord::Base
       seen[g.guid] = true
       no_circular_groups(g.groups, seen)
     end
-  end
-
-  def version
-    raise "Version will only be accurate on persisted objects." if changed?
-    xmin.to_i
   end
 
 end

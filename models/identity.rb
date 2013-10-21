@@ -1,5 +1,4 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
-  default_scope  { select('*, identities.xmin') }
   include Aok::ModelAuthoritiesMethods
   has_many :protected_resources
   has_many :access_tokens
@@ -20,6 +19,8 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     :presence => true
 
   validates :email, :presence => true
+
+  set_locking_column :version
 
   before_create do
     if self.groups.empty?
@@ -45,11 +46,6 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   # Used by Omniauth
   def uid
     guid ? guid.to_s : nil
-  end
-
-  def version
-    raise "Version will only be accurate on persisted objects." if changed?
-    xmin.to_i
   end
 
   def email=(val)

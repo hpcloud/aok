@@ -34,6 +34,7 @@ class ApplicationController < Sinatra::Base
     logger.datetime_format = '%a %d-%m-%Y %H%M '
     set :logger, logger
     $stdout.sync = true
+    ActiveRecord::Base.logger = logger
   end
 
   # OAuth2 Resource Server
