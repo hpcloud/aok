@@ -16,7 +16,7 @@ api-get /Users
 got1="$(api-output-linear | head -n4)"
 want1=\
 '/totalResults	13
-/itemsPerPage	10
+/itemsPerPage	100
 /startIndex	1
 /schemas/0	"urn:scim:schemas:core:1.0"'
 is "$got1" "$want1" 'header stuff matches'
