@@ -20,7 +20,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   validates :email, :presence => true
 
-  set_locking_column :version
+  self.locking_column = :version
 
   before_create do
     if self.groups.empty?

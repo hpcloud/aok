@@ -16,7 +16,7 @@ class Group < ActiveRecord::Base
     self.guid ||= SecureRandom.uuid
   end
 
-  set_locking_column :version
+  self.locking_column = :version
 
   validates :name,
     :uniqueness => { :case_sensitive => false },

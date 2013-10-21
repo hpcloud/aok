@@ -85,6 +85,7 @@ class UsersController < ApplicationController
   # http://www.simplecloud.info/specs/draft-scim-api-01.html#query-resources
   # http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-12
   # TODO: authentication
+  # TODO: support sortBy query param
   get '/?' do
     begin
       filter = if params[:filter]
@@ -112,7 +113,7 @@ class UsersController < ApplicationController
     end
 
     response = {
-      'totalResults' => identities.size,
+      'totalResults' => Identity.where(filter).count,
       'itemsPerPage' => items_per_page,
       'startIndex' => start_index,
       'schemas' => ["urn:scim:schemas:core:1.0"],
