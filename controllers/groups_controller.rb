@@ -12,7 +12,8 @@ class GroupsController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-group-post-group
   post '/?' do
     # authenticate!
-    group = make_group read_json_body
+    group = Group.new
+    set_group_details group, read_json_body
     if group.save
       group = Group.find(group.id) # reload version
       return 201, group_hash(group).to_json
@@ -26,6 +27,8 @@ class GroupsController < ApplicationController
     # authenticate!
     id = params[:id]
     group = Group.find_by_guid(id)
+    raise Aok::Errors::ScimNotFound.new("Group #{id} does not exist") \
+      unless group
     group_hash(group).to_json
   end
 
@@ -42,6 +45,23 @@ class GroupsController < ApplicationController
 
     group.identities.concat(array)
 
+    if group.save
+      group = Group.find(group.id) # reload version
+      return 200, group_hash(group).to_json
+    else
+      handle_save_error group
+    end
+  end
+
+  # Update a Group
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-put-groupid
+  put '/:id' do
+    # authenticate!
+    id = params[:id]
+    group = Group.find_by_guid(id)
+    raise Aok::Errors::ScimNotFound.new("Group #{id} does not exist") \
+      unless group
+    set_group_details group, read_json_body
     if group.save
       group = Group.find(group.id) # reload version
       return 200, group_hash(group).to_json
@@ -85,12 +105,12 @@ class GroupsController < ApplicationController
     return 200
   end
 
-  def make_group hash
-    group = Group.new
-    group.name = hash['displayName']
-    logger.debug "make_group hash: #{hash.inspect}"
-    if hash['members']
-      hash['members'].each do |member_hash|
+  def set_group_details group, group_details
+    group.name = group_details['displayName']
+    if group_details['members']
+      group.identities = []
+      group.groups = []
+      group_details['members'].each do |member_hash|
         case member_hash['type']
         when 'GROUP'
           g = Group.find_by_guid member_hash['value']
@@ -142,10 +162,16 @@ class GroupsController < ApplicationController
   end
 
   def handle_save_error group
-    status((group.errors[:identifier] && group.errors[:identifier].any?{|e|e =~ /taken/}) ? 409 : 400)
+    error = 'invalid_scim_resource'
+    status 400
+    if (group.errors[:name] && group.errors[:name].any?{|e|e =~ /taken/})
+      status 409
+      error = 'scim_resource_already_exists'
+    end
     return  {
-      :error => "invalid_#{group.class.name.underscore}",
+      :error => error,
       :error_description => group.errors.full_messages.join('. ')
     }.to_json
   end
+
 end

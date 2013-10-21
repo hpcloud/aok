@@ -122,9 +122,13 @@ class OauthController < ApplicationController
       available_scopes = get_available_scopes(req, client)
       invalid_scopes = requested_scopes - available_scopes
       if !invalid_scopes.empty?
-        req.invalid_scope!("Invalid scopes: #{invalid_scopes.join(', ')}.
+        msg = "Invalid scopes: #{invalid_scopes.join(', ')}.
           Did you know that you can get default scopes by simply sending
-          no value?".gsub(/\s+/,' '),
+          no value?".gsub(/\s+/,' ')
+        msg << " You requested a scope containing a comma. Are you sure?
+          When requesting multiple scopes, they should be separated with
+          spaces, not commas.".gsub(/\s+/,' ') if invalid_scopes.any?{|s|s.include?(',')}
+        req.invalid_scope!(msg,
           :redirect_uri => client.redirect_uri,
           :protocol_params_location => params)
       end
@@ -133,16 +137,23 @@ class OauthController < ApplicationController
 
     def determine_scopes req, client
       requested_scopes = req.scope
+      # bod = request.body.read
+      # logger.debug "Req body: #{bod.inspect}"
+      # logger.debug "Real requested scopes is #{requested_scopes.inspect}"
+      unless requested_scopes.kind_of? Array
+        raise "requested_scopes must be an array. but was #{requested_scopes.inspect}"
+      end
 
       if requested_scopes.blank?
         requested_scopes = get_available_scopes req, client
       end
 
+      # logger.debug "De facto requested scopes is #{requested_scopes.inspect}"
       return requested_scopes
     end
 
     def get_available_scopes req, client
-      if req.respond_to?(:grant_type)
+      available_scopes = if req.respond_to?(:grant_type)
         case req.grant_type
         when :client_credentials
           client.authorities_list
@@ -154,6 +165,8 @@ class OauthController < ApplicationController
       else
         client.scope_list
       end
+      # logger.debug "Available scopes for #{req.grant_type} grant type is #{available_scopes.inspect}"
+      return available_scopes
     end
 
     def validate_grant_type req, client

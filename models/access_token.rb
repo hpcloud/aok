@@ -9,6 +9,7 @@ class AccessToken < ActiveRecord::Base
   def to_bearer_token(with_refresh_token = false)
     bearer_token = Rack::OAuth2::AccessToken::Bearer.new(
       :access_token => self.token,
+      :scope => scopes,
       :expires_in => self.expires_in # TODO: set correctly
     )
     if with_refresh_token
