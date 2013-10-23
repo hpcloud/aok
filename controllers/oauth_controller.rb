@@ -88,7 +88,7 @@ class OauthController < ApplicationController
         headers[key] = header[key] if header[key].present?
       end
       if response.redirect?
-        redirect header['Location'], 302
+        redirect to(header['Location']), 302
       else
         raise "Shouldn't have gotten here, response was #{response.inspect}"
       end

@@ -1,6 +1,7 @@
 if AppConfig[:oauth] && AppConfig[:oauth][:clients]
   AppConfig[:oauth][:clients].each do |name, config|
-    c = Client.find_by_identifier(config[:id]) || Client.new
+    identifier = config[:id] || name
+    c = Client.find_by_identifier(identifier) || Client.new
     c.name = name
     c.authorities = config[:authorities]
     c.secret = config[:secret] if config[:secret]
@@ -9,8 +10,7 @@ if AppConfig[:oauth] && AppConfig[:oauth][:clients]
     c.website = config[:redirect_uri]
     c.redirect_uri = config[:redirect_uri]
     c.identity = Identity.first
-    c.save!
-    c.identifier = config[:id]
+    c.identifier = identifier
     c.save!
   end
 end

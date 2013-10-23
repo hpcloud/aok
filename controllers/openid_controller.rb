@@ -77,7 +77,7 @@ class OpenidController < ApplicationController
 
   def redirect_to_auth(oidreq)
     session[:last_oidreq] = oidreq
-    redirect '/auth'
+    redirect to('/auth')
   end
 
   get '/idp_xrds' do
@@ -91,7 +91,7 @@ class OpenidController < ApplicationController
   get '/complete' do
     oidreq = session[:last_oidreq]
     unless oidreq
-      logger.info "No openid request was found in the session. 
+      logger.info "No openid request was found in the session.
       This can sometimes be caused by clock skew between the server
       and the user-agent causing the cookie to expire prematurely."
 
@@ -158,7 +158,7 @@ class OpenidController < ApplicationController
 
     case web_response.code
     when HTTP_OK then web_response.body
-    when HTTP_REDIRECT then redirect(web_response.headers['location'])
+    when HTTP_REDIRECT then redirect(to(web_response.headers['location']))
     else [400, web_response.body]
     end
   end

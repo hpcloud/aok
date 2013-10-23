@@ -14,7 +14,7 @@ class RootController < ApplicationController
   end
 
   get '/auth/?' do
-    redirect "/auth/#{settings.strategy}"
+    redirect to("/auth/#{settings.strategy}")
   end
 
   # Undocumented API used in the integration tests

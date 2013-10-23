@@ -241,12 +241,14 @@ class UsersController < ApplicationController
       from_decoded_json(dec_json)
     end
 
+    # Also prunes nil values
     def self.downcase_keys! obj
       case obj
       when Hash
         keys = obj.keys.dup
         keys.each do |k|
-          obj[k.downcase] = downcase_keys!(obj.delete(k))
+          value = downcase_keys!(obj.delete(k))
+          obj[k.downcase] = value unless value.nil?
         end
       when Array
         obj.collect!{|o| downcase_keys!(o)}
@@ -269,6 +271,12 @@ class UsersController < ApplicationController
     end
 
     optional :emails do
+      [
+        {'value' => String}
+      ]
+    end
+
+    optional :phonenumbers do
       [
         {'value' => String}
       ]

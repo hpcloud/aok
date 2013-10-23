@@ -1,6 +1,7 @@
 required_groups = %W{
   openid
   password.write
+  cloud_controller.admin
   cloud_controller.read
   cloud_controller.write
   tokens.read

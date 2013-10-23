@@ -53,7 +53,7 @@ class ApplicationController < Sinatra::Base
   get '/auth/failure' do
     # legacy login failures handles by Aok::Config::Strategy::FailureEndpoint
     clear_current_user
-    redirect '/openid/complete'
+    redirect to('/openid/complete')
   end
 
   helpers do

@@ -15,7 +15,6 @@ class GroupsController < ApplicationController
     group = Group.new
     set_group_details group, read_json_body
     if group.save
-      group = Group.find(group.id) # reload version
       return 201, group_hash(group).to_json
     else
       handle_save_error group
@@ -38,15 +37,17 @@ class GroupsController < ApplicationController
     # authenticate!
     # XXX check that user is not already in group
     group = Group.find_by_guid(params[:id])
-    array = read_json_body.collect do |user|
+    read_json_body['members'].each do |user|
       user_guid = user['value']
-      Identity.find_by_guid(user_guid)
+      identity = Identity.find_by_guid(user_guid)
+      if user['operation'].downcase == 'delete'
+        group.identities.delete(identity)
+      else
+        group.identities << identity
+      end
     end
 
-    group.identities.concat(array)
-
     if group.save
-      group = Group.find(group.id) # reload version
       return 200, group_hash(group).to_json
     else
       handle_save_error group
@@ -63,7 +64,6 @@ class GroupsController < ApplicationController
       unless group
     set_group_details group, read_json_body
     if group.save
-      group = Group.find(group.id) # reload version
       return 200, group_hash(group).to_json
     else
       handle_save_error group
@@ -118,7 +118,7 @@ class GroupsController < ApplicationController
             raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
           end
           group.groups << g
-        when 'USER'
+        when 'USER', nil
           i = Identity.find_by_guid member_hash['value']
           if i.nil?
             raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
