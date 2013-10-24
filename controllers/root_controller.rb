@@ -68,7 +68,8 @@ class RootController < ApplicationController
     authenticate!
     i = security_context.identity
     return {
-      :user_id => i.username,
+      :user_id => i.guid,
+      :user_name => i.username,
       :email => i.email
     }.to_json
   end
