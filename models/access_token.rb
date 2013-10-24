@@ -44,8 +44,8 @@ class AccessToken < ActiveRecord::Base
     }
     if identity
       payload.merge!({
-        :user_id => identity.id.to_s, # TODO: make this a guid
-        :sub => identity.id.to_s, # TODO: make this a guid
+        :user_id => identity.guid.to_s, # TODO: make this a guid
+        :sub => identity.guid.to_s, # TODO: make this a guid
         :user_name => identity.username,
         :email => identity.email,
       })
