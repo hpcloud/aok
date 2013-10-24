@@ -158,7 +158,8 @@ class RootController < ApplicationController
   # Logout
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#logout-get-logoutdo
   get '/uaa/logout.do', :provides => :html do
-    raise Aok::Errors::NotImplemented
+    session.destroy
+    redirect to('/')
   end
 
   # Get the Token Signing Key

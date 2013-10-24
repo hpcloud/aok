@@ -34,7 +34,7 @@ module Rack
 
       # Should return a new session id or nil if options[:drop]
       def destroy_session(env, sid, options)
-        ::Session.delete_all(:conditions => {:sid => sid})
+        ::Session.delete_all(:sid => sid)
         generate_sid unless options[:drop]
       end
 
