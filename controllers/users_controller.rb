@@ -22,7 +22,6 @@ class UsersController < ApplicationController
     user = Identity.new
     set_user_details user, user_details, :allow_password
     if user.save
-      user = Identity.find(user.id) #reload version
       return 201, scim_user_response(user)
     else
       handle_save_error user
@@ -32,12 +31,15 @@ class UsersController < ApplicationController
 
   # Get a specific User by guid
   # This isn't actually in the spec, but should probably return the same JSON
-  # aas create User.
+  # as create User.
   get '/:id' do
     # authenticate! #TODO enforce permissions on this call
-    id = params[:id]
-    user = Identity.find_by_guid(id)
-    raise Aok::Errors::ScimNotFound.new("User #{params[:id]} does not exist") unless user
+    guid = params[:id]
+    user = Identity.
+      where(guid: guid).
+      includes(:groups =>[:parent_groups]).
+      limit(1).first
+    raise Aok::Errors::ScimNotFound.new("User #{guid} does not exist") unless user
     scim_user_response user
   end
 
@@ -50,7 +52,6 @@ class UsersController < ApplicationController
     raise Aok::Errors::ScimNotFound.new("User #{params[:id]} does not exist") unless user
     set_user_details user, user_details
     if user.save
-      user = Identity.find(user.id) #reload version
       return scim_user_response(user)
     else
       handle_save_error user
@@ -73,7 +74,6 @@ class UsersController < ApplicationController
 
     user.password = user.password_confirmation = password_details['password']
     if user.save
-      user = Identity.find(user.id) #reload version
       return scim_user_response(user)
     else
       handle_save_error user
