@@ -9,7 +9,9 @@ class ApplicationController < Sinatra::Base
 
   # IP Spoofing protection isn't that helpful and
   # causes a lot of warnings in the log
-  set :protection, :except => :ip_spoofing
+  disabled_protection = [:ip_spoofing]
+  disabled_protection << :json_csrf if File.exist?('/s/code/console/DEV_MODE')
+  set :protection, :except => disabled_protection
 
   set :logging, Logger::DEBUG
 
