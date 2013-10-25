@@ -53,11 +53,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   end
 
   def authorities_list
-    groups.collect(&:name).uniq
-  end
-
-  def authorities_list_with_defaults
-    (authorities_list | AppConfig[:oauth][:users][:default_authorities])
+    ascendant_groups.collect(&:name)
   end
 
   # returns ALL groups this identity is a member of, including parents of immediate groups

@@ -10,17 +10,19 @@ class OauthController < ApplicationController
     Rack::OAuth2::Server::Token.new do |req, resp|
       authenticate!(:basic)
       client = security_context.client
-      scopes = validate_scope(req, client)
       grant_type = validate_grant_type req, client
       case grant_type
       when :client_credentials
+        scopes = validate_scope(req, client)
         resp.access_token = AccessToken.create!(:client => client, :scopes => scopes).to_bearer_token
       when :password
         identity = Identity.authenticate(req.username, req.password) || req.invalid_grant!
+        scopes = validate_scope(req, client, identity)
         resp.access_token = AccessToken.create!(:client => client, :scopes => scopes, :identity => identity).to_bearer_token(:with_refresh_token)
       when :authorization_code
         code = AuthorizationCode.valid.find_by_token(req.code)
         req.invalid_grant! if code.blank? || code.redirect_uri != req.redirect_uri
+        scopes = validate_scope(req, client, code.identity)
         resp.access_token = code.access_token(scopes).to_bearer_token(:with_refresh_token)
       when :refresh_token
         refresh_token = client.refresh_tokens.valid.find_by_token(req.refresh_token)
@@ -109,7 +111,7 @@ class OauthController < ApplicationController
 
     def validate_scope req, client, identity=nil
       requested_scopes = determine_scopes req, client
-      user_scopes = identity ? identity.authorities_list_with_defaults : nil
+      user_scopes = identity ? identity.authorities_list : nil
 
       scopes_to_grant = user_scopes ? (user_scopes & requested_scopes) : requested_scopes
       if scopes_to_grant.blank? && !client.authorities.blank?
