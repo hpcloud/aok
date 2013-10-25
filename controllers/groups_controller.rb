@@ -40,7 +40,7 @@ class GroupsController < ApplicationController
     read_json_body['members'].each do |user|
       user_guid = user['value']
       identity = Identity.find_by_guid(user_guid)
-      if user['operation'].downcase == 'delete'
+      if user['operation'] && user['operation'].downcase == 'delete'
         group.identities.delete(identity)
       else
         group.identities << identity
