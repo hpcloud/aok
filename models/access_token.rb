@@ -13,7 +13,7 @@ class AccessToken < ActiveRecord::Base
       :expires_in => self.expires_in # TODO: set correctly
     )
     if with_refresh_token
-      bearer_token.refresh_token = self.create_refresh_token(
+      bearer_token.refresh_token = self.create_refresh_token!(
         :identity => identity,
         :client => self.client
       ).token
