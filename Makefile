@@ -1,11 +1,11 @@
 VM=$(VMNAME).local
 
-EXTERNAL_VERSION=0.0.5
+EXTERNAL_VERSION=0.0.6
 
 EXTERNAL_REPOS = \
 	ext/test-more-bash \
 	ext/test-tap-bash \
-	ext/bpan-bash \
+	ext/bashplus \
 	ext/json-bash \
 
 default: help

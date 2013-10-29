@@ -1,11 +1,11 @@
 # Setup environment for API Tap tests:
 
-BPANLIB="$(set -- $PWD/test-api $PWD/ext/*/{bin,lib}; IFS=':'; echo "$*")"
-PATH="$BPANLIB:$PATH"
+BASHLIB="$(set -- $PWD/test-api $PWD/ext/*/{bin,lib}; IFS=':'; echo "$*")"
+PATH="$BASHLIB:$PATH"
 
 AOK_API_URL="http://aok.$VMNAME.local/uaa"
 
-source bpan :std
+source bash+ :std
 use Test::More
 use REST-API
 use JSON
