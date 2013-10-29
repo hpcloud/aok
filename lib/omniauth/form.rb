@@ -27,12 +27,12 @@ module OmniAuth
     end
 
     def label_field(text, target)
-      @html << "\n<label for='#{target}'>#{text}:</label>"
+      @html << "\n<div class='form-group'><label class='col-lg-2 control-label' for='#{target}'>#{text}:</label>"
       self
     end
 
     def input_field(type, name)
-      @html << "\n<input type='#{type}' id='#{name}' name='#{name}'/>"
+      @html << "\n<div class='col-lg-10'><input type='#{type}' class='form-control' id='#{name}' name='#{name}' placeholder='#{name}'/></div></div>"
       self
     end
 
@@ -50,7 +50,7 @@ module OmniAuth
 
     def button(text)
       @with_custom_button = true
-      @html << "\n" << '<input class="signin-button" type="submit" value="' << text << '">'
+      @html << "\n" << '<input class="signin-button btn btn-primary btn-lg pull-right" type="submit" value="' << text << '">'
     end
 
     def html(html)
@@ -71,7 +71,7 @@ module OmniAuth
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>#{title}</title>
-        <link href="//#{cc_url}/all-1.css" rel="stylesheet" />
+        <link href="/console/css/console.css" rel="stylesheet" />
         <link href="//#{cc_url}/theme/style.css" rel="stylesheet" />
         <script src="//#{cc_url}/theme/settings.js"></script>
         <script type="text/javascript">
@@ -82,25 +82,31 @@ module OmniAuth
         #{header_info}
       </head>
       <body class="login">
+        <div id="header-container">
+          <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+            <img class="navbar-brand" src="/console/img/stackato_logo_header.png" alt="Stackato">
+          </nav>
+        </div>
         <div class="page_wrapper">
-          <div class="content">
-            <div class="login_logo">
-              <div class="stackato_logo"></div>
-              <h2>#{title}</h2>
-              
-            </div>
-            <form id="login_form" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
+          <div class="container">
+            <div class="content">
+              <div class="well">
+                <h2>#{title}</h2>
+                <form id="login_form" class="form form-horizontal" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
       HTML
       self
     end
 
     def footer
       return self if @footer
-      @html << "\n" << '<input class="signin-button" type="submit" value="Sign in">' unless @with_custom_button
+      @html << "\n" << '<input class="signin-button btn btn-primary btn-lg pull-right" type="submit" value="Sign in">' unless @with_custom_button
       @html << <<-HTML
-            </form>
-          </div><!-- .content -->
-        </div><!-- .page_wrapper -->
+                </form>
+                <div class='clearfix'></div>
+              </div>
+            </div><!-- .content -->
+          </div>
+        </div>
       </body>
       </html>
       HTML
