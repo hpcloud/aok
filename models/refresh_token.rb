@@ -3,6 +3,16 @@ class RefreshToken < ActiveRecord::Base
   self.default_lifetime = 1.month
   has_many :access_tokens
 
+  def scopes
+    s = read_attribute(:scopes)
+    s.nil? ? [] : s.split(',')
+  end
+
+  def scopes=(arr)
+    val = arr.nil? ? nil : arr.join(',')
+    write_attribute(:scopes, val)
+  end
+
   private
   def setup
     super
