@@ -1,6 +1,6 @@
 class RefreshToken < ActiveRecord::Base
   include Oauth2Token
-  self.default_lifetime = 1.month
+  self.default_lifetime = 24.hours
   has_many :access_tokens
 
   def scopes
