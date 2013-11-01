@@ -1,4 +1,11 @@
 GIT
+  remote: git@github.com:ActiveState/uaa-spring-security-utils.git
+  revision: 351e9f15e91fca558cfb56929750f5f934cff78f
+  specs:
+    uaa_spring_security_utils (0.0.1)
+      nokogiri (~> 1.6.0)
+
+GIT
   remote: https://github.com/cloudfoundry/cf-message-bus.git
   revision: dbc2fc6e71b70980d6d4559b39ed9451449140eb
   specs:
@@ -113,6 +120,7 @@ GEM
     membrane (0.0.2)
     method_source (0.8.2)
     mime-types (1.24)
+    mini_portile (0.5.2)
     msgpack (0.5.5)
     multi_json (1.7.4)
     multi_xml (0.5.5)
@@ -124,6 +132,8 @@ GEM
       json_pure (>= 1.7.3)
       thin (>= 1.4.1)
     net-ldap (0.2.2)
+    nokogiri (1.6.0)
+      mini_portile (~> 0.5.0)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
       rack
@@ -283,6 +293,7 @@ DEPENDENCIES
   membrane (= 0.0.2)
   method_source (= 0.8.2)
   mime-types (= 1.24)
+  mini_portile (= 0.5.2)
   msgpack (= 0.5.5)
   multi_json (= 1.7.4)
   multi_xml (= 0.5.5)
@@ -290,6 +301,7 @@ DEPENDENCIES
   mustache (= 0.99.4)
   nats (= 0.4.26)
   net-ldap (= 0.2.2)
+  nokogiri (= 1.6.0)
   omniauth (= 1.1.4)
   omniauth-google-apps (= 0.0.2)
   omniauth-identity (= 1.1.0)
@@ -331,6 +343,7 @@ DEPENDENCIES
   thin (= 1.5.1)
   tilt (= 1.4.1)
   tzinfo (= 0.3.37)
+  uaa_spring_security_utils (= 0.0.1)!
   vcap-concurrency (= 0.1.0)
   vcap_common (= 2.2.0)!
   vic (= 1.0.0)

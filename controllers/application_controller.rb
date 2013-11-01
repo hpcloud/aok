@@ -39,6 +39,14 @@ class ApplicationController < Sinatra::Base
     ActiveRecord::Base.logger = logger
   end
 
+  configure do
+    security_config = UaaSpringSecurityUtils::ConfigParser.new
+    security_config.logger = logger
+    security_config.parse
+    set :security_config, security_config
+  end
+
+
   # OAuth2 Resource Server
   require 'rack/oauth2'
   require 'rack/oauth2/server/token/extension/jwt'
@@ -50,6 +58,8 @@ class ApplicationController < Sinatra::Base
   before do
     content_type 'application/json'
     @security_context = Aok::SecurityContext.new(request)
+    path_rule = settings.security_config.match_path(request)
+    logger.debug "Path matched: #{path_rule.inspect}"
   end
 
   get '/auth/failure' do
