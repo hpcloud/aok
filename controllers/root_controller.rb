@@ -17,6 +17,11 @@ class RootController < ApplicationController
     redirect to("/auth/#{settings.strategy}")
   end
 
+  get '/uaa/auth/failure' do
+    clear_current_user
+    redirect to("/uaa" + (request.query_string.blank? ? '' : "?#{request.query_string}"))
+  end
+
   # Undocumented API used in the integration tests
   get '/uaa/clientinfo', :provides => :json do
     client = security_context.client

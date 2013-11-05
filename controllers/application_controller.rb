@@ -52,12 +52,6 @@ class ApplicationController < Sinatra::Base
     @security_context = Aok::SecurityContext.new(request)
   end
 
-  get '/auth/failure' do
-    # legacy login failures handles by Aok::Config::Strategy::FailureEndpoint
-    clear_current_user
-    redirect to('/openid/complete')
-  end
-
   helpers do
     # authenticate(type=:oauth2)
     def authenticate!(*args)

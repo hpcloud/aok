@@ -3,14 +3,20 @@ module Aok
   module Config
     module Strategy
 
-      class FailureEndpoint
-        def self.call(the_env)
-          if the_env["aok.block"] # legacy login
-            the_env["aok.block"].call(nil)
+      class FailureEndpoint < OmniAuth::FailureEndpoint
+        def call
+          if env["aok.block"] # legacy login
+            env["aok.block"].call(nil)
             return
           end
-          return 403 if the_env["aok.no_openid"] # legacy login
-          OmniAuth::FailureEndpoint.call(the_env) # default behavior
+          return 403 if env["aok.no_openid"] # legacy login
+          redirect_to_failure
+        end
+
+        def redirect_to_failure
+          message_key = env['omniauth.error.type']
+          new_path = "/uaa/auth/failure?message=#{message_key}#{origin_query_param}#{strategy_name_query_param}"
+          Rack::Response.new(["302 Moved"], 302, 'Location' => new_path).finish
         end
       end
       OmniAuth.config.on_failure = Aok::Config::Strategy::FailureEndpoint
