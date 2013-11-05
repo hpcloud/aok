@@ -36,8 +36,15 @@ strategy:
      - email
      - userPrincipalName
     # Next two are optional. Anonymous access will be used if omitted.
-    bind_dn: 'default_bind_dn' #optional, default credentials for user lookup
-    password: 'password' #optional, default credentials for user lookup
+    #bind_dn: 'default_bind_dn' #optional, default credentials for user lookup
+    #password: 'password' #optional, default credentials for user lookup
+
+    # Optional. The user with this uid should be given admin privileges.
+    # You should have something in order to be able to bootstrap
+    # your installation when using LDAP. The user will be granted admin
+    # the first time they log in, and will remain an admin if this setting
+    # is removed.
+    #admin_user: johnDoe
 
     # name_proc allows you to match the user name entered with the
     # format of the uid attributes. For example, value of

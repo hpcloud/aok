@@ -6,6 +6,28 @@ module LoginEndpoint
     base.post '/uaa/login.do' do
       email = auth_hash[:info][:email]
       user = env['omniauth.identity']
+      if user.nil?
+        # using something other than the Identity strategy (like LDAP)
+        info = env['omniauth.auth'][:info]
+        username = info[:nickname]
+        user = Identity.find_by_username(username)
+        if user.nil?
+          user = Identity.create!(
+            username: username,
+            email: info[:email],
+            given_name: info[:first_name],
+            family_name: info[:last_name],
+            )
+        end
+        if env['omniauth.auth'][:provider] =='ldap'
+          config_admin = AppConfig[:strategy][:ldap][:admin_user]
+          if config_admin && username.downcase == config_admin.downcase
+            admin_group = Group.find_by_name!('cloud_controller.admin')
+            user.groups << admin_group
+            user.save!
+          end
+        end
+      end
       set_current_user(user)
 
       if env["aok.block"] # legacy login
