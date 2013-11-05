@@ -16,9 +16,11 @@ class OauthController < ApplicationController
         scopes = validate_scope(req, client)
         resp.access_token = AccessToken.create!(:client => client, :scopes => scopes).to_bearer_token
       when :password
-        identity = Identity.authenticate(req.username, req.password) || req.invalid_grant!
-        scopes = validate_scope(req, client, identity)
-        resp.access_token = AccessToken.create!(:client => client, :scopes => scopes, :identity => identity).to_bearer_token(:with_refresh_token)
+        find_identity do |i|
+          identity = i || req.invalid_grant!
+          scopes = validate_scope(req, client, identity)
+          resp.access_token = AccessToken.create!(:client => client, :scopes => scopes, :identity => identity).to_bearer_token(:with_refresh_token)
+        end
       when :authorization_code
         code = AuthorizationCode.valid.find_by_token(req.code)
         req.invalid_grant! if code.blank? || code.redirect_uri != req.redirect_uri

@@ -10,6 +10,13 @@ module LoginEndpoint
         # using something other than the Identity strategy (like LDAP)
         info = env['omniauth.auth'][:info]
         username = info[:nickname]
+        if env['omniauth.auth'][:provider] =='ldap'
+          username = env['omniauth.auth'][:extra][:raw_info][AppConfig[:strategy][:ldap][:uid]]
+          username = username.kind_of?(Array) ? username.first : username
+        end
+        if username.nil?
+          raise "Couldn't find a username to user for this user! #{env['omniauth.auth'].inspect}"
+        end
         user = Identity.find_by_username(username)
         if user.nil?
           user = Identity.create!(
