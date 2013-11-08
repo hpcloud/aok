@@ -18,7 +18,7 @@ gem 'axiom-types'       ,    '0.0.5'
 gem 'backports'         ,    '3.3.5'
 gem 'bcrypt-ruby'       ,    '3.1.2', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
-gem 'cf-message-bus'    ,    '0.0.5'
+gem 'cf-message-bus'    ,    '0.0.5', :github => "ActiveState/cf-message-bus", :branch => "stackato"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'coercible'         ,    '0.2.0'
 gem 'cookiejar'         ,    '0.3.0'
@@ -92,7 +92,7 @@ gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.38'
 gem 'uuidtools'         ,    '2.1.4'
 gem 'vcap-concurrency'  ,    '0.1.0'
-gem 'vcap_common'       ,    '2.2.2', :require => ['cf/registrar','vcap/common','vcap/component', 'json_message']
+gem 'vcap_common'       ,    '2.2.2', :require => ['cf/registrar','vcap/common','vcap/component', 'json_message'], :github => "ActiveState/vcap-common", :branch => "stackato"
 gem 'virtus'            ,    '1.0.0'
 gem 'vmstat'            ,    '2.0.0'
 gem 'xmlparser'         ,  '0.7.2.1'
