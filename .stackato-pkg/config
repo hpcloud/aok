@@ -5,11 +5,13 @@
 # arbitrary actions.  The main intent is to set up various PKG_*
 # variables used to configure and generate the package.
 
+KATO_GEM_VERSION="2.11.0"
 PKG_NAME="stackato-aok-ng"
 PKG_VERSION="auto"
 PKG_ARCH="all"
 PKG_DESCR_SHORT="stackato-aok-ng"
 PKG_DESCR_LONG="Stackato authentication service."
 PKG_GITDESCRIBE=".pkg-gitdescribe"
-PKG_DEPENDS="stackato-rubies, postgresql-contrib, libpq-dev, libexpat1-dev"
+PKG_DEPENDS="stackato-rubies, postgresql-contrib, libpq-dev, libexpat1-dev, stackato-kato-core-ng-$KATO_GEM_VERSION"
 PKG_BUILD_DEPENDS="build-essential"
+
