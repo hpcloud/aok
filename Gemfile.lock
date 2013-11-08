@@ -245,7 +245,7 @@ DEPENDENCIES
   ruby-openid (~> 2.3.0)
   scim-query-filter-parser (~> 0.0.3)
   sinatra (~> 1.3.3)
-  stackato-kato
+  stackato-kato (~> 3.0.0)
   thin
   vcap_common!
   zxcvbn-ruby

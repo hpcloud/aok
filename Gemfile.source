@@ -19,7 +19,7 @@ end
 gem 'ruby-openid', '~>2.3.0'
 
 # cluster/config stuff
-gem 'stackato-kato'
+gem 'stackato-kato', '~> 3.0.0'
 gem 'thin'
 
 # ActiveRecord stuff
