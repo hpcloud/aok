@@ -26,7 +26,7 @@ gem 'thin'
 gem 'rake'
 gem 'activerecord', '~> 3.2.15', :require => 'active_record'
 gem 'pg'
-gem 'bcrypt-ruby', :require => 'bcrypt'
+gem 'bcrypt-ruby', '~> 3.0.0', :require => 'bcrypt'
 
 # Auth
 gem 'omniauth', '~>1.1.1'

@@ -16,7 +16,7 @@ gem 'arel'              ,    '3.0.2'
 gem 'attr_required'     ,    '0.0.5'
 gem 'axiom-types'       ,    '0.0.5'
 gem 'backports'         ,    '3.3.5'
-gem 'bcrypt-ruby'       ,    '3.1.2', :require => 'bcrypt'
+gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
 gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/cloudfoundry/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
