@@ -39,7 +39,7 @@ GIT
       yajl-ruby
 
 GEM
-  remote: http://asgems:3dnShTDN@gems.activestate.com/
+  remote: https://rubygems.org/
   specs:
     activemodel (3.2.15)
       activesupport (= 3.2.15)
