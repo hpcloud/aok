@@ -19,7 +19,7 @@ module OmniAuth
     def self.build(options = {},&block)
       form = OmniAuth::Form.new(options)
       if block.arity > 0
-        yield form 
+        yield form
       else
         form.instance_eval(&block)
       end
@@ -31,20 +31,21 @@ module OmniAuth
       self
     end
 
-    def input_field(type, name)
-      @html << "\n<div class='col-lg-10'><input type='#{type}' class='form-control' id='#{name}' name='#{name}' placeholder='#{name}'/></div></div>"
+    def input_field(type, name, label=nil)
+      label ||= name
+      @html << "\n<div class='col-lg-10'><input type='#{type}' class='form-control' id='#{name}' name='#{name}' placeholder='#{label}'/></div></div>"
       self
     end
 
     def text_field(label, name)
       label_field(label, name)
-      input_field('text', name)
+      input_field('text', name, label)
       self
     end
 
     def password_field(label, name)
       label_field(label, name)
-      input_field('password', name)
+      input_field('password', name, label)
       self
     end
 
@@ -59,7 +60,7 @@ module OmniAuth
 
     def fieldset(legend, options = {}, &block)
       @html << "\n<fieldset#{" style='#{options[:style]}'" if options[:style]}#{" id='#{options[:id]}'" if options[:id]}>\n  <legend>#{legend}</legend>\n"
-      self.instance_eval &block
+      self.instance_eval(&block)
       @html << "\n</fieldset>"
       self
     end

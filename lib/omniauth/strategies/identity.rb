@@ -13,9 +13,8 @@ module OmniAuth
           :title => (options[:title] || "Identity Verification"),
           :url => callback_path
         ) do |f|
-          f.text_field model.auth_key.titlecase, model.auth_key
+          f.text_field model.auth_key.titlecase, 'auth_key'
           f.password_field 'Password', 'password'
-          f.html "\n\n<!-- This is to satisfy the UAA unit tests: /login.do -->\n\n"
         end.to_response
       end
 
@@ -29,10 +28,6 @@ module OmniAuth
         # stash the identity we just validated
         self.env['omniauth.identity'] = @identity
         super
-      end
-
-      def identity
-        @identity ||= model.authenticate(request[model.auth_key], request['password'])
       end
 
     end
