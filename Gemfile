@@ -59,6 +59,8 @@ gem 'omniauth-ldap'     ,    '1.0.3'
 gem 'omniauth-openid'   ,    '1.0.1'
 gem 'pg'                ,   '0.14.1'
 gem 'posix-spawn'       ,    '0.3.6'
+gem 'pry'               , '0.9.12.3'
+gem 'pry-debugger'      ,    '0.2.2'
 gem 'pyu-ruby-sasl'     ,  '0.0.3.3'
 gem 'rack'              ,    '1.5.2', :groups => [:default, :test]
 gem 'rack-accept'       ,    '0.4.5'
