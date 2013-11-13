@@ -19,7 +19,7 @@ module CurrentUserHelper
   def require_user
     unless current_user
       session[:aok] = 'true' # set cookie required by UAA integration tests
-      halt(redirect(to("/auth/#{settings.strategy}?origin=#{CGI.escape(request.fullpath)}")))
+      halt(redirect("/aok/auth/#{settings.strategy}?origin=#{CGI.escape(request.fullpath)}"))
     end
   end
 end

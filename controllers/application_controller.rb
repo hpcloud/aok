@@ -36,7 +36,14 @@ class ApplicationController < Sinatra::Base
     logger.datetime_format = '%a %d-%m-%Y %H%M '
     set :logger, logger
     $stdout.sync = true
-    ActiveRecord::Base.logger = logger
+    OmniAuth.config.logger = logger
+
+    # This is another logger for AR so we don't have
+    # to see all those SQL statements
+    ar_logger = Logger.new $stdout
+    ar_logger.level = Logger::INFO
+    ar_logger.datetime_format = '%a %d-%m-%Y %H%M '
+    ActiveRecord::Base.logger = ar_logger
   end
 
   # OAuth2 Resource Server

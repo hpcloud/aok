@@ -19,7 +19,7 @@ class RootController < ApplicationController
 
   get '/uaa/auth/failure' do
     clear_current_user
-    redirect to("/uaa" + (request.query_string.blank? ? '' : "?#{request.query_string}"))
+    halt(redirect("/aok/auth/#{settings.strategy}" + (request.query_string.blank? ? '' : "?#{request.query_string}")))
   end
 
   # Undocumented API used in the integration tests

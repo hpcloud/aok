@@ -73,13 +73,11 @@ module OmniAuth
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>#{title}</title>
         <link href="/console/css/console.css" rel="stylesheet" />
-        <link href="//#{cc_url}/theme/style.css" rel="stylesheet" />
-        <script src="//#{cc_url}/theme/settings.js"></script>
         <script type="text/javascript">
           $CC_URL = "//#{cc_url}"
         </script>
-        <script src="/jquery-1.10.1.min.js"></script>
-        <script src="/aok.js"></script>
+        <script src="/console/js/lib/jquery/jquery-1.10.1.min.js"></script>
+        <script src="/aok/aok.js"></script>
         #{header_info}
       </head>
       <body class="login">
