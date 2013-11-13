@@ -33,11 +33,10 @@ module Aok
       # and the corresponding mapping of field names from id/secret if needed
       STRATEGIES_DIRECT = {
         :default => {
-          :id => :username,
+          :id => :auth_key,
           :secret => :password
         },
         :builtin => {
-          :id => :username
         },
         :ldap => {
         },
