@@ -9,22 +9,26 @@ source `dirname $0`/setup.bash
   aocole_guid="$(api-output-get /resources/0/id)"
   api-get '/Groups?filter=displayname eq "aok.koolkidz"'
   koolkidz_guid="$(api-output-get /resources/0/id)"
-  api-patch "/Groups/$koolkidz_guid" '[
-    {
-        "type":"USER",
-        "authorities":["READ"],
-        "value":"'$ingy_guid'"
-    }
-  ]'
+  api-patch "/Groups/$koolkidz_guid" '{
+    "members": [
+      {
+          "type":"USER",
+          "authorities":["READ"],
+          "value":"'$ingy_guid'"
+      }
+    ]
+  }'
   is "$(api-status)" 200 \
     'PATCH /Groups/:id (add ingy to group) 200'
-  api-patch "/Groups/$koolkidz_guid" '[
-    {
-        "type":"USER",
-        "authorities":["READ"],
-        "value":"'$aocole_guid'"
-    }
-  ]'
+  api-patch "/Groups/$koolkidz_guid" '{
+    "members": [
+      {
+          "type":"USER",
+          "authorities":["READ"],
+          "value":"'$aocole_guid'"
+      }
+    ]
+  }'
   is "$(api-status)" 200 \
     'PATCH /Groups/:id (add aocole to group) 200'
   api-get '/Groups?filter=displayname eq "aok.koolkidz"'
