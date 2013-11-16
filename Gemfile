@@ -12,13 +12,13 @@ gem 'activemodel'       ,   '3.2.15'
 gem 'activerecord'      ,   '3.2.15', :require => 'active_record'
 gem 'activesupport'     ,   '3.2.15'
 gem 'addressable'       ,    '2.3.5'
-gem 'arel'              ,    '3.0.2'
+gem 'arel'              ,    '3.0.3'
 gem 'attr_required'     ,    '0.0.5'
 gem 'axiom-types'       ,    '0.0.5'
 gem 'backports'         ,    '3.3.5'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
-gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/cloudfoundry/cf-message-bus.git"
+gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'coercible'         ,    '0.2.0'
 gem 'colored'           ,      '1.2'
@@ -45,7 +45,7 @@ gem 'json_pure'         ,    '1.8.1'
 gem 'listen'            ,    '1.0.3', :groups => [:development]
 gem 'membrane'          ,    '0.0.2'
 gem 'mime-types'        ,      '2.0'
-gem 'msgpack'           ,    '0.5.6'
+gem 'msgpack'           ,    '0.5.7'
 gem 'multi_json'        ,    '1.8.2'
 gem 'multi_xml'         ,    '0.5.5'
 gem 'multipart-post'    ,    '1.2.0'
@@ -65,7 +65,7 @@ gem 'pyu-ruby-sasl'     ,  '0.0.3.3'
 gem 'rack'              ,    '1.5.2', :groups => [:default, :test]
 gem 'rack-accept'       ,    '0.4.5'
 gem 'rack-mount'        ,    '0.8.3'
-gem 'rack-oauth2'       ,    '1.0.5'
+gem 'rack-oauth2'       ,    '1.0.6'
 gem 'rack-openid'       ,    '1.3.1'
 gem 'rack-protection'   ,    '1.5.1'
 gem 'rack-test'         ,    '0.6.2', :groups => [:test]
