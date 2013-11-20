@@ -71,7 +71,7 @@ class ApplicationController < Sinatra::Base
   helpers do
     def check_security
       path_rule = settings.path_rules.match_path(request)
-      logger.debug "Matched path: #{path_rule.to_s}"
+      # logger.debug "Matched path: #{path_rule.to_s}"
 
       if path_rule.nil?
         raise Aok::Errors::Unauthorized.new("Unauthorized: Unknown path")
