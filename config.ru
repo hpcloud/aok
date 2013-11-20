@@ -7,7 +7,6 @@ use Rack::ContentType
 maps = {
   '/'                  => RootController,
   '/openid'            => OpenidController,
-  '/logins'            => LoginsController,
   '/uaa/Users'         => UsersController,
   '/uaa/Groups'        => GroupsController,
   '/uaa/oauth/clients' => ClientsController,

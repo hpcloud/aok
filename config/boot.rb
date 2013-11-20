@@ -32,7 +32,6 @@ Bundler.require(:default)
   controllers/user_tokens_controller
   controllers/groups_controller
   controllers/clients_controller
-  controllers/logins_controller
 
   models/identity
   models/session
