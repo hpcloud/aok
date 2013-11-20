@@ -4,13 +4,13 @@ class UsersController < ApplicationController
   MAX_ITEMS_PER_PAGE = 1000
   DEFAULT_ITEMS_PER_PAGE = 100
 
-        # XXX Test only methods:
-        # Reset -- delete all users
-        get '/RESET/' do
-          Identity.delete_all
-          return
-        end
-        # TODO Move these to test-only class.
+        # # XXX Test only methods:
+        # # Reset -- delete all users
+        # get '/RESET/' do
+        #   Identity.delete_all
+        #   return
+        # end
+        # # TODO Move these to test-only class.
 
   # Create a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
