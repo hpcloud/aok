@@ -46,6 +46,14 @@ class ApplicationController < Sinatra::Base
     ActiveRecord::Base.logger = ar_logger
   end
 
+  configure do
+    filepath = File.join(File.dirname(File.expand_path(__FILE__)), '..', 'config', 'path_rules.yml')
+    path_rules = UaaSpringSecurityUtils::PathRules.new(filepath)
+    path_rules.logger = logger
+    set :path_rules, path_rules
+  end
+
+
   # OAuth2 Resource Server
   require 'rack/oauth2'
   require 'rack/oauth2/server/token/extension/jwt'
@@ -57,9 +65,45 @@ class ApplicationController < Sinatra::Base
   before do
     content_type 'application/json'
     @security_context = Aok::SecurityContext.new(request)
+    check_security
   end
 
   helpers do
+    def check_security
+      path_rule = settings.path_rules.match_path(request)
+      logger.debug "Matched path: #{path_rule.to_s}"
+
+      if path_rule.nil?
+        raise Aok::Errors::Unauthorized.new("Unauthorized: Unknown path")
+      end
+
+      if !path_rule.security?
+        # no security! whee!
+        return
+      end
+
+      pass = false
+
+      # XXX: check conditions from rule here
+
+      return if pass
+
+      # everything from here on is failure-handling
+      if path_rule['access-denied-page']
+        logger.debug "Should redirect to #{path_rule['access-denied-page'].inspect} for access denial"
+        return
+      end
+      handler = path_rule['access-denied-handler']['ref']['class']
+      logger.debug "Should use #{handler} to handle denial"
+      case handler
+      when /\.OAuth2AccessDeniedHandler$/
+        # XXX: do something
+      else
+        # XXX: something better here
+        raise 'no access-denied-handler found'
+      end
+    end
+
     # authenticate(type=:oauth2)
     def authenticate!(*args)
       type = :oauth2

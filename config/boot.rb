@@ -15,6 +15,7 @@ Bundler.require(:default)
   lib/database_reconnect
   lib/secure_token
   lib/oauth2_token
+  lib/spring_security/lib/uaa_spring_security_utils
 
   config/config
 
