@@ -4,6 +4,7 @@ module Aok
     module Strategy
 
       class FailureEndpoint < OmniAuth::FailureEndpoint
+        include Sinatra::Helpers
         def call
           if env["aok.block"] # legacy login
             env["aok.block"].call(nil)
@@ -13,9 +14,13 @@ module Aok
           redirect_to_failure
         end
 
+        def request
+          @request ||= Sinatra::Request.new(env)
+        end
+
         def redirect_to_failure
           message_key = env['omniauth.error.type']
-          new_path = "/uaa/auth/failure?message=#{message_key}#{origin_query_param}#{strategy_name_query_param}"
+          new_path = uri("/uaa/auth/failure?message=#{message_key}#{origin_query_param}#{strategy_name_query_param}")
           Rack::Response.new(["302 Moved"], 302, 'Location' => new_path).finish
         end
       end
