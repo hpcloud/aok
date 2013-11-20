@@ -175,7 +175,7 @@ class OauthController < ApplicationController
 
     def validate_grant_type req, client
       unless client.valid_grant_type?(req.grant_type)
-        req.invalid_grant_type!
+        req.unauthorized_client!
       end
       return req.grant_type
     end
