@@ -89,6 +89,7 @@ module OmniAuth
         <div class="page_wrapper">
           <div class="container">
             <div class="content">
+              <div id="invalid_credentials" class="alert alert-danger hide">Sorry.  Your attempt to sign in failed.  Please try again.</div>
               <div class="well">
                 <h2>#{title}</h2>
                 <form id="login_form" class="form form-horizontal" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
