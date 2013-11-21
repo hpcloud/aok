@@ -82,7 +82,7 @@ ext/$(EXTERNAL_VERSION):
 	touch $@
 
 $(EXTERNAL_REPOS): ext/$(EXTERNAL_VERSION)
-	git clone http://git-mirrors.activestate.com/$(@:ext/%=%) $@
+	git clone http://git-mirrors.activestate.com/github.com/ingydotnet/$(@:ext/%=%) $@
 
 export:
 	@echo export VMNAME=$(VMNAME)
