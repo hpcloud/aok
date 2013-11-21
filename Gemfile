@@ -18,7 +18,7 @@ gem 'axiom-types'       ,    '0.0.5'
 gem 'backports'         ,    '3.3.5'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
-gem 'cf-message-bus'    ,    '0.1.0', :git => "https://github.com/cloudfoundry/cf-message-bus.git"
+gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'coercible'         ,    '0.2.0'
 gem 'colored'           ,      '1.2'
@@ -32,7 +32,7 @@ gem 'em-socksify'       ,    '0.3.0'
 gem 'equalizer'         ,    '0.0.7'
 gem 'eventmachine'      ,    '1.0.3'
 gem 'ffi'               ,    '1.9.3', :groups => [:development]
-gem 'fluent-logger'     ,    '0.4.6'
+gem 'fluent-logger'     ,    '0.4.7'
 gem 'grape'             ,    '0.6.1'
 gem 'hashie'            ,    '2.0.5'
 gem 'http_parser.rb'    , '0.6.0.beta.2'
@@ -61,13 +61,11 @@ gem 'omniauth-ldap'     ,    '1.0.3'
 gem 'omniauth-openid'   ,    '1.0.1'
 gem 'pg'                ,   '0.14.1'
 gem 'posix-spawn'       ,    '0.3.6'
-gem 'pry'               , '0.9.12.3'
-gem 'pry-debugger'      ,    '0.2.2'
 gem 'pyu-ruby-sasl'     ,  '0.0.3.3'
 gem 'rack'              ,    '1.5.2', :groups => [:default, :test]
 gem 'rack-accept'       ,    '0.4.5'
 gem 'rack-mount'        ,    '0.8.3'
-gem 'rack-oauth2'       ,    '1.0.6'
+gem 'rack-oauth2'       ,    '1.0.7'
 gem 'rack-openid'       ,    '1.3.1'
 gem 'rack-protection'   ,    '1.5.1'
 gem 'rack-test'         ,    '0.6.2', :groups => [:test]
