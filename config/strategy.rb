@@ -4,6 +4,7 @@ module Aok
     module Strategy
 
       class FailureEndpoint < OmniAuth::FailureEndpoint
+        require 'sinatra'
         include Sinatra::Helpers
         def call
           if env["aok.block"] # legacy login
