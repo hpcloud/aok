@@ -81,9 +81,9 @@ module UaaSpringSecurityUtils
     # with a 'pattern' attribute and optional 'method'
     def simple_match? request_path, method, pattern_holder
       re = compile_pattern pattern_holder['pattern']
-      logger.debug "Checking match of request : #{method} '#{request_path}' =~ #{pattern_holder['method'] || '*'} #{re.inspect}"
+      #logger.debug "Checking match of request : #{method} '#{request_path}' =~ #{pattern_holder['method'] || '*'} #{re.inspect}"
       if request_path =~ re && (pattern_holder['method'].nil? || pattern_holder['method'].upcase == method.upcase)
-        logger.debug "    ...match!"
+        #logger.debug "    ...match!"
         return true
       end
       return false

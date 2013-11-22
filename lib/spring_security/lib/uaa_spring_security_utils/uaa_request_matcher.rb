@@ -40,12 +40,12 @@ module UaaSpringSecurityUtils
 
     def matches? request
       request_path = request.path.sub(Regexp.new('^' + mount_point + '/?'), '/')
-      message = ''
-      logger.debug do
-        message = "#{request.request_method.inspect} #{request_path.inspect}.start_with?(#{path.inspect}) with parameters="+
-          "#{parameters.inspect}, headers #{expected_headers.inspect}, and method #{method.inspect}"
-        "Checking match of request : " + message
-      end
+      # message = ''
+      # logger.debug do
+      #   message = "#{request.request_method.inspect} #{request_path.inspect}.start_with?(#{path.inspect}) with parameters="+
+      #     "#{parameters.inspect}, headers #{expected_headers.inspect}, and method #{method.inspect}"
+      #   "Checking match of request : " + message
+      # end
       return false if !request_path.start_with?(path)
 
       return false if method && method.upcase != request.request_method.upcase
@@ -63,14 +63,14 @@ module UaaSpringSecurityUtils
         return false if request_value.nil? || !request_value.start_with?(expected_value)
       end
 
-      logger.debug "    ...Matched request #{message}"
+      # logger.debug "    ...Matched request #{message}"
       return true
     end
 
     def matches_header? request_value, expected_values
       expected_values ||= []
       return expected_values.all? do |expected_value|
-        logger.debug "Matching header value #{request_value.inspect} against #{expected_value.inspect}"
+        # logger.debug "Matching header value #{request_value.inspect} against #{expected_value.inspect}"
         !request_value.nil? && request_value.start_with?(expected_value)
       end
     end
