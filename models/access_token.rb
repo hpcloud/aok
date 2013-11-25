@@ -1,8 +1,8 @@
 class AccessToken < ActiveRecord::Base
   include Oauth2Token
+  include Aok::ScopesShoehorn
   self.default_lifetime = 24.hours
   belongs_to :refresh_token
-  attr_accessor :scopes
 
   before_validation :make_token, :on => :create
 
@@ -26,7 +26,7 @@ class AccessToken < ActiveRecord::Base
 
   def setup
     super
-    if refresh_token
+    if refresh_token && !persisted?
       # Creating a new access token from an existing refresh token.
       # Copy most attributes from the refresh token.
       self.identity = refresh_token.identity

@@ -6,6 +6,7 @@ Bundler.require(:default)
   lib/aok/errors
   lib/aok/security_context
   lib/aok/model_authorities_methods
+  lib/aok/scopes_shoehorn
   lib/aok/scim/active_record_query_builder
   lib/rack_port_monkeypatch
   lib/omniauth/strategies/identity
