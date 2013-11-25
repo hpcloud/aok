@@ -13,6 +13,7 @@ module UaaSpringSecurityUtils
       request_path = request.path.sub(Regexp.new('^' + mount_point + '/?'), '/')
       method = request.request_method
       path_to_return = nil
+      intercept_to_return = nil
       path_rules.each do |path|
         # rules missing 'pattern' attribute should match all requests
         next unless path['pattern'].nil? || simple_match?(request_path, method, path)
@@ -23,9 +24,8 @@ module UaaSpringSecurityUtils
           path['intercept-url'].each do |intercept|
             if simple_match?(request_path, method, intercept)
               path_to_return = path
-              # XXX: need to be able to reference this particular intercept-url
-              # when returning the path. The intercept should have an "access" key
-              # that describes the access requirement.
+              intercept_to_return = intercept
+              break
             end
           end
         end
@@ -33,14 +33,14 @@ module UaaSpringSecurityUtils
         request_matcher = get_request_matcher(path['request-matcher'])
         if request_matcher
           if request_matcher.matches?(request)
-            return Path.new(path_to_return)
+            return Path.new(path_to_return, intercept_to_return)
           else
             next
           end
         end
 
         if path_to_return
-          return Path.new(path_to_return)
+          return Path.new(path_to_return, intercept_to_return)
         end
       end
       raise "No path matched! Expected a catch-all."
@@ -82,7 +82,7 @@ module UaaSpringSecurityUtils
     def simple_match? request_path, method, pattern_holder
       re = compile_pattern pattern_holder['pattern']
       #logger.debug "Checking match of request : #{method} '#{request_path}' =~ #{pattern_holder['method'] || '*'} #{re.inspect}"
-      if request_path =~ re && (pattern_holder['method'].nil? || pattern_holder['method'].upcase == method.upcase)
+      if request_path =~ re && (pattern_holder['method'].blank? || pattern_holder['method'].upcase == method.upcase)
         #logger.debug "    ...match!"
         return true
       end

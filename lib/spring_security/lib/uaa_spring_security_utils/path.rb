@@ -2,7 +2,12 @@ require 'pp'
 module UaaSpringSecurityUtils
   class Path
 
-    attr_reader :path, :entry_point, :security
+    attr_reader :path, :entry_point, :security, :intercept, :decision_manager, :decision_mode
+
+    SCOPE_ENFORCEMENT = /scope=([^,]+)|#oauth2.hasScope\('([^,]+)'\)/
+    FULL_AUTHENTICATION = /IS_AUTHENTICATED_FULLY|isFullyAuthenticated\(\)/
+    MODE_UNANIMOUS = "org.springframework.security.access.vote.UnanimousBased"
+    MODE_AFFIRMATIVE = "org.springframework.security.access.vote.AffirmativeBased"
 
     class PathClass
       include Util
@@ -28,13 +33,115 @@ module UaaSpringSecurityUtils
       end
     end
 
-    def initialize the_path
-      @path = the_path
-      @entry_point = EntryPoint.new(path['entry-point'])
-      @security = path['security'] != 'none'
+    class Intercept < PathClass
+      attr_reader :pattern, :access, :method
+      def initialize(hash)
+        super
+        @pattern = @hash['pattern']
+        @method = @hash['method']
+        @access = @hash['access']
+      end
     end
 
-    def security?; security; end
+    def initialize the_path, the_intercept
+      @path = the_path
+      @intercept = Intercept.new(the_intercept)
+      @entry_point = EntryPoint.new(path['entry-point'])
+      @security = path['security'] != 'none'
+      @decision_manager = path['access-decision-manager'] && path['access-decision-manager']['id']
+      @decision_mode = path['access-decision-manager'] && path['access-decision-manager']['class']
+    end
+
+    alias security? security
+
+    # List of "access" used in uaa:
+    # ["scope=openid",
+    #  "IS_AUTHENTICATED_FULLY",
+    #  "IS_AUTHENTICATED_FULLY,scope=clients.secret",
+    #  "#oauth2.hasScope('clients.write')",
+    #  "#oauth2.hasScope('clients.read')",
+    #  "scope=scim.write,scope=groups.update,memberScope=writer",
+    #  "scope=scim.read,memberScope=reader",
+    #  "scope=scim.write",
+    #  "ROLE_NONEXISTENT",
+    #  "IS_AUTHENTICATED_FULLY,scope=password.write",
+    #  "scope=scim.read,user=self",
+    #  "scope=scim.write,user=self",
+    #  "hasRole('uaa.resource')",
+    #  "isAnonymous() or hasRole('uaa.resource')",
+    #  "isFullyAuthenticated()",
+    #  "IS_AUTHENTICATED_ANONYMOUSLY",
+    #  "denyAll"]
+    def authorized?(security_context)
+      return true if !security
+
+      votes = []
+
+      if intercept
+        logger.debug "Processing intercept: #{intercept.inspect}"
+        # Oauth2 scopes
+        if intercept.access
+          scopes = get_scope_enforcement(intercept.access)
+          scopes.each do |scope|
+            logger.debug "Checking for scope #{scope.inspect}..."
+            unless security_context.token
+              logger.debug "    No oauth2 token at all!"
+              votes << false
+              break
+            end
+            logger.debug "Token has scopes: #{security_context.token.scopes.inspect}"
+            vote = security_context.token.has_scope?(scope)
+            logger.debug "    #{vote ? 'got it!' : 'nope!'}"
+            votes << vote
+          end
+        end
+
+        # TODO: IS_AUTHENTICATED_FULLY, isFullyAuthenticated
+        if requires_full_authentication?(intercept.access)
+          vote = security_context.authenticated?
+          logger.debug "Requires full authentication. Voting #{vote}"
+          votes << vote
+        end
+
+        # TODO: hasRole(), ROLE_
+
+        # TODO: memberScope
+
+        # TODO: user=self
+      else
+        logger.debug "No intercepts. Path was: #{to_s}"
+      end
+
+      # decision time
+      logger.debug "Access votes are: #{votes.inspect}"
+      case decision_mode
+      when nil
+        # XXX: Is this right? I'm treating it like MODE_UNANIMOUS.
+        # This happens for emptyAuthenticationManager
+        logger.debug "Requiring unanimous decision (was nil)"
+        return votes.inject{|m, v| m && v}
+      when MODE_AFFIRMATIVE
+        logger.debug "Using affirmative decision"
+        return votes.inject{|m, v| m || v}
+      when MODE_UNANIMOUS
+        logger.debug "Requiring unanimous decision"
+        return votes.inject{|m, v| m && v}
+      else
+        raise "unknown decision mode: #{decision_mode.inspect}. Path was:\n #{to_s}"
+      end
+
+      # TODO: authentication-manager
+
+      logger.debug "Didn't get any decision for path. Defaulting to 403. Path was: #{to_s}"
+    end
+
+    def get_scope_enforcement(access)
+      access.scan(SCOPE_ENFORCEMENT).flatten.compact
+    end
+
+    def requires_full_authentication? access
+      access =~ FULL_AUTHENTICATION
+    end
 
     def to_s
       PP.pp(path, txt='')
@@ -44,6 +151,10 @@ module UaaSpringSecurityUtils
 
     def [](key)
       path[key]
+    end
+
+    def logger
+      ApplicationController.logger
     end
 
   end

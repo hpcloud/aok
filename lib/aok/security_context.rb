@@ -17,29 +17,24 @@ module Aok
       basic = Rack::Auth::Basic::Request.new(request.env)
       if basic.provided? && basic.basic?
         basic_auth(basic)
-      elsif oauth2?
+      elsif raw_token
         token_auth
       end
     end
 
-    def authenticated?
-      authentication.authenticated?
+    # proxy some methods down to the authentication object
+    %W{authenticated? client identity principal token}.each do |name|
+      define_method(name) do
+        authentication.send(name)
+      end
     end
 
-    def access_token
+    def raw_token
       request.env[Rack::OAuth2::Server::Resource::ACCESS_TOKEN]
     end
 
-    def client
-      authentication.client
-    end
-
-    def identity
-      authentication.identity
-    end
-
     def oauth2?
-      !!access_token
+      !!authentication.token
     end
 
     private
@@ -68,7 +63,7 @@ module Aok
     end
 
     def token_auth
-      unless authentication.token = AccessToken.valid.find_by_token(access_token)
+      unless authentication.token = AccessToken.valid.find_by_token(raw_token)
         raise Aok::Errors::InvalidToken
       end
       authentication.identity = authentication.token.identity
@@ -87,8 +82,12 @@ module Aok
   class Authentication
     attr_accessor :identity, :type, :client, :token
 
-    def authenticated?
+    def principal
       identity || client
+    end
+
+    def authenticated?
+      !!principal
     end
 
     def basic?

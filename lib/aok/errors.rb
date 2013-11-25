@@ -35,6 +35,15 @@ module Aok
       end
     end
 
+    class AccessDenied < AokError
+      def initialize(desc='Access Denied')
+        super()
+        @http_status = 403
+        @error = 'access_denied'
+        @error_description = desc
+      end
+    end
+
     class InvalidToken < Unauthorized
       def initialize(reason='could not decode')
         super("Invalid token (#{reason})")
