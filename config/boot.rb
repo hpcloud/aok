@@ -14,6 +14,7 @@ Bundler.require(:default)
   lib/active_record_session_store
   lib/active_record_openid_store/lib/openid_ar_store
   lib/database_reconnect
+  lib/generic_error_handling
   lib/secure_token
   lib/oauth2_token
   lib/spring_security/lib/uaa_spring_security_utils

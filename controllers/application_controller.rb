@@ -4,8 +4,9 @@ require 'kato/local/node'
 class ApplicationController < Sinatra::Base
   helpers ApplicationHelper, CurrentUserHelper, ErrorHandlingHelper
 
-  set :raise_errors, true
-  set :show_exceptions, false
+  set :raise_errors, true # throw exceptions up the rack stack
+  set :show_exceptions, false # disable html error pages
+  set :dump_errors, false # disable stack traces for handled errors
 
   # IP Spoofing protection isn't that helpful and
   # causes a lot of warnings in the log

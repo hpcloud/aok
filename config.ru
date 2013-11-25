@@ -1,6 +1,7 @@
 Dir.chdir(File.dirname(__FILE__))
 require File.expand_path('../config/boot', __FILE__)
 
+use GenericErrorHandling
 use DatabaseReconnect
 use Rack::ContentType
 
