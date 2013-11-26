@@ -142,4 +142,14 @@ namespace :test do
     `grep  -L -E "<(failure|error|skipped)" #{dir}/* | xargs rm`
     `sub -n #{dir}`
   end
+
+  desc "Set up aok's config for testing. Insecure, not for production."
+  task :setup => :config do
+    require 'kato/config'
+    require 'yaml'
+    config_file = File.join(File.dirname(__FILE__), 'test', 'test_config.yml')
+    config = YAML.load_file(config_file)
+    old_config = Kato::Config.get("aok", '/')
+    Kato::Config.set("aok", "/", old_config.deep_merge(config))
+  end
 end

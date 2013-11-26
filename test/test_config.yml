@@ -1,0 +1,29 @@
+oauth:
+  clients:
+    vmc:
+      id: vmc
+      authorized_grant_types: implicit
+      scope: cloud_controller.read,cloud_controller.write,openid,password.write
+      authorities: uaa.none
+      resource_ids: none
+      redirect_uri: https://uaa.cloudfoundry.com/redirect/vmc
+    cloud_controller:
+      id: cloud_controller
+      secret: cloudcontrollersecret
+      authorized_grant_types: client_credentials
+      scope: scim.read,scim.write,password.write
+      authorities: uaa.resource,scim.read,scim.write,password.write
+      resource_ids: none
+    admin:
+      authorized_grant_types: client_credentials
+      scope: clients.read,clients.write,clients.secret
+      authorities: uaa.admin,clients.read,clients.write,clients.secret
+      id: admin
+      secret: adminsecret
+      resource_ids: clients,tokens
+scim:
+  users:
+    - paul|wombat|paul@test.org|Paul|Smith|uaa.admin
+    - stefan|wallaby|stefan@test.org|Stefan|Schmidt
+    - vcap_tester@vmware.com|dr0wssaPH@ck|vcap_tester@vmware.com|VCAP|Tester
+
