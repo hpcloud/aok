@@ -1848,6 +1848,9 @@
   - pattern: /Groups
     access: scope=scim.write
     method: POST
+  - pattern: /Groups/**
+    access: scope=scim.write
+    method: PATCH
   - pattern: /**
     access: ROLE_NONEXISTENT
   custom-filter:
@@ -2101,6 +2104,9 @@
   - pattern: /Users/*
     access: scope=scim.write,user=self
     method: PUT
+  - pattern: /Users/*
+    access: scope=scim.write,user=self
+    method: PATCH
   - pattern: /Users
     access: scope=scim.write
     method: POST
