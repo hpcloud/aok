@@ -24,9 +24,9 @@ module UaaSpringSecurityUtils
       hash = Hash[node.attributes.collect do |name, att|
         value = att.value
         if name =~ /-?ref$/
-          name = name.sub(/-ref$/, '')
+          name = name.sub(/-?ref$/, '')
           value = if BEAN_BLACKLIST.include?(value)
-            "#{value.inspect} OMITTED"
+            {value => "OMITTED"}
           else
             bean = @beans[value]
             raise "couldn't resolve bean #{value}" unless bean
@@ -35,6 +35,19 @@ module UaaSpringSecurityUtils
         end
         [name, value]
       end]
+
+      # fix dereference of some beans
+      if hash['']
+        subhash = hash.delete('')
+        if subhash.kind_of? Hash
+          hash.merge!(subhash)
+        else
+          raise "Unexpect hash form #{hash.inspect}" unless hash.keys.empty?
+          hash = subhash
+        end
+
+      end
+
 
       node.children.each do |child|
         value = if child.name == 'text'
