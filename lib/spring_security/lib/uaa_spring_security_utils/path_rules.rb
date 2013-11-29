@@ -100,6 +100,8 @@ module UaaSpringSecurityUtils
     # a 'method' sort higher than those without. see url 'note'
     # http://docs.spring.io/spring-security/site/docs/3.1.4.RELEASE/reference/ns-config.html#ns-minimal
     def intercept_compare a, b
+      raise a['method'].inspect if a['method'].kind_of?(Hash)
+      raise b['method'].inspect if b['method'].kind_of?(Hash)
       case
       when (a['method'].nil? && b['method'].nil?) ||
         (a['method'] && b['method']) then 0

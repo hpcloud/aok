@@ -6,7 +6,7 @@ module Aok
   # * OAuth Client tokens are used by authorized 3rd-party system (like cc_ng)
   #
   class SecurityContext
-    attr_reader :authentication, :request
+    attr_reader :authentication, :request, :invalid_client_identifier
     BASIC = 'Basic'
     OAUTH2_USER = 'OAuth2 User'
     OAUTH2_CLIENT = 'OAuth2 Client'
@@ -41,17 +41,18 @@ module Aok
 
     def basic_auth(auth)
       return unless auth.credentials
-      username, password = auth.credentials
-      logger.debug "Basic authentication attempt with username #{
-        username.inspect} and password #{
+      @client_identifier, password = auth.credentials
+      logger.debug "Basic authentication attempt with @client_identifier #{
+        @client_identifier.inspect} and password #{
         password.blank? ? '[BLANK]' : '[REDACTED]'}"
-      client = Client.find_by_identifier username
+      client = Client.find_by_identifier @client_identifier
       unless client
-        logger.debug "Client #{username.inspect} not found"
+        @invalid_client_identifier = true
+        logger.debug "Client #{@client_identifier.inspect} not found"
         return
       end
       unless client.secret
-        logger.debug "Client #{username.inspect} doesn't have a secret to authenticate"
+        logger.debug "Client #{@client_identifier.inspect} doesn't have a secret to authenticate"
       end
       unless password == (client.secret || "")
         logger.debug "Password doesn't match client secret"

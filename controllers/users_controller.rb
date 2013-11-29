@@ -16,8 +16,7 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
   # http://www.simplecloud.info/specs/draft-scim-core-schema-01.html#user-resource
   post '/?' do
-    # authenticate! #TODO enforce permissions on this call
-    # TODO: Authentication, Validation, robustification
+    # TODO: Validation, robustification
     user_details = CreateUserMessage.decode request.body.read
     user = Identity.new
     set_user_details user, user_details, :allow_password
@@ -33,7 +32,6 @@ class UsersController < ApplicationController
   # This isn't actually in the spec, but should probably return the same JSON
   # as create User.
   get '/:id' do
-    # authenticate! #TODO enforce permissions on this call
     guid = params[:id]
     user = Identity.
       where(guid: guid).
@@ -46,7 +44,6 @@ class UsersController < ApplicationController
   # Update a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-user-put-usersid
   put '/:id' do
-    authenticate! #TODO enforce permissions on this call
     user_details = UpdateUserMessage.decode request.body.read
     user = Identity.find_by_guid params[:id]
     raise Aok::Errors::ScimNotFound.new("User #{params[:id]} does not exist") unless user
@@ -61,16 +58,25 @@ class UsersController < ApplicationController
   # Change Password
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#change-password-put-usersidpassword
   put '/:id/password' do
-    authenticate! #TODO enforce permissions on this call
+    unless AppConfig[:strategy][:use].to_s == 'builtin'
+      raise Aok::Errors::NotImplemented.new("Password change not supported if not using built-in authentication.")
+    end
+
     password_details = read_json_body
     user = Identity.find_by_guid params[:id]
     raise Aok::Errors::ScimNotFound.new("User #{params[:id]} does not exist") unless user
 
-    # TODO: user changing own password should require oldPassword,
+    # user changing own password should require oldPassword,
     # admin changing passwords should not.
-    # if !user.authenticate(password_details['oldPassword'])
-    #   raise Aok::Errors::AokError.new 'unauthorized', 'oldPassword is incorrect', 401
-    # end
+    if user == security_context.principal
+      if !user.authenticate(password_details['oldPassword'])
+        raise Aok::Errors::AokError.new 'unauthorized', 'oldPassword is incorrect', 400
+      end
+    elsif !security_context.token.has_scope? 'uaa.admin'
+      raise Aok::Errors::AccessDenied.new(
+        "You are not permitted to access this resource."
+      )
+    end
 
     user.password = user.password_confirmation = password_details['password']
     if user.save
@@ -126,7 +132,6 @@ class UsersController < ApplicationController
   # Delete a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-user-delete-usersid
   delete '/:id' do
-    # authenticate! #TODO enforce permissions on this call
     id = params[:id]
     user = Identity.find_by_guid(id)
     raise Aok::Errors::ScimNotFound.new("User #{id} does not exist") \

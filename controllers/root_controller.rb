@@ -51,7 +51,6 @@ class RootController < ApplicationController
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
   post '/uaa/check_token/?' do
-    authenticate!(:basic)
     CF::UAA::TokenCoder.decode(
       params[:token],
       {
@@ -192,6 +191,11 @@ class RootController < ApplicationController
   # Undocumented in UAA
   get '/uaa/healthz/?', :provides => 'text/plain' do
     "ok\n"
+  end
+
+  # Remote authentication
+  post '/uaa/authenticate', :provides => :json do
+    raise Aok::Errors::NotImplemented
   end
 
 

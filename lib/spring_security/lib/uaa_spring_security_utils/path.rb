@@ -5,6 +5,7 @@ module UaaSpringSecurityUtils
     attr_reader :path, :entry_point, :security, :intercept, :decision_manager, :decision_mode
 
     SCOPE_ENFORCEMENT = /scope=([^,]+)|#oauth2.hasScope\('([^,]+)'\)/
+    ROLE_ENFORCEMENT  = /ROLE_([^,]+)|hasRole\('([^,]+)'\)/
     FULL_AUTHENTICATION = /IS_AUTHENTICATED_FULLY|isFullyAuthenticated\(\)/
     MODE_UNANIMOUS = "org.springframework.security.access.vote.UnanimousBased"
     MODE_AFFIRMATIVE = "org.springframework.security.access.vote.AffirmativeBased"
@@ -96,14 +97,28 @@ module UaaSpringSecurityUtils
           end
         end
 
-        # TODO: IS_AUTHENTICATED_FULLY, isFullyAuthenticated
+        # IS_AUTHENTICATED_FULLY, isFullyAuthenticated
         if requires_full_authentication?(intercept.access)
           vote = security_context.authenticated?
           logger.debug "Requires full authentication. Voting #{vote}"
           votes << vote
         end
 
-        # TODO: hasRole(), ROLE_
+        # hasRole(), ROLE_
+        # "role" really means a client authority.
+        roles = get_role_enforcement(intercept.access)
+        roles.each do |role|
+          logger.debug "Checking for role #{role.inspect}..."
+          unless security_context.client
+            logger.debug "    No client auth at all!"
+            votes << false
+            break
+          end
+          logger.debug "Client has authorities: #{security_context.client.authorities_list.inspect}"
+          vote = security_context.client.has_authority?(role)
+          logger.debug "    #{vote ? 'got it!' : 'nope!'}"
+          votes << vote
+        end
 
         # TODO: memberScope
 
@@ -137,6 +152,10 @@ module UaaSpringSecurityUtils
 
     def get_scope_enforcement(access)
       access.scan(SCOPE_ENFORCEMENT).flatten.compact
+    end
+
+    def get_role_enforcement(access)
+      access.scan(ROLE_ENFORCEMENT).flatten.compact
     end
 
     def requires_full_authentication? access

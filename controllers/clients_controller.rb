@@ -23,7 +23,7 @@ class ClientsController < ApplicationController
     {
       :client_id => client.identifier,
       :scope => client.scope,
-      :resource_ids => client.scope.split(',').collect{|s|s.split('.').last}.join(','), #TODO: verify what this is supposed to be
+      :resource_ids => client.scope_list.collect{|s|s.split('.').last}.join(','), #TODO: verify what this is supposed to be
       :authorities => client.authorities,
       :authorized_grant_types => client.authorized_grant_types_list,
       :refresh_token_validity => client.refresh_token_validity,
@@ -59,8 +59,6 @@ class ClientsController < ApplicationController
     client.secret = client_details['client_secret'] if allow_secret
     client.authorized_grant_types = client_details['authorized_grant_types'].join(',')
     client.authorities = client_details['authorities'].join(',')
-    # TODO: what are the resource ids for?
-    #client.resource_ids = client_details['resource_ids'].join(',')
     client.redirect_uri = client_details['redirect_uri']
 
     # TODO: once we have schema for this, store in the db

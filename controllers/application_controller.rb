@@ -66,6 +66,7 @@ class ApplicationController < Sinatra::Base
   before do
     content_type 'application/json'
     @security_context = Aok::SecurityContext.new(request)
+    logger.debug "Security context principal: #{security_context.principal.inspect}"
     check_security
   end
 
@@ -83,26 +84,34 @@ class ApplicationController < Sinatra::Base
         return
       end
 
-      pass = false
-
-      # XXX: check conditions from rule here
+      pass = path_rule.authorized?(security_context)
 
       return if pass
+
+      # XXX ignoring failure if on login path, since we handle this in the route
+      if path_rule['custom-filter'].kind_of?(Hash) &&
+          path_rule['custom-filter']['position'] == "FORM_LOGIN_FILTER"
+        logger.debug "Ignoring auth failure since this is an auth entry point"
+        return
+      end
 
       # everything from here on is failure-handling
       if path_rule['access-denied-page']
         logger.debug "Should redirect to #{path_rule['access-denied-page'].inspect} for access denial"
         return
       end
-      handler = path_rule['access-denied-handler']['ref']['class']
-      logger.debug "Should use #{handler} to handle denial"
+      handler = path_rule['access-denied-handler']['class']
+      logger.debug "Should use #{handler.inspect} to handle denial"
       case handler
       when /\.OAuth2AccessDeniedHandler$/
-        # XXX: do something
+        UaaSpringSecurityUtils::OAuth2AccessDeniedHandler.handle(path_rule, security_context)
       else
         # XXX: something better here
         raise 'no access-denied-handler found'
       end
+
+      # Catchall
+      raise Aok::Errors::AccessDenied.new('Unauthorized via Spring Security rules')
     end
 
     # authenticate(type=:oauth2)
@@ -156,12 +165,6 @@ class ApplicationController < Sinatra::Base
     Aok::Config.initialize_database
     set :public_folder, File.expand_path('../../public', __FILE__)
     logger.debug "Serving static files from #{settings.public_folder.inspect}"
-  end
-
-  before '*' do
-    headers({
-      'X-XRDS-Location' => url("/openid/idp_xrds", true, false)
-    })
   end
 
   def self.get_and_post(*args, &block)

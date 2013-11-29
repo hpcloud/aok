@@ -9,7 +9,8 @@ module Aok
         @error_description = desc
         @http_status = code
         @http_headers = {
-          'Content-Type' => 'application/json'
+          'Content-Type' => 'application/json',
+          'Cache-Control' => 'no-store'
         }
       end
 
@@ -32,6 +33,14 @@ module Aok
           'WWW-Authenticate' =>
             %Q{#{type} realm="#{realm}", error="#{error}", error_description="#{error_description}"}
         })
+      end
+    end
+
+    class InvalidClient < Unauthorized
+      def initialize(type, realm)
+        super
+        @error_description = "Invalid client identifier supplied."
+        @error = 'invalid_client'
       end
     end
 

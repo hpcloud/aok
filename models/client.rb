@@ -44,6 +44,10 @@ class Client < ActiveRecord::Base
     parse_list authorities
   end
 
+  def has_authority?(authority)
+    authorities_list.include?(authority)
+  end
+
   def add_grant_type type
     self.authorized_grant_types = (authorized_grant_types_list << type).uniq.join(',')
   end
