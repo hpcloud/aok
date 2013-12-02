@@ -3,7 +3,6 @@ class ClientsController < ApplicationController
   # List Clients
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#list-clients-get-oauthclients
   get '/?' do
-    authenticate!
     Client.all.collect do |client|
       client_hash client
     end.to_json
@@ -13,7 +12,6 @@ class ClientsController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#inspect-client-get-oauthclientsclient_id
   # TODO: what should permissions be for this call?
   get "/:identifier" do
-    authenticate!  #TODO
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
     return client_hash(client).to_json
@@ -35,7 +33,6 @@ class ClientsController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-client-post-oauthclientsclient_id
   # TODO: What should permissions be for this call?
   post "/?" do
-    authenticate! #TODO FIXME
     client_details = read_json_body
     client = Client.new
     set_client_details client, client_details, :allow_secret
@@ -69,7 +66,6 @@ class ClientsController < ApplicationController
   # Update Client
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-client-put-oauthclientsclient_id
   put '/:identifier' do
-    authenticate! #TODO FIXME
     cd = read_json_body
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
@@ -84,7 +80,6 @@ class ClientsController < ApplicationController
   # Delete Client
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-client-delete-oauthclientsclient_id
   delete '/:identifier' do
-    authenticate!  #TODO
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
     client.destroy
@@ -94,7 +89,6 @@ class ClientsController < ApplicationController
   # Change Client Secret
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#change-client-secret-put-oauthclientsclient_idsecret
   put '/:identifier/secret' do
-    authenticate! #TODO FIXME
     secret_details = read_json_body
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
