@@ -71,6 +71,7 @@ module OmniAuth
       <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link id="favicon" rel="shortcut icon" type="image/png" href="" />
         <title>#{title}</title>
         <link href="/console/css/console.css" rel="stylesheet" />
         <script type="text/javascript">
@@ -80,7 +81,7 @@ module OmniAuth
         <script src="/aok/aok.js"></script>
         #{header_info}
       </head>
-      <body class="login">
+      <body class="login" style="display:none;">
         <div id="header-container">
           <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
             <img class="navbar-brand" src="/console/img/stackato_logo_header.png" alt="Stackato">
