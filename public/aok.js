@@ -98,6 +98,8 @@ $().ready(function () {
         // Set the header logo
         $('.navbar-brand').attr('src', settings.product_logo_header_url);
 
+        $('.form-signin-heading').html('Welcome to ' + settings.product_name);
+
         // NOTE: apply additional theme colors in this statement
         $("head").append("<style type=\"text/css\" charset=\"utf-8\"> body{background-color:" + settings.background_color + "}</style>");
 
@@ -108,6 +110,12 @@ $().ready(function () {
 
         // Show the page
         $('body').css('display', 'block');
+
+        // Update sign in button state when clicked
+        $('.signin-button').click(function () {
+            $('#invalid_credentials').hide();
+            $('.signin-button').button('loading');
+        });
 
         $('input').first().focus();
 

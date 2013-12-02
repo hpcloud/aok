@@ -27,13 +27,13 @@ module OmniAuth
     end
 
     def label_field(text, target)
-      @html << "\n<div class='form-group'><label class='col-lg-2 control-label' for='#{target}'>#{text}:</label>"
+      # @html << "\n<div class='form-group'><label class='col-lg-2 control-label' for='#{target}'>#{text}:</label>"
       self
     end
 
     def input_field(type, name, label=nil)
       label ||= name
-      @html << "\n<div class='col-lg-10'><input type='#{type}' class='form-control' id='#{name}' name='#{name}' placeholder='#{label}'/></div></div>"
+      @html << "\n<input type='#{type}' class='form-control' id='#{name}' name='#{name}' placeholder='#{label}' required />"
       self
     end
 
@@ -51,7 +51,7 @@ module OmniAuth
 
     def button(text)
       @with_custom_button = true
-      @html << "\n" << '<input class="signin-button btn btn-primary btn-lg pull-right" type="submit" value="' << text << '">'
+      @html << "\n" << '<button class="signin-button btn btn-lg btn-primary btn-block" type="submit" data-loading-text="Signing in...">"' << text << '"</button>'
     end
 
     def html(html)
@@ -74,10 +74,12 @@ module OmniAuth
         <link id="favicon" rel="shortcut icon" type="image/png" href="" />
         <title>#{title}</title>
         <link href="/console/css/console.css" rel="stylesheet" />
+        <link href="/aok/aok.css" rel="stylesheet" />
         <script type="text/javascript">
           $CC_URL = "//#{cc_url}"
         </script>
         <script src="/console/js/lib/jquery/jquery-1.10.1.min.js"></script>
+        <script src="/console/js/lib/bootstrap/js/bootstrap.min.js"></script>
         <script src="/aok/aok.js"></script>
         #{header_info}
       </head>
@@ -89,23 +91,20 @@ module OmniAuth
         </div>
         <div class="page_wrapper">
           <div class="container">
-            <div class="content">
-              <div id="invalid_credentials" class="alert alert-danger hide">Sorry.  Your attempt to sign in failed.  Please try again.</div>
-              <div class="well">
-                <h2>#{title}</h2>
-                <form id="login_form" class="form form-horizontal" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
+            <form id="login_form" class="form-signin" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
+                <h2 class="form-signin-heading">#{title}</h2>
+                <div id="invalid_credentials" class="alert alert-danger hide">Your attempt to sign in failed. Please try again.</div>
+
       HTML
       self
     end
 
     def footer
       return self if @footer
-      @html << "\n" << '<input class="signin-button btn btn-primary btn-lg pull-right" type="submit" value="Sign in">' unless @with_custom_button
+      @html << "\n" << '<button class="signin-button btn btn-lg btn-primary btn-block" type="submit" data-loading-text="Signing in...">Sign in</button>' unless @with_custom_button
       @html << <<-HTML
                 </form>
                 <div class='clearfix'></div>
-              </div>
-            </div><!-- .content -->
           </div>
         </div>
       </body>
