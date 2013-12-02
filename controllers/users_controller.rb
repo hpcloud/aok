@@ -73,11 +73,14 @@ class UsersController < ApplicationController
         logger.debug "user did not provide correct oldPassword"
         raise Aok::Errors::AokError.new 'unauthorized', 'oldPassword is incorrect', 400
       end
-    elsif security_context.identity && !security_context.token.has_scope?('uaa.admin')
+    elsif security_context.identity && !(security_context.token.has_scope?('uaa.admin') || security_context.token.has_scope?('cloud_controller.admin'))
+      # XXX: bug 101940: AOK loosening restrictions to allow cloud_controller.admin to change
+      # user's passwords (in addition to allowing uaa.admin to do it).
+      #
       # XXX: aocole believes this behavior is wrong-- client should still need uaa.admin scope
       # this behavior is here to replicate uaa's behavior, but contradicts docs at:
       # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-Security.md#password-change
-      logger.debug "User #{security_context.identity} trying to change password for #{user.inspect} but does not have needed admin scope. Scopes were #{security_context.token.scopes.inspect}."
+      logger.debug "User #{security_context.identity.inspect} trying to change password for #{user.inspect} but does not have needed admin scope. Scopes were #{security_context.token.scopes.inspect}."
       raise Aok::Errors::AccessDenied.new(
         "You are not permitted to access this resource."
       )
