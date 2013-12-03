@@ -11,8 +11,29 @@ class Client < ActiveRecord::Base
   validates :name, :presence => true #:website, :redirect_uri, :identity,
   validates :identifier, :presence => true, :uniqueness => true
 
-  validates :secret, :presence => true,
+  require 'bcrypt'
+  attr_reader :secret
+  validates :secret_digest, :presence => true,
     :if => Proc.new{|c|c.valid_grant_type?('client_credentials')}
+  attr_protected :secret_digest
+
+  def authenticate(cleartext_secret)
+    # clients can sometimes have blank secrets and still authenticate using them
+    if (secret_digest.nil?)
+      return self if cleartext_secret.blank?
+      return false
+    end
+
+    return self if BCrypt::Password.new(secret_digest) == cleartext_secret
+    return false
+  end
+
+  def secret=(cleartext_secret)
+    @secret = cleartext_secret
+    unless cleartext_secret.blank?
+      self.secret_digest = BCrypt::Password.create(cleartext_secret)
+    end
+  end
 
   before_validation do
     if (valid_grant_type?('authorization_code') || valid_grant_type?('password')) &&

@@ -54,7 +54,7 @@ module Aok
       unless client.secret
         logger.debug "Client #{@client_identifier.inspect} doesn't have a secret to authenticate"
       end
-      unless password == (client.secret || "")
+      unless client.authenticate(password)
         logger.debug "Password doesn't match client secret"
         return
       end

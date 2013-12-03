@@ -36,7 +36,7 @@ class RootController < ApplicationController
         }.to_json
       ]
     end
-    if client.secret
+    if client.secret_digest
       authenticate! :basic
     elsif client.valid_grant_type? 'implicit'
       # no auth needed

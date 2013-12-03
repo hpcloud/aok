@@ -93,7 +93,7 @@ class ClientsController < ApplicationController
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
     # TODO: Gotta make the client secret a hash in the db
-    if secret_details['oldSecret'] != client.secret
+    unless client.authenticate(secret_details['oldSecret'])
       raise Aok::Errors::AokError.new 'unauthorized', 'oldSecret is incorrect', 401
     end
     client.secret = secret_details['secret']
