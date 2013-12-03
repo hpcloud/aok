@@ -98,11 +98,10 @@ class UsersController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#query-for-information-get-users
   # http://www.simplecloud.info/specs/draft-scim-api-01.html#query-resources
   # http://tools.ietf.org/html/draft-ietf-scim-core-schema-02#section-12
-  # TODO: authentication
   # TODO: support sortBy query param
   get '/?' do
     begin
-      filter = if params[:filter]
+      filter = if !params[:filter].blank?
         Aok::Scim::ActiveRecordQueryBuilder.new.build_query(params[:filter])
       else
         true
@@ -111,6 +110,7 @@ class UsersController < ApplicationController
       # XXX This error doesn't show up in logs
       raise Aok::Errors::ScimFilterError.new($!.message)
     end
+    filter = true if filter.blank? || filter =='""' #XXX bug in scim-query-filter-parser-rb
     start_index = params[:startIndex] || 1
     start_index = [start_index.to_i, 1].max
     items_per_page = params[:count] || DEFAULT_ITEMS_PER_PAGE
