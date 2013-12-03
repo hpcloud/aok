@@ -3,6 +3,9 @@ module UaaSpringSecurityUtils
     include Util
     attr_accessor :path_rules, :mount_point, :logger
 
+    # Test for guid in URL
+    SUBJECT = /\/([a-f0-9\-]{36})\/?/
+
     def initialize(rule_filepath, mount_point="/uaa")
       @path_rules = YAML.load_file(rule_filepath)
       sort_intercepts!
@@ -11,6 +14,7 @@ module UaaSpringSecurityUtils
 
     def match_path request
       request_path = request.path.sub(Regexp.new('^' + mount_point + '/?'), '/')
+      subject = request_path.match(SUBJECT){|m|m[1]}
       method = request.request_method
       path_to_return = nil
       intercept_to_return = nil
@@ -33,14 +37,14 @@ module UaaSpringSecurityUtils
         request_matcher = get_request_matcher(path['request-matcher'])
         if request_matcher
           if request_matcher.matches?(request)
-            return Path.new(path_to_return, intercept_to_return)
+            return Path.new(path_to_return, intercept_to_return, subject)
           else
             next
           end
         end
 
         if path_to_return
-          return Path.new(path_to_return, intercept_to_return)
+          return Path.new(path_to_return, intercept_to_return, subject)
         end
       end
       raise "No path matched! Expected a catch-all."

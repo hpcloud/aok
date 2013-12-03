@@ -86,3 +86,7 @@ $(EXTERNAL_REPOS): ext/$(EXTERNAL_VERSION)
 
 export:
 	@echo export VMNAME=$(VMNAME)
+
+keytool:
+	echo | openssl s_client -connect api.stackato-andrew.local:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > cert.pem
+	keytool -importcert -file cert.pem -keystore keystore.jks -alias "api.stackato-andrew.local"

@@ -2,10 +2,17 @@ require 'pp'
 module UaaSpringSecurityUtils
   class Path
 
-    attr_reader :path, :entry_point, :security, :intercept, :decision_manager, :decision_mode
+    attr_reader :path,
+      :entry_point,
+      :security,
+      :intercept,
+      :decision_manager,
+      :decision_mode,
+      :subject
 
     SCOPE_ENFORCEMENT = /scope=([^,]+)|#oauth2.hasScope\('([^,]+)'\)/
     ROLE_ENFORCEMENT  = /ROLE_([^,]+)|hasRole\('([^,]+)'\)/
+    SELF_ENFORCEMENT  = /user=self/
     FULL_AUTHENTICATION = /IS_AUTHENTICATED_FULLY|isFullyAuthenticated\(\)/
     MODE_UNANIMOUS = "org.springframework.security.access.vote.UnanimousBased"
     MODE_AFFIRMATIVE = "org.springframework.security.access.vote.AffirmativeBased"
@@ -44,13 +51,14 @@ module UaaSpringSecurityUtils
       end
     end
 
-    def initialize the_path, the_intercept
+    def initialize the_path, the_intercept, the_subject
       @path = the_path
       @intercept = Intercept.new(the_intercept)
       @entry_point = EntryPoint.new(path['entry-point'])
       @security = path['security'] != 'none'
       @decision_manager = path['access-decision-manager'] && path['access-decision-manager']['id']
       @decision_mode = path['access-decision-manager'] && path['access-decision-manager']['class']
+      @subject = the_subject
     end
 
     alias security? security
@@ -104,6 +112,13 @@ module UaaSpringSecurityUtils
           votes << vote
         end
 
+        # user=self
+        if requires_self?(intercept.access)
+          vote = security_context.identity && security_context.identity.guid == subject
+          logger.debug "Requires action on self. Voting #{vote} for subject guid: #{subject.inspect}."
+          votes << vote
+        end
+
         # hasRole(), ROLE_
         # "role" really means a client authority.
         roles = get_role_enforcement(intercept.access)
@@ -122,7 +137,6 @@ module UaaSpringSecurityUtils
 
         # TODO: memberScope
 
-        # TODO: user=self
       else
         logger.debug "No intercepts. Path was: #{to_s}"
       end
@@ -160,6 +174,10 @@ module UaaSpringSecurityUtils
 
     def requires_full_authentication? access
       access =~ FULL_AUTHENTICATION
+    end
+
+    def requires_self? access
+      access =~ SELF_ENFORCEMENT
     end
 
     def to_s
