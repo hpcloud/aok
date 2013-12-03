@@ -51,7 +51,7 @@ module Aok
         logger.debug "Client #{@client_identifier.inspect} not found"
         return
       end
-      unless client.secret
+      unless client.secret_digest
         logger.debug "Client #{@client_identifier.inspect} doesn't have a secret to authenticate"
       end
       unless client.authenticate(password)
