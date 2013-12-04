@@ -4,19 +4,10 @@ class UsersController < ApplicationController
   MAX_ITEMS_PER_PAGE = 1000
   DEFAULT_ITEMS_PER_PAGE = 100
 
-        # # XXX Test only methods:
-        # # Reset -- delete all users
-        # get '/RESET/' do
-        #   Identity.delete_all
-        #   return
-        # end
-        # # TODO Move these to test-only class.
-
   # Create a User
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-user-post-users
   # http://www.simplecloud.info/specs/draft-scim-core-schema-01.html#user-resource
   post '/?' do
-    # TODO: Validation, robustification
     user_details = CreateUserMessage.decode request.body.read
     user = Identity.new
     set_user_details user, user_details, :allow_password
@@ -29,8 +20,6 @@ class UsersController < ApplicationController
   end
 
   # Get a specific User by guid
-  # This isn't actually in the spec, but should probably return the same JSON
-  # as create User.
   get '/:id' do
     guid = params[:id]
     user = Identity.
@@ -74,7 +63,7 @@ class UsersController < ApplicationController
         raise Aok::Errors::AokError.new 'unauthorized', 'oldPassword is incorrect', 400
       end
     elsif security_context.identity && !(security_context.token.has_scope?('uaa.admin') || security_context.token.has_scope?('cloud_controller.admin'))
-      # XXX: bug 101940: AOK loosening restrictions to allow cloud_controller.admin to change
+      # bug 101940: AOK loosening restrictions to allow cloud_controller.admin to change
       # user's passwords (in addition to allowing uaa.admin to do it).
       #
       # XXX: aocole believes this behavior is wrong-- client should still need uaa.admin scope
@@ -107,7 +96,7 @@ class UsersController < ApplicationController
         true
       end
     rescue
-      # XXX This error doesn't show up in logs
+      # This error doesn't show up in logs
       raise Aok::Errors::ScimFilterError.new($!.message)
     end
     filter = true if filter.blank? || filter =='""' #XXX bug in scim-query-filter-parser-rb
@@ -269,7 +258,7 @@ class UsersController < ApplicationController
       obj
     end
 
-    optional :id, String # TODO: needed to pass integration tests, but do we want it?
+    optional :id, String
     optional :externalid, String
     required :username, String
     optional :password, String

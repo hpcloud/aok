@@ -1,17 +1,8 @@
 class GroupsController < ApplicationController
 
-        # XXX Test only methods:
-        # Reset -- delete all groups
-        get '/RESET/' do
-          Group.delete_all
-          return
-        end
-        # TODO Move these to test-only class.
-
   # Create a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#create-a-group-post-group
   post '/?' do
-    # authenticate!
     group = Group.new
     set_group_details group, read_json_body
     if group.save
@@ -23,7 +14,6 @@ class GroupsController < ApplicationController
 
   # Get a specific Group by guid
   get '/:id' do
-    # authenticate!
     id = params[:id]
     group = Group.find_by_guid(id)
     raise Aok::Errors::ScimNotFound.new("Group #{id} does not exist") \
@@ -34,7 +24,6 @@ class GroupsController < ApplicationController
   # Update a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-patch-groupid
   patch '/:id' do
-    # authenticate!
     # XXX check that user is not already in group
     group = Group.find_by_guid(params[:id])
     read_json_body['members'].each do |user|
@@ -57,7 +46,6 @@ class GroupsController < ApplicationController
   # Update a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-put-groupid
   put '/:id' do
-    # authenticate!
     id = params[:id]
     group = Group.find_by_guid(id)
     raise Aok::Errors::ScimNotFound.new("Group #{id} does not exist") \
@@ -96,7 +84,6 @@ class GroupsController < ApplicationController
   # Delete a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-a-group-delete-groupid
   delete '/:id' do
-    # authenticate!
     id = params[:id]
     group = Group.find_by_guid(id)
     raise Aok::Errors::ScimNotFound.new("Group #{id} does not exist") \

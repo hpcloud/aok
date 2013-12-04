@@ -10,7 +10,6 @@ class ClientsController < ApplicationController
 
   # Inspect Client
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#inspect-client-get-oauthclientsclient_id
-  # TODO: what should permissions be for this call?
   get "/:identifier" do
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
@@ -31,7 +30,6 @@ class ClientsController < ApplicationController
 
   # Register Client
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-client-post-oauthclientsclient_id
-  # TODO: What should permissions be for this call?
   post "/?" do
     client_details = read_json_body
     client = Client.new
@@ -44,11 +42,6 @@ class ClientsController < ApplicationController
   end
 
   def set_client_details(client, client_details, allow_secret = false)
-    #TODO: ClientAdminEndpointsIntegrationTests implies that you should
-    # be able to set arbitrary fields on clients. For instance, they send
-    # "foo": "rab" in the json to PUT. What's the functionality of that
-    # supposed to be? Do we want to support that?
-
     #TODO: instead of joining these here, use a helper method in the
     #authorities module to properly assign list values
     client.scope = client_details['scope'].join(',')
@@ -92,13 +85,11 @@ class ClientsController < ApplicationController
     secret_details = read_json_body
     client = Client.find_by_identifier params[:identifier]
     raise Aok::Errors::NotFound.new("Client not found.") unless client
-    # TODO: Gotta make the client secret a hash in the db
     unless client.authenticate(secret_details['oldSecret'])
       raise Aok::Errors::AokError.new 'unauthorized', 'oldSecret is incorrect', 401
     end
     client.secret = secret_details['secret']
     if client.save
-      # TODO: API docs say to return "a status message (hash)" wtf is that?
       return 200, {'status' => 'saved'}.to_json
     else
       handle_save_error client

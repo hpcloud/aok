@@ -61,7 +61,7 @@ module UaaSpringSecurityUtils
 
     private
 
-    # XXX: fix this to display intercept-url/pattern combinations
+    # TODO: fix this to display intercept-url/pattern combinations
     def path_name(path_rule)
         path_rule['pattern'] ||
         path_rule['request-matcher']['constructor-arg']['value'] ||

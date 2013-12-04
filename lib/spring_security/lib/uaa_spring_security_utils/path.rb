@@ -145,8 +145,6 @@ module UaaSpringSecurityUtils
       logger.debug "Access votes are: #{votes.inspect}"
       case decision_mode
       when nil
-        # XXX: Is this right? I'm treating it like MODE_UNANIMOUS.
-        # This happens for emptyAuthenticationManager
         logger.debug "Requiring unanimous decision (was nil)"
         return votes.inject{|m, v| m && v}
       when MODE_AFFIRMATIVE

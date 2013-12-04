@@ -58,8 +58,6 @@ class AccessToken < ActiveRecord::Base
     self.token = CF::UAA::TokenCoder.encode(
       payload,
       {
-        # TODO: This should probably be changed to public-key
-        # encryption for production.
         :skey => AppConfig[:jwt][:token][:signing_key]
       }
     )

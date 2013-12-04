@@ -12,7 +12,6 @@ if AppConfig[:scim] && AppConfig[:scim][:users]
       :email => email,
       :first_name => first_name,
       :last_name => last_name
-      # TODO: set authorities (groups)
     )
   end
 end

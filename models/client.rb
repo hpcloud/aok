@@ -1,7 +1,5 @@
 class Client < ActiveRecord::Base
 
-  #TODO: Client secrets should be hashed in the DB
-
   include Aok::ModelAuthoritiesMethods
   has_many :access_tokens
   has_many :refresh_tokens

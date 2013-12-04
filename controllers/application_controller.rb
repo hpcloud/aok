@@ -88,7 +88,7 @@ class ApplicationController < Sinatra::Base
 
       return if pass
 
-      # XXX ignoring failure if on login path, since we handle this in the route
+      # ignoring failure if on login path, since we handle this in the route
       if path_rule['custom-filter'].kind_of?(Hash) &&
           path_rule['custom-filter']['position'] == "FORM_LOGIN_FILTER"
         logger.debug "Ignoring auth failure since this is an auth entry point"
@@ -106,7 +106,6 @@ class ApplicationController < Sinatra::Base
       when /\.OAuth2AccessDeniedHandler$/
         UaaSpringSecurityUtils::OAuth2AccessDeniedHandler.handle(path_rule, security_context)
       else
-        # XXX: something better here
         raise 'no access-denied-handler found'
       end
 
@@ -123,7 +122,6 @@ class ApplicationController < Sinatra::Base
           type = if type_string == 'basic'
             :basic
           elsif type_string =~ /^oauth2/
-            # TODO: flesh this out to differentiate user/client auth
             :oauth2
           else
             nil
