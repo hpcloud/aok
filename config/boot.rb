@@ -12,7 +12,6 @@ Bundler.require(:default)
   lib/omniauth/strategies/identity
   lib/omniauth/form
   lib/active_record_session_store
-  lib/active_record_openid_store/lib/openid_ar_store
   lib/database_reconnect
   lib/generic_error_handling
   lib/secure_token
@@ -29,7 +28,6 @@ Bundler.require(:default)
   controllers/login_endpoint
   controllers/root_controller
   controllers/oauth_controller
-  controllers/openid_controller
   controllers/users_controller
   controllers/user_tokens_controller
   controllers/groups_controller
