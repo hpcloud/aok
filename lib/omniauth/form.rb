@@ -27,7 +27,7 @@ module OmniAuth
     end
 
     def label_field(text, target)
-      # @html << "\n<div class='form-group'><label class='col-lg-2 control-label' for='#{target}'>#{text}:</label>"
+      @html << "\n<div class='form-group'><label class='col-lg-2 control-label' for='#{target}'>#{text}</label>"
       self
     end
 
