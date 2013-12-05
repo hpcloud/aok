@@ -14,6 +14,7 @@ module UaaSpringSecurityUtils
     ROLE_ENFORCEMENT  = /ROLE_([^,]+)|hasRole\('([^,]+)'\)/
     SELF_ENFORCEMENT  = /user=self/
     FULL_AUTHENTICATION = /IS_AUTHENTICATED_FULLY|isFullyAuthenticated\(\)/
+    ANONYMOUS = /IS_AUTHENTICATED_ANONYMOUSLY|isAnonymous\(\)/
     MODE_UNANIMOUS = "org.springframework.security.access.vote.UnanimousBased"
     MODE_AFFIRMATIVE = "org.springframework.security.access.vote.AffirmativeBased"
 
@@ -112,6 +113,12 @@ module UaaSpringSecurityUtils
           votes << vote
         end
 
+        if requires_anonymous?(intercept.access)
+          vote = true
+          logger.debug "Requires anonymous authentication. Voting #{vote}"
+          votes << vote
+        end
+
         # user=self
         if requires_self?(intercept.access)
           vote = security_context.identity && security_context.identity.guid == subject
@@ -172,6 +179,10 @@ module UaaSpringSecurityUtils
 
     def requires_full_authentication? access
       access =~ FULL_AUTHENTICATION
+    end
+
+    def requires_anonymous? access
+      access =~ ANONYMOUS
     end
 
     def requires_self? access

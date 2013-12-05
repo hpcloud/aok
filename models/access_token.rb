@@ -2,7 +2,7 @@ class AccessToken < ActiveRecord::Base
   include Oauth2Token
   include Aok::ScopesShoehorn
   self.default_lifetime = 24.hours
-  belongs_to :refresh_token
+  belongs_to :refresh_token, :dependent => :delete
 
   before_validation :make_token, :on => :create
 

@@ -2,6 +2,15 @@ class OauthController < ApplicationController
   # This is needed in order to process direct_login in this controller
   include LoginEndpoint
 
+  # AOK-only endpoint
+  # delete the current token
+  delete '/token' do
+    authenticate!
+    result = security_context.token.destroy
+    logger.debug(result ? "Token destroyed" : "Token could not be destroyed successfully :-(")
+    session.destroy
+    204
+  end
 
   # Client Obtains Token
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#client-obtains-token-post-oauthtoken

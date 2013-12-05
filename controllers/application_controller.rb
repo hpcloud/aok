@@ -71,6 +71,7 @@ class ApplicationController < Sinatra::Base
   end
 
   helpers do
+    WHITELIST = /\A\/uaa((\/?)|(\/oauth\/uaa\/login\.do)|(\/logout.do)|(\/oauth\/authorize))\z/
     def check_security
       path_rule = settings.path_rules.match_path(request)
       # logger.debug "Matched path: #{path_rule.to_s}"
@@ -81,6 +82,7 @@ class ApplicationController < Sinatra::Base
 
       if !path_rule.security?
         # no security! whee!
+        logger.debug "No security for path #{request.path}"
         return
       end
 
@@ -95,11 +97,19 @@ class ApplicationController < Sinatra::Base
         return
       end
 
-      # everything from here on is failure-handling
       if path_rule['access-denied-page']
-        logger.debug "Should redirect to #{path_rule['access-denied-page'].inspect} for access denial"
-        return
+        # Whitelisting a couple paths that have their own auth
+        if request.path =~ WHITELIST
+          logger.debug "Path #{request.path} whitelisted..."
+          return
+        end
+        logger.debug "#{request.path} NOT whitelisted..."
+        logger.debug "Access denied page: #{path_rule['access-denied-page'].inspect} for access denial"
+        # XXX Not really sure what is supposed to happen here. Redirecting to / causes a loop
+        raise Aok::Errors::AccessDenied.new('You are not allowed to access this resource.')
       end
+
+      # everything from here on is failure-handling
       handler = path_rule['access-denied-handler']['class']
       logger.debug "Should use #{handler.inspect} to handle denial"
       case handler
