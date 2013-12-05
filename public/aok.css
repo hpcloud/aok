@@ -49,4 +49,5 @@ body {
     font-size: 16px;
     margin-top: 5px;
     padding-left: 0 !important;
+    float: none !important;
 }

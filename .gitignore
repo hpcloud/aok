@@ -10,3 +10,5 @@ vendor/
 HEAD
 STDOUT
 STDERR
+
+.idea/
