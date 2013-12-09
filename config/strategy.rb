@@ -45,6 +45,7 @@ module Aok
         :builtin => {
         },
         :ldap => {
+          :id => :username
         },
         :developer => {
         }
