@@ -71,7 +71,7 @@ class ApplicationController < Sinatra::Base
   end
 
   helpers do
-    WHITELIST = /\A\/uaa((\/?)|(\/oauth\/uaa\/login\.do)|(\/logout.do)|(\/oauth\/authorize))\z/
+    WHITELIST = /\A\/uaa((\/?)|(\/oauth\/uaa\/login\.do)|(\/logout.do)|(\/oauth\/authorize)|(\/auth\/failure))\z/
     def check_security
       path_rule = settings.path_rules.match_path(request)
       # logger.debug "Matched path: #{path_rule.to_s}"
