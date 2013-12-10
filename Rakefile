@@ -84,7 +84,7 @@ end
 
 namespace :test do
   desc "Run the java integration tests from the UAA project."
-  task :integration do
+  task :integration => :truststore do
     Dir.chdir '../uaa'
     `rm -rf uaa/target/surefire-reports`
     require 'pty'
@@ -147,9 +147,41 @@ namespace :test do
   task :setup => :config do
     require 'kato/config'
     require 'yaml'
+
+    # set up kato config
     config_file = File.join(File.dirname(__FILE__), 'test', 'test_config.yml')
     config = YAML.load_file(config_file)
     old_config = Kato::Config.get("aok", '/')
+    unless File.exist?('old_config.yml')
+      File.open('old_config.yml', 'w+') {|f| f.puts(old_config.to_yaml)}
+    end
     Kato::Config.set("aok", "/", old_config.deep_merge(config))
+
+    # fix ssl cert
+    # http://bugs.activestate.com/show_bug.cgi?id=102044
+    puts `sudo sed -i 's/\\/CN=\*\.\$DOMAIN\\/CN=\$DOMAIN/\\/CN=\*\.\$DOMAIN/' /usr/bin/stackato-regenerate-ssl-cert`
+    hostname = `hostname`.chomp
+    puts `sudo /usr/bin/stackato-regenerate-ssl-cert #{hostname}.local`
+
+    # restart kato for cert/config changes to take effect
+    require 'pty'
+    cmd = "kato restart"
+    begin
+      PTY.spawn( cmd ) do |stdin, stdout, pid|
+        begin
+          stdin.each { |line| print line }
+        rescue Errno::EIO
+          puts "Errno:EIO error, but this probably just means " +
+                "that the process has finished giving output"
+        end
+      end
+    rescue PTY::ChildExited
+      puts "The child process exited!"
+    end
+  end
+
+  desc "Set up java truststore for tests"
+  task :truststore do
+    `yes yes | make truststore`
   end
 end
