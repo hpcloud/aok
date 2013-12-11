@@ -2,16 +2,18 @@
 # authorities that an Identity has, and in turn affects what scopes they
 # may be granted on oauth2 tokens.
 class Group < ActiveRecord::Base
-  has_and_belongs_to_many :identities
+  has_and_belongs_to_many :identities, :uniq => true
   has_and_belongs_to_many :groups,
     :foreign_key => "group_a_id",
     :association_foreign_key => "group_b_id",
-    :before_add => :no_circular_groups
+    :before_add => :no_circular_groups,
+    :uniq => true
   has_and_belongs_to_many :parent_groups,
     :join_table => "groups_groups",
     :class_name => "Group",
     :foreign_key => "group_b_id",
-    :association_foreign_key => "group_a_id"
+    :association_foreign_key => "group_a_id",
+    :uniq => true
   before_validation do
     self.guid ||= SecureRandom.uuid
   end

@@ -32,7 +32,11 @@ class GroupsController < ApplicationController
       if user['operation'] && user['operation'].downcase == 'delete'
         group.identities.delete(identity)
       else
-        group.identities << identity
+        begin
+          group.identities << identity
+        rescue ActiveRecord::RecordNotUnique
+          # Already have this one. Ignore.
+        end
       end
     end
 
@@ -95,8 +99,8 @@ class GroupsController < ApplicationController
   def set_group_details group, group_details
     group.name = group_details['displayName']
     if group_details['members']
-      group.identities = []
-      group.groups = []
+      identities = []
+      groups = []
       group_details['members'].each do |member_hash|
         case member_hash['type']
         when 'GROUP'
@@ -104,17 +108,19 @@ class GroupsController < ApplicationController
           if g.nil?
             raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
           end
-          group.groups << g
+          groups << g
         when 'USER', nil
           i = Identity.find_by_guid member_hash['value']
           if i.nil?
             raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
           end
-          group.identities << i
+          identities << i
         else
           raise Aok::Errors::ScimGroupInvalid.new("Invalid group: Group member type #{member_hash['type'].inspect} not supported.")
         end
       end
+      group.groups = groups.uniq
+      group.identities = identities.uniq
     end
     return group
   end
