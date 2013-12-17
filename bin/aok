@@ -9,7 +9,7 @@ app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
 
 EM.run do
   bind_address = Kato::Local::Node.get_local_node_id
-  server = Thin::Server.new(bind_address, AppConfig[:port])
+  server = Thin::Server.new(bind_address, AppConfig[:port], :signals => false)
 
   ENV['RACK_ENV'] = 'production'
   server.app = app
