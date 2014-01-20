@@ -49,7 +49,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   end
 
   def email=(val)
-    write_attribute :email, val.strip.downcase
+    write_attribute :email, val.kind_of?(String) ? val.strip.downcase : val
   end
 
   def authorities_list
