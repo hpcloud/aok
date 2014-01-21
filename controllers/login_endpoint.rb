@@ -30,8 +30,10 @@ module LoginEndpoint
           config_admin = AppConfig[:strategy][:ldap][:admin_user]
           if config_admin && username.downcase == config_admin.downcase
             admin_group = Group.find_by_name!('cloud_controller.admin')
-            user.groups << admin_group
-            user.save!
+            unless user.groups.include? admin_group
+              user.groups << admin_group
+              user.save!
+            end
           end
         end
       end
