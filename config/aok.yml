@@ -28,7 +28,7 @@ strategy:
     # email is the LDAP attribute containing the user's fully qualified
     # email address. An email address attribute is necessary for AOK to
     # work properly with the cloud controller. This may be a scalar
-    # attribute or an array of attributes to search. Tbe default is
+    # attribute or an array of attributes to search. The default is
     # shown. The first non-null attribute will be used (AOK will not
     # validate that this is an email address).
     email:
@@ -65,6 +65,19 @@ strategy:
     # familiar with these authentication methods, please just avoid them.
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
+
+    # group_query and group_attribute are necessary to utilize authn/authz
+    # based on LDAP groups in AOK. Specifying group_query will cause AOK to
+    # perform an additional search on the LDAP server after a user has
+    # successfully authenticated in order to fetch their group membership.
+    # %{username} will be replaced with the value of the field specified by
+    # uid. %{dn} will be replaced by the dn of the authenticated user. If using
+    # this option, you must also specify group_attribute. Set group_query to nil
+    # or false to disable this additional query.
+    # group_attribute is the LDAP attribute to extract from the entries returned
+    # by group_query.
+    # group_query: (&(objectClass=posixGroup)(memberUid=%{username}))
+    # group_attribute: cn
 
   #------------------------------------------------------------------------------
   # 3) `google` Your "Google Apps for Business" domain
