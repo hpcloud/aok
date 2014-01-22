@@ -7,10 +7,27 @@ module LoginEndpoint
       email = auth_hash[:info][:email]
       user = env['omniauth.identity']
       if user.nil?
-        # using something other than the Identity strategy (like LDAP)
+        # using something other than the Identity strategy (like LDAP)  
         info = env['omniauth.auth'][:info]
         username = info[:nickname]
         if env['omniauth.auth'][:provider] =='ldap'
+
+          allowed_groups = AppConfig[:strategy][:ldap][:allowed_groups]
+          if allowed_groups && allowed_groups.kind_of?(Array) && allowed_groups.length > 0
+
+            users_groups = env['omniauth.auth'][:extra][:groups]
+            if users_groups.nil? 
+              logger.error "LDAP group security appears to be configured as allowed_groups has been set but no groups 
+                returned for user, check group_query and group_attribute config. #{env['omniauth.auth'].inspect}"
+              raise Aok::Errors::AccessDenied.new('Unauthorized via group security rules')
+            end
+
+            has_access_via_group = allowed_groups.index { |group| users_groups.include?(group) }
+            if has_access_via_group == nil
+              raise Aok::Errors::AccessDenied.new('Unauthorized via group security rules')
+            end
+          end
+
           username = env['omniauth.auth'][:extra][:raw_info][AppConfig[:strategy][:ldap][:uid]]
           username = username.kind_of?(Array) ? username.first : username
         end

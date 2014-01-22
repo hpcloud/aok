@@ -24,7 +24,7 @@ strategy:
     # uid is the LDAP attribute name for the user name in the login
     # form. Typically AD would be 'sAMAccountName' or 'UserPrincipalName',
     # while OpenLDAP is 'uid'.
-    uid: 'sAMAccountName'
+    uid: 'uid'
     # email is the LDAP attribute containing the user's fully qualified
     # email address. An email address attribute is necessary for AOK to
     # work properly with the cloud controller. This may be a scalar
@@ -78,6 +78,10 @@ strategy:
     # by group_query.
     # group_query: (&(objectClass=posixGroup)(memberUid=%{username}))
     # group_attribute: cn
+    #
+    # if group_query and group_attribute are configured, specify the names of groups
+    # here that are allowed to access Stackato
+    # allowed_groups: nil
 
   #------------------------------------------------------------------------------
   # 3) `google` Your "Google Apps for Business" domain
