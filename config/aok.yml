@@ -24,7 +24,7 @@ strategy:
     # uid is the LDAP attribute name for the user name in the login
     # form. Typically AD would be 'sAMAccountName' or 'UserPrincipalName',
     # while OpenLDAP is 'uid'.
-    uid: 'uid'
+    uid: 'sAMAccountName'
     # email is the LDAP attribute containing the user's fully qualified
     # email address. An email address attribute is necessary for AOK to
     # work properly with the cloud controller. This may be a scalar
