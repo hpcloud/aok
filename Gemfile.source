@@ -10,9 +10,15 @@ group :development do
   gem 'rb-inotify'
 end
 
+gem 'rspec'
+
 group :test do
-  gem 'rspec'
+  gem 'simplecov'
+  gem 'simplecov-rcov'
+  gem 'webmock'
+  gem 'ci_reporter'
   gem 'rack-test'
+  gem 'parallel_tests'
 end
 
 # OpenID support
