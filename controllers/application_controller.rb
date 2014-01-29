@@ -27,7 +27,7 @@ class ApplicationController < Sinatra::Base
     :httponly => true
   }
 
-  configure :development do
+  configure :development, :test do
     # The normal Sinatra logger
     set :logging, Logger::DEBUG
 

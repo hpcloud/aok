@@ -6,10 +6,11 @@ end
 
 describe 'LoginEndpoint Controller' do
 
-  get '/'
-  puts "#{last_response.body}"
 
   it "fails yo" do
+    get '/'
+    puts "#{last_response.body}"
+
     2.should == 1
   end
 end

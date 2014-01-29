@@ -10,7 +10,15 @@ def check_config hash
 end
 
 begin
-  AppConfig = Kato::Config.get("aok").symbolize_keys
+  conf = Kato::Config.get("aok").symbolize_keys
+
+  if ENV['RACK_ENV'] == 'test'
+    require 'active_support/core_ext/hash/deep_merge'
+    $test_config ||= {}
+    conf.deep_merge!($test_config)
+  end
+  AppConfig = conf
+
   check_config(AppConfig)
   CCConfig = Kato::Config.get("cloud_controller_ng").symbolize_keys
 

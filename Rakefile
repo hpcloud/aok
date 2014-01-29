@@ -78,9 +78,9 @@ task :config do
   puts "Using #{ENV['RACK_ENV'].inspect} environment"
 end
 
-# require 'rspec/core/rake_task'
-# desc "run specs"
-# RSpec::Core::RakeTask.new
+require 'rspec/core/rake_task'
+desc "run specs"
+RSpec::Core::RakeTask.new
 
 namespace :test do
   desc "Run the java integration tests from the UAA project."
