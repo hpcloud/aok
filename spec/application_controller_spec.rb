@@ -5,9 +5,9 @@ def app
 end
 
 describe 'Application Controller' do
-  it "says AOK!" do
+  it "says go away!" do
     get '/'
-    last_response.should be_ok
-    last_response.body.should == '<h1>AOK!</h1>'
+    last_response.status.should eq(403)
+    last_response.body.should eq("{\"error\":\"access_denied\",\"error_description\":\"You are not allowed to access this resource.\"}")
   end
 end

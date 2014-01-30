@@ -10,7 +10,7 @@ module LoginEndpoint
         # using something other than the Identity strategy (like LDAP)  
         info = env['omniauth.auth'][:info]
         username = info[:nickname]
-        if env['omniauth.auth'][:provider] =='ldap'
+        if env['omniauth.auth'][:provider] == 'ldap'
 
           allowed_groups = AppConfig[:strategy][:ldap][:allowed_groups]
           if allowed_groups && allowed_groups.kind_of?(Array) && allowed_groups.length > 0
@@ -32,7 +32,7 @@ module LoginEndpoint
           username = username.kind_of?(Array) ? username.first : username
         end
         if username.nil?
-          raise "Couldn't find a username to user for this user! #{env['omniauth.auth'].inspect}"
+          raise "Couldn't find a username to use for this user! #{env['omniauth.auth'].inspect}"
         end
         user = Identity.find_by_username(username)
         if user.nil?
@@ -43,7 +43,7 @@ module LoginEndpoint
             family_name: info[:last_name],
             )
         end
-        if env['omniauth.auth'][:provider] =='ldap'
+        if env['omniauth.auth'][:provider] == 'ldap'
           config_admin = AppConfig[:strategy][:ldap][:admin_user]
           if config_admin && username.downcase == config_admin.downcase
             admin_group = Group.find_by_name!('cloud_controller.admin')

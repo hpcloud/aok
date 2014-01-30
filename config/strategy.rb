@@ -147,6 +147,13 @@ module Aok
         def direct_strategy_config
           STRATEGIES_DIRECT[AppConfig[:strategy][:use].to_sym]
         end
+
+        # test method
+        def remove
+          strategy = ApplicationController.settings.strategy.to_s
+          klass = OmniAuth::Strategies.const_get("#{OmniAuth::Utils.camelize(strategy)}")
+          ApplicationController.instance_variable_get('@middleware').delete_if{|m|m.first == klass}
+        end
       end
 
     end
