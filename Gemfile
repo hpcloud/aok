@@ -19,12 +19,13 @@ gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
 gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
+gem 'ci_reporter'       , :groups => [:test]
 gem 'coercible'         ,    '1.0.0'
 gem 'colored'           ,      '1.2'
 gem 'cookiejar'         ,    '0.3.0'
 gem 'daemons'           ,    '1.1.9'
 gem 'descendants_tracker',    '0.0.3'
-gem 'diff-lcs'          ,    '1.2.5', :groups => [:test]
+gem 'diff-lcs'          ,    '1.2.5'
 gem 'docopt'            ,    '0.5.0'
 gem 'em-http-request'   ,    '1.1.2'
 gem 'em-socksify'       ,    '0.3.0'
@@ -58,6 +59,7 @@ gem 'omniauth-google-apps',    '0.0.2'
 gem 'omniauth-identity' ,    '1.1.1'
 gem 'omniauth-ldap'     ,    '1.0.4', :github => 'ActiveState/omniauth-ldap'
 gem 'omniauth-openid'   ,    '1.0.1'
+gem 'parallel_tests'    , :groups => [:test]
 gem 'pg'                ,   '0.14.1'
 gem 'posix-spawn'       ,    '0.3.8'
 gem 'pyu-ruby-sasl'     ,  '0.0.3.3'
@@ -74,15 +76,17 @@ gem 'rb-inotify'        ,    '0.9.3', :groups => [:development]
 gem 'rb-kqueue'         ,    '0.2.0', :groups => [:development]
 gem 'redis'             ,    '3.0.6'
 gem 'rerun'             ,    '0.8.2', :groups => [:development]
-gem 'rspec'             ,   '2.14.1', :groups => [:test]
-gem 'rspec-core'        ,   '2.14.7', :groups => [:test]
-gem 'rspec-expectations',   '2.14.4', :groups => [:test]
-gem 'rspec-mocks'       ,   '2.14.4', :groups => [:test]
+gem 'rspec'             ,   '2.14.1'
+gem 'rspec-core'        ,   '2.14.7'
+gem 'rspec-expectations',   '2.14.4'
+gem 'rspec-mocks'       ,   '2.14.4'
 gem 'ruby-openid'       ,    '2.3.0'
 gem 'ruby-openid-apps-discovery',    '1.2.0'
 gem 'ruby-termios'      ,    '0.9.6'
 gem 'rubyntlm'          ,    '0.1.1'
 gem 'scim-query-filter-parser',    '0.0.4', :require => 'scim/query/filter/parser'
+gem 'simplecov'         , :groups => [:test]
+gem 'simplecov-rcov'    , :groups => [:test]
 gem 'sinatra'           ,    '1.3.6', :require => 'sinatra/base'
 gem 'sqlite3'           ,    '1.3.7'
 gem 'squash_ruby'       ,    '1.4.0'
@@ -96,6 +100,7 @@ gem 'vcap-concurrency'  ,    '0.1.0'
 gem 'vcap_common'       ,    '2.2.0', :require => ['cf/registrar','vcap/common','vcap/component', 'json_message'], :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
 gem 'virtus'            ,    '1.0.1'
 gem 'vmstat'            ,    '2.1.0'
+gem 'webmock'           , :groups => [:test]
 gem 'xmlparser'         ,  '0.7.2.1'
 gem 'yajl-ruby'         ,    '1.1.0'
 gem 'zxcvbn-ruby'       ,    '0.0.2', :require => 'zxcvbn'
