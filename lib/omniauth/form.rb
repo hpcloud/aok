@@ -51,7 +51,7 @@ module OmniAuth
 
     def button(text)
       @with_custom_button = true
-      @html << "\n" << '<button class="signin-button btn btn-lg btn-primary btn-block" type="submit" data-loading-text="Signing in...">"' << text << '"</button>'
+      @html << "\n" << '<button class="signin-button btn btn-lg btn-primary btn-block" type="submit" data-loading-text="Signing in...">' << text << '</button>'
     end
 
     def html(html)
