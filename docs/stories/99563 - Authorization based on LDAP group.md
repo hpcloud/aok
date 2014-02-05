@@ -1,6 +1,6 @@
 ## Authorization Based on LDAP Group
 
-AOK now supports restricting Stackato access to users that are members of certains group(s).
+AOK now supports restricting Stackato access to users who are members of certain LDAP group(s).
 
 When configuring the LDAP strategy there are three new settings that must be set to enable this functionality.
 

@@ -75,13 +75,26 @@ strategy:
     # this option, you must also specify group_attribute. Set group_query to nil
     # or false to disable this additional query.
     # group_attribute is the LDAP attribute to extract from the entries returned
-    # by group_query.
+    # by group_query. Values of this field are what the allowed_groups and
+    # admin_groups settings match against.
     # group_query: (&(objectClass=posixGroup)(memberUid=%{username}))
     # group_attribute: cn
     #
-    # if group_query and group_attribute are configured, specify the names of groups
-    # here that are allowed to access Stackato
-    # allowed_groups: nil
+    # If group_query and group_attribute are configured, specify the names of groups
+    # here that are allowed to access Stackato. This should be an array of string 
+    # group names.
+    # allowed_groups:
+    #  - friends
+    #  - frenemies
+    #
+    # If group_query and group_attribute are configured, specify the names of groups
+    # whose members should be granted admin privilege. The user will be granted admin
+    # the first time they log in while a member of a listed LDAP group, and will 
+    # remain an admin even if they are later removed from the LDAP group. This 
+    # should be an array of Strings.
+    # admin_groups:
+    #  - managers
+    #  - sysadmins
 
   #------------------------------------------------------------------------------
   # 3) `google` Your "Google Apps for Business" domain
