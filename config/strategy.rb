@@ -11,7 +11,6 @@ module Aok
             env["aok.block"].call(nil)
             return
           end
-          return 403 if env["aok.no_openid"] # legacy login
           redirect_to_failure
         end
 
@@ -27,28 +26,17 @@ module Aok
       end
       OmniAuth.config.on_failure = Aok::Config::Strategy::FailureEndpoint
 
-      # All valid strategies
-      STRATEGIES = %W{
-        builtin
-        ldap
-        google_apps
-        developer
-      }
+      # All valid strategies-- individual strategies will add themselves to this
+      STRATEGIES = []
 
       # Strategies for which we are capable of doing legacy client login with name/pw,
       # and the corresponding mapping of field names from id/secret if needed
+      # individual strategies will add themselves to this
       STRATEGIES_DIRECT = {
         :default => {
           :id => :auth_key,
           :secret => :password
         },
-        :builtin => {
-        },
-        :ldap => {
-          :id => :username
-        },
-        :developer => {
-        }
       }
 
       DEFAULT_OPTIONS = {
@@ -62,74 +50,12 @@ module Aok
             abort "AOK cannot start. Strategy was #{AppConfig[:strategy][:use].inspect} -- not a valid strategy."
           end
 
-          method(AppConfig[:strategy][:use]).call
+          strategy_klass.setup
 
           unless ApplicationController.strategy
             abort "AOK cannot start. No authentication strategy set."
           end
           puts "Initialized #{ApplicationController.strategy} authentication strategy."
-        end
-
-        def builtin
-          require 'omniauth-identity'
-          ApplicationController.use OmniAuth::Strategies::Identity, DEFAULT_OPTIONS
-          ApplicationController.set :strategy, :identity
-        end
-
-        def ldap
-          require 'omniauth-ldap'
-          options = DEFAULT_OPTIONS.merge(AppConfig[:strategy][:ldap])
-
-          if options.key? :name_proc
-            proc = options[:name_proc]
-            begin
-              proc = eval(proc) unless proc.kind_of? Proc
-            rescue Exception => e
-              abort "#{e.inspect} raised when trying to eval ldap name_proc"
-            end
-            abort "ldap name_proc must be a Ruby Proc" unless proc.kind_of? Proc
-            unless proc.arity == 1
-              abort "ldap name_proc must accept exactly one argument."
-            end
-            begin
-              proc.call('foo')
-            rescue Exception => e
-              abort "ldap name_proc raised #{e.inspect} in a simple test (name_proc.call('foo')). The proc must accept arbitrary user input safely. Please fix."
-            end
-            options[:name_proc] = proc
-          end
-
-          config = OmniAuth::Strategies::LDAP.class_variable_get '@@config'
-          if options.key? :email
-            config['email'] = options[:email]
-          end
-
-          ApplicationController.use OmniAuth::Strategies::LDAP, options
-          ApplicationController.set :strategy, :ldap
-        end
-
-        def google_apps
-          require 'omniauth-google-apps'
-          options = DEFAULT_OPTIONS.merge(AppConfig[:strategy][:google_apps])
-          [:domain].each do |option_key|
-            unless options.key?(option_key) && !options[option_key].empty?
-              abort "Google login requires that the `#{option_key}` configuration option is set."
-            end
-          end
-
-          ApplicationController.use OmniAuth::Builder do
-            provider :google_apps, :domain => options[:domain]
-          end
-          ApplicationController.set :strategy, :google_apps
-
-          OpenID.fetcher.ca_file = "/etc/ssl/certs/ca-certificates.crt"
-        end
-
-        def developer
-          options = DEFAULT_OPTIONS.merge({:fields => [:username]})
-          puts "WARNING Developer strategy is wide-open access. Completely insecure!"
-          ApplicationController.use OmniAuth::Strategies::Developer, options
-          ApplicationController.set :strategy, :developer
         end
 
         def direct_login_enabled?
@@ -154,8 +80,17 @@ module Aok
           klass = OmniAuth::Strategies.const_get("#{OmniAuth::Utils.camelize(strategy)}")
           ApplicationController.instance_variable_get('@middleware').delete_if{|m|m.first == klass}
         end
+
+        def strategy_klass
+          const_get(OmniAuth::Utils.camelize(AppConfig[:strategy][:use]))
+        end
+
       end
 
     end
   end
+end
+
+%W{base ldap google_apps builtin developer}.each do |l|
+  require_relative "strategy/#{l}"
 end

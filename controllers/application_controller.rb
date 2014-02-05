@@ -236,7 +236,6 @@ class ApplicationController < Sinatra::Base
         "REQUEST_URI" => path,
         "rack.input" => form_io,
         "CONTENT_TYPE" => "application/x-www-form-urlencoded",
-        "aok.no_openid" => true, # just return a status code, no openid redirects
         "aok.block" => block # call the block (if provided) with the login result
       )
 

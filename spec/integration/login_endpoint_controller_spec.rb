@@ -9,7 +9,8 @@ describe 'LoginEndpoint Controller' do
   context "with LDAP strategy" do
     before(:all) do
       Aok::Config::Strategy.remove
-      Aok::Config::Strategy.ldap
+      AppConfig[:strategy][:use] = :ldap
+      Aok::Config::Strategy::LDAP.setup
       OmniAuth.config.test_mode = true
     end
 
@@ -35,6 +36,7 @@ describe 'LoginEndpoint Controller' do
         }
       }
 
+      AppConfig[:strategy][:ldap][:allowed_groups] = nil
 
       post '/uaa/login.do'
       last_response.should be_redirect
@@ -127,6 +129,33 @@ describe 'LoginEndpoint Controller' do
       last_response.should be_redirect
       follow_redirect!
       last_request.url.should eq("http://example.org/uaa")
+    end
+
+
+    it "grants admin when admin group present" do
+      OmniAuth.config.mock_auth[:default] = {
+        :provider => 'ldap',
+        :info => {
+          :email => 'andrewc@activestate.com',
+          :nickname => 'andrewc'
+        },
+        :extra => {
+          :raw_info => {
+            AppConfig[:strategy][:ldap][:uid] => 'andrewc'
+          },
+          :groups => %W{friends}
+        }
+      }
+
+      AppConfig[:strategy][:ldap][:admin_groups] = %W{friends activators}
+
+      post '/uaa/login.do'
+      last_response.should be_redirect
+      follow_redirect!
+      last_request.url.should eq("http://example.org/uaa")
+
+      user = Identity.find_by_username(session[:auth_username])
+      user.should be_admin
     end
 
 
