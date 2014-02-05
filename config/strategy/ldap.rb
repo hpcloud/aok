@@ -33,6 +33,14 @@ module ::Aok; module Config; module Strategy
         config['email'] = options[:email]
       end
 
+      [:allowed_groups, :admin_groups].each do |key|
+        if options.key? key
+          unless options[key].nil? or options[key].kind_of?(Array)
+            abort "The LDAP strategy option #{key} should be an Array[String], not #{options[key].class}"
+          end
+        end
+      end
+
       ApplicationController.use OmniAuth::Strategies::LDAP, options
       ApplicationController.set :strategy, :ldap
     end
