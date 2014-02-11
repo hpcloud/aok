@@ -146,7 +146,7 @@ oauth:
       scope: uaa.none
     stackato_router:
       secret: routersecret
-      authorized_grant_types: client_credentials
+      authorized_grant_types: authorization_code
       authorities: uaa.none
       scope: scim.me
   users:

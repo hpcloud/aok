@@ -11,6 +11,9 @@ EM.run do
   bind_address = Kato::Local::Node.get_local_node_id
   server = Thin::Server.new(bind_address, AppConfig[:port], :signals => false)
 
+  # Set default time zone to UTC to prevent ActiveRecord from converting times to local timezone before storing
+  ActiveRecord::Base.default_timezone = :utc
+
   ENV['RACK_ENV'] = 'production'
   server.app = app
   # The routers proxying to us handle killing inactive connections. Set an upper limit

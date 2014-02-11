@@ -33,6 +33,9 @@ module Oauth2Token
   private
 
   def setup
-    self.expires_at ||= self.default_lifetime.from_now
+    puts "self.expires_at #{self.expires_at}"
+    puts "self.default_lifetime.from_now.utc #{self.default_lifetime.from_now.utc}"
+    self.expires_at ||= self.default_lifetime.from_now.utc
+    puts "final self.expires_at #{self.expires_at}"
   end
 end

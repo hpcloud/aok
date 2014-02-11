@@ -32,6 +32,14 @@ class OauthController < ApplicationController
         end
       when :authorization_code
         code = AuthorizationCode.valid.find_by_token(req.code)
+
+        if code.blank?
+          puts "CODE NOT FOUND"
+        end
+        puts "CODE: #{code}"
+
+
+
         req.invalid_grant! if code.blank? || code.redirect_uri != req.redirect_uri
         scopes = validate_scope(req, client, code.identity)
         resp.access_token = code.access_token(scopes).to_bearer_token(:with_refresh_token)
