@@ -157,13 +157,7 @@ namespace :test do
     end
     Kato::Config.set("aok", "/", old_config.deep_merge(config))
 
-    # fix ssl cert
-    # http://bugs.activestate.com/show_bug.cgi?id=102044
-    puts `sudo sed -i 's/\\/CN=\*\.\$DOMAIN\\/CN=\$DOMAIN/\\/CN=\*\.\$DOMAIN/' /usr/bin/stackato-regenerate-ssl-cert`
-    hostname = `hostname`.chomp
-    puts `sudo /usr/bin/stackato-regenerate-ssl-cert #{hostname}.local`
-
-    # restart kato for cert/config changes to take effect
+    # restart kato for config changes to take effect
     require 'pty'
     cmd = "kato restart"
     begin
