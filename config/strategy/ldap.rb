@@ -95,7 +95,7 @@ module ::Aok; module Config; module Strategy
     end
 
     def auto_remove_user_from_admin_group user
-      unless !user.auto_admin
+      if user.auto_admin
         admin_group = Group.find_by_name!('cloud_controller.admin')
         if user.groups.include? admin_group
           user.groups.delete(admin_group)
