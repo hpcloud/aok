@@ -142,13 +142,8 @@ oauth:
     cloud_controller:
       secret: cloudcontrollersecret
       authorized_grant_types: client_credentials
-      authorities: scim.read,scim.write
+      authorities: scim.read,scim.write,clients.read,clients.write
       scope: uaa.none
-    stackato_router:
-      secret: routersecret
-      authorized_grant_types: authorization_code
-      authorities: uaa.none
-      scope: scim.me
   users:
     default_authorities:
         - openid
