@@ -45,9 +45,19 @@ module ::Aok; module Config; module Strategy
       ApplicationController.set :strategy, :ldap
     end
 
+    def valid_group_data?(group_data)
+      group_data && group_data.kind_of?(Array) && group_data.length > 0
+    end
+
     def filter_callback(the_env)
       allowed_groups = AppConfig[:strategy][:ldap][:allowed_groups]
-      if allowed_groups && allowed_groups.kind_of?(Array) && allowed_groups.length > 0
+      admin_groups = AppConfig[:strategy][:ldap][:admin_groups]
+
+      if valid_group_data? allowed_groups
+        if valid_group_data? admin_groups
+          allowed_groups.concat(admin_groups)
+        end 
+
         has_access_via_group = groups_intersect?(allowed_groups, users_groups(the_env))
         unless has_access_via_group
           raise Aok::Errors::AccessDenied.new('Unauthorized via group security rules')
@@ -64,22 +74,35 @@ module ::Aok; module Config; module Strategy
       config_admin = AppConfig[:strategy][:ldap][:admin_user]
 
       if config_admin && user.username.downcase == config_admin.downcase
-        add_user_to_admin_group user
+        auto_add_user_to_admin_group user
       end
 
       admin_groups = AppConfig[:strategy][:ldap][:admin_groups]
-      if admin_groups && admin_groups.kind_of?(Array) && admin_groups.length > 0
+      if valid_group_data? admin_groups
         has_admin_via_group = groups_intersect?(admin_groups, users_groups(the_env))
-        add_user_to_admin_group(user) if has_admin_via_group
+        has_admin_via_group ? auto_add_user_to_admin_group(user) : auto_remove_user_from_admin_group(user)
       end
-
     end
 
-    def add_user_to_admin_group user
+    def auto_add_user_to_admin_group user
       admin_group = Group.find_by_name!('cloud_controller.admin')
       unless user.groups.include? admin_group
         user.groups << admin_group
+        user.auto_admin = true
         user.save!
+        logger.info "Automatically granted #{user.username} admin privileges due to configured LDAP admin group access rules."
+      end
+    end
+
+    def auto_remove_user_from_admin_group user
+      unless !user.auto_admin
+        admin_group = Group.find_by_name!('cloud_controller.admin')
+        if user.groups.include? admin_group
+          user.groups.delete(admin_group)
+          user.auto_admin = false
+          user.save!
+          logger.info "Automatically revoked admin privileges from #{user.username} due to configured LDAP admin group access rules."
+        end
       end
     end
 
