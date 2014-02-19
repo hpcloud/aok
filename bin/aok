@@ -35,7 +35,7 @@ EM.run do
 
   def registrar
     @registrar ||= Cf::Registrar.new(
-        :mbus => CCConfig[:message_bus_uri],
+        :mbus => CCConfig[:message_bus_servers].first,
         :host => Kato::Local::Node.get_local_node_id,
         :port => AppConfig[:port],
         :uri => CCConfig[:external_domain].sub(/^api/, 'aok'),
@@ -45,7 +45,7 @@ EM.run do
   end
 
   require "cf_message_bus/message_bus"
-  message_bus = CfMessageBus::MessageBus.new(:uri => CCConfig[:message_bus_uri], :logger => ApplicationController.logger)
+  message_bus = CfMessageBus::MessageBus.new(:uri => CCConfig[:message_bus_servers].first, :logger => ApplicationController.logger)
   register_component(message_bus)
   registrar.register_with_router
 
