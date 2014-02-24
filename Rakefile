@@ -96,8 +96,8 @@ namespace :test do
           # Do stuff with the output here. Just printing to show it works
           stdin.each { |line| print line }
         rescue Errno::EIO
-          puts "Errno:EIO error, but this probably just means " +
-                "that the process has finished giving output"
+          # puts "Errno:EIO error, but this probably just means " +
+          #       "that the process has finished giving output"
         end
       end
     rescue PTY::ChildExited
@@ -136,11 +136,19 @@ namespace :test do
     puts `ls -ltr #{target}`
   end
 
-  desc "Open a window with the integration test results failures (linux only)"
+  desc "Open a window with the integration test results failures"
   task :results do
+    viewer = ENV['DIRVIEWCMD'] || 'sub'
+    `which #{viewer}`
+    if $? != 0
+      puts "Command `#{viewer}` not found. Please set DIRVIEWCMD to a command " +
+           "capable of viewing a directory contents."
+      abort
+    end
+
     dir = '../uaa/uaa/target/surefire-reports'
     `grep  -L -E "<(failure|error|skipped)" #{dir}/* | xargs rm`
-    `sub -n #{dir}`
+    `#{viewer} -n #{dir}`
   end
 
   desc "Set up aok's config for testing. Insecure, not for production."
@@ -165,8 +173,8 @@ namespace :test do
         begin
           stdin.each { |line| print line }
         rescue Errno::EIO
-          puts "Errno:EIO error, but this probably just means " +
-                "that the process has finished giving output"
+          # puts "Errno:EIO error, but this probably just means " +
+          #       "that the process has finished giving output"
         end
       end
     rescue PTY::ChildExited
