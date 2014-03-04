@@ -66,6 +66,10 @@ module ::Aok; module Config; module Strategy
 
       # set username by modifying omniauth.auth in place
       username = the_env['omniauth.auth'][:extra][:raw_info][AppConfig[:strategy][:ldap][:uid]]
+      if AppConfig[:strategy][:ldap][:use_email_for_username]
+        email = the_env['omniauth.auth'][:info][:email]
+        username = email
+      end
       username = username.kind_of?(Array) ? username.first : username
       the_env['omniauth.auth'][:info][:nickname] = username
     end

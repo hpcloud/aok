@@ -66,6 +66,11 @@ strategy:
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
 
+    # This option will use the user's email address as their username in 
+    # Stackato, like Stackato 2.x did. This is helpful if importing data
+    # and users from Stackato 2.x.
+    # use_email_for_username: true
+
     # group_query and group_attribute are necessary to utilize authn/authz
     # based on LDAP groups in AOK. Specifying group_query will cause AOK to
     # perform an additional search on the LDAP server after a user has
