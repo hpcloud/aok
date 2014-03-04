@@ -66,6 +66,11 @@ strategy:
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
 
+    # This option will use the user's email address as their username in 
+    # Stackato, like Stackato 2.x did. This is helpful if importing data
+    # and users from Stackato 2.x.
+    # use_email_for_username: true
+
   #------------------------------------------------------------------------------
   # 3) `google` Your "Google Apps for Business" domain
   #------------------------------------------------------------------------------

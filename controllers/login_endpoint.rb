@@ -12,6 +12,7 @@ module LoginEndpoint
         username = info[:nickname]
         if env['omniauth.auth'][:provider] =='ldap'
           username = env['omniauth.auth'][:extra][:raw_info][AppConfig[:strategy][:ldap][:uid]]
+          username = email if AppConfig[:strategy][:ldap][:use_email_for_username]
           username = username.kind_of?(Array) ? username.first : username
         end
         if username.nil?
