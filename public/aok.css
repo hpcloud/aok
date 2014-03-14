@@ -1,7 +1,10 @@
 body {
-    padding-top: 80px;
-    padding-bottom: 40px;
     background-color: #eee;
+}
+
+.page_wrapper {
+    padding-top: 25px;
+    padding-bottom: 40px;
 }
 
 .form-signin {
