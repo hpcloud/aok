@@ -8,9 +8,9 @@ source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
-gem 'activemodel'       ,   '3.2.16'
-gem 'activerecord'      ,   '3.2.16', :require => 'active_record'
-gem 'activesupport'     ,   '3.2.16'
+gem 'activemodel'       ,   '3.2.17'
+gem 'activerecord'      ,   '3.2.17', :require => 'active_record'
+gem 'activesupport'     ,   '3.2.17'
 gem 'addressable'       ,    '2.3.5'
 gem 'arel'              ,    '3.0.3'
 gem 'attr_required'     ,    '0.0.5'

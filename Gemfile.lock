@@ -51,15 +51,15 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (3.2.16)
-      activesupport (= 3.2.16)
+    activemodel (3.2.17)
+      activesupport (= 3.2.17)
       builder (~> 3.0.0)
-    activerecord (3.2.16)
-      activemodel (= 3.2.16)
-      activesupport (= 3.2.16)
+    activerecord (3.2.17)
+      activemodel (= 3.2.17)
+      activesupport (= 3.2.17)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activesupport (3.2.16)
+    activesupport (3.2.17)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     addressable (2.3.5)
@@ -251,9 +251,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel (= 3.2.16)
-  activerecord (= 3.2.16)
-  activesupport (= 3.2.16)
+  activemodel (= 3.2.17)
+  activerecord (= 3.2.17)
+  activesupport (= 3.2.17)
   addressable (= 2.3.5)
   arel (= 3.0.3)
   attr_required (= 0.0.5)
