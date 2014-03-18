@@ -10,10 +10,10 @@ module LoginEndpoint
         # using something other than the Identity strategy (like LDAP)
         begin
           Aok::Config::Strategy.strategy_klass.filter_callback(env)
-        rescue => e
+        rescue Aok::Errors::AccessDenied => e
           logger.error "Authentication failure! #{e.class}, #{e.message}"
           failure_endpoint = OmniAuth::FailureEndpoint.new(env)
-          return redirect to("/uaa/auth/failure?message=invalid_credentials#{failure_endpoint.origin_query_param}#{failure_endpoint.strategy_name_query_param}"), 302
+          return redirect to("/uaa/auth/failure?message=unauthorized#{failure_endpoint.origin_query_param}#{failure_endpoint.strategy_name_query_param}"), 302
         end
 
         info = env['omniauth.auth'][:info]

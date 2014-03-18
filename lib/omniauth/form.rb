@@ -93,7 +93,7 @@ module OmniAuth
           <div class="container">
             <form id="login_form" class="form-signin" method='post' #{"action='#{options[:url]}' " if options[:url]}noValidate='noValidate'>
                 <h2 class="form-signin-heading">#{title}</h2>
-                <div id="invalid_credentials" class="alert alert-danger hide">Your attempt to sign in failed. Please try again.</div>
+                <div id="failed-login-alert" class="alert alert-danger hide">Your attempt to sign in failed. Please try again.</div>
 
       HTML
       self
