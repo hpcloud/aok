@@ -9,7 +9,7 @@ Settings = {
     setting_defaults: {
         product_name: 'Stackato',
         company_name: 'ActiveState Software',
-        vendor_version: '3.0',
+        vendor_version: '3.2',
         default_locale: 'en',
         product_logo_favicon_url: '/console/img/stackato_logo_favicon.png',
         product_logo_header_url: '/console/img/stackato_logo_header.png',
@@ -136,9 +136,11 @@ $().ready(function () {
         }
 
         var params = getParams();
-        if (params['message'] && (params['message'] == 'invalid_credentials')) {
-            console.log("FAILED LOGIN");
-            $('#invalid_credentials').removeClass('hide');
+        if (params['message']) {
+            if(params['message'] === 'unauthorized'){
+                $('#failed-login-alert').text("The administrator has not granted you access to " + settings.product_name + ".");
+            }
+            $('#failed-login-alert').removeClass('hide');
         }
     });
 });
