@@ -1,4 +1,5 @@
 module LoginEndpoint
+
   def self.included(base)
 
     # Internal Login
@@ -7,7 +8,13 @@ module LoginEndpoint
       user = env['omniauth.identity']
       if user.nil?
         # using something other than the Identity strategy (like LDAP)
-        Aok::Config::Strategy.strategy_klass.filter_callback(env)
+        begin
+          Aok::Config::Strategy.strategy_klass.filter_callback(env)
+        rescue => e
+          logger.error "Authentication failure! #{e.class}, #{e.message}"
+          failure_endpoint = OmniAuth::FailureEndpoint.new(env)
+          return redirect to("/uaa/auth/failure?message=invalid_credentials#{failure_endpoint.origin_query_param}#{failure_endpoint.strategy_name_query_param}"), 302
+        end
 
         info = env['omniauth.auth'][:info]
         username = info[:nickname]
@@ -26,7 +33,6 @@ module LoginEndpoint
         end
 
         Aok::Config::Strategy.strategy_klass.authorization_callback(env, user)
-
       end
 
       set_current_user(user)
