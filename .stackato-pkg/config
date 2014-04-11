@@ -13,6 +13,6 @@ PKG_ARCH="all"
 PKG_DESCR_SHORT="stackato-aok-ng"
 PKG_DESCR_LONG="Stackato authentication service."
 PKG_GITDESCRIBE=".pkg-gitdescribe"
-PKG_DEPENDS="stackato-rubies, postgresql-contrib, libpq-dev, libexpat1-dev, stackato-kato-core-ng-$KATO_GEM_VERSION (=auto)"
+PKG_DEPENDS="postgresql-contrib, libpq-dev, libexpat1-dev, stackato-kato-core-ng-$KATO_GEM_VERSION (=auto)"
 PKG_BUILD_DEPENDS="build-essential"
 
