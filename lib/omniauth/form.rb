@@ -73,7 +73,7 @@ module OmniAuth
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link id="favicon" rel="shortcut icon" type="image/png" href="" />
         <title>#{title}</title>
-        <link href="/console/css/console.css" rel="stylesheet" />
+        <link href="/console/css/compiled/console.min.css" rel="stylesheet" />
         <link href="/aok/aok.css" rel="stylesheet" />
         <script type="text/javascript">
           $CC_URL = "//#{cc_url}"
