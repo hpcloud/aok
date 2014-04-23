@@ -38,7 +38,7 @@ EM.run do
         :mbus => CCConfig[:message_bus_servers].first,
         :host => Kato::Local::Node.get_local_node_id,
         :port => AppConfig[:port],
-        :uri => CCConfig[:external_domain].sub(/^api/, 'aok'),
+        :uri =>  URI(CCConfig[:uaa][:url]).host,
         :tags => {:component => "AOK"},
         #:index => @config[:index]
     )
