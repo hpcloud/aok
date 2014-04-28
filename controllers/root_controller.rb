@@ -5,12 +5,12 @@ class RootController < ApplicationController
   MIMIMUM_PASSWORD_SCORE = 0
 
   get '/?' do
-    redirect to('/uaa/')
+    redirect to('/')
   end
 
   get '/uaa/?', :provides => :html do
     require_user
-    erb 'logged_in.html'.intern
+    redirect to('/')
   end
 
   get '/auth/?' do
