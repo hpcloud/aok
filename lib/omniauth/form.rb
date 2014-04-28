@@ -80,6 +80,7 @@ module OmniAuth
         </script>
         <script src="/console/js/lib/jquery/jquery-1.10.1.min.js"></script>
         <script src="/console/js/lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/console/js/lib/async/async.js"></script>
         <script src="/aok/aok.js"></script>
         #{header_info}
       </head>
