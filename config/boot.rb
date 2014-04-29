@@ -8,7 +8,6 @@ Bundler.require(:default)
   lib/aok/model_authorities_methods
   lib/aok/scopes_shoehorn
   lib/aok/scim/active_record_query_builder
-  lib/rack_port_monkeypatch
   lib/omniauth/strategies/identity
   lib/omniauth/form
   lib/active_record_session_store
