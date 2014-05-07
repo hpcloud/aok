@@ -21,9 +21,6 @@ begin
 
   check_config(AppConfig)
   CCConfig = Kato::Config.get("cloud_controller_ng").symbolize_keys
-
-  AppConfig[:commit_id] = File.read(File.dirname(__FILE__) + '/../.pkg-gitdescribe').strip
-  AppConfig[:timestamp] = File.mtime(File.dirname(__FILE__) + '/../.pkg-gitdescribe')
 rescue => ex
   $stderr.puts %[FATAL: Exception encountered while loading config: #{ex}\n#{ex.backtrace.join("\n")}]
   exit 1
