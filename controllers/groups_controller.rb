@@ -24,7 +24,6 @@ class GroupsController < ApplicationController
   # Update a Group
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-a-group-patch-groupid
   patch '/:id' do
-    # XXX check that user is not already in group
     group = Group.find_by_guid(params[:id])
     read_json_body['members'].each do |user|
       user_guid = user['value']
