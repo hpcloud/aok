@@ -22,10 +22,12 @@ and you're ready to run the tests:
 
 == Java Integration Tests
 
-You must have ActiveState's UAA repo cloned next to AOK in the filesystem. There
-are probably some java prereqs also (like maven). Please update this as you
-discover what else needs to be installed for the tests to run.
+You must have ActiveState's UAA repo cloned next to AOK in the filesystem on
+your workstation. There are probably some java prereqs also (like maven).
+Please update this as you discover what else needs to be installed for the
+tests to run.
 
 On the VM, run `rake test:setup` to configure the VM
 
-On your workstation, run `rake test:integration` to run the tests. Use `rake test:results` to view the results (failures and skips) of the test.
+On your workstation, run `rake test:integration` to run the tests. Use
+`rake test:results` to view the results (failures and skips) of the test.
