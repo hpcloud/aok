@@ -1,4 +1,3 @@
-#!/home/aocole/.rbenv/shims/ruby
 require 'base64'
 require 'cgi'
 
