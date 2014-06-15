@@ -66,7 +66,7 @@ strategy:
     # try_sasl: true
     # sasl_mechanisms: DIGEST-MD5 # or GSS-SPNEGO
 
-    # This option will use the user's email address as their username in 
+    # This option will use the user's email address as their username in
     # Stackato, like Stackato 2.x did. This is helpful if importing data
     # and users from Stackato 2.x.
     # use_email_for_username: true
@@ -86,7 +86,7 @@ strategy:
     # group_attribute: cn
     #
     # If group_query and group_attribute are configured, specify the names of groups
-    # here that are allowed to access Stackato. This should be an array of string 
+    # here that are allowed to access Stackato. This should be an array of string
     # group names.
     # allowed_groups:
     #  - friends
@@ -94,8 +94,8 @@ strategy:
     #
     # If group_query and group_attribute are configured, specify the names of groups
     # whose members should be granted admin privilege. The user will be granted admin
-    # the first time they log in while a member of a listed LDAP group, and will 
-    # remain an admin even if they are later removed from the LDAP group. This 
+    # the first time they log in while a member of a listed LDAP group, and will
+    # remain an admin even if they are later removed from the LDAP group. This
     # should be an array of Strings.
     # admin_groups:
     #  - managers
@@ -140,7 +140,7 @@ oauth:
       authorized_grant_types: password,implicit
       authorities: uaa.none
       scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write
-      redirect_uri: https://$ENDPOINT/console/oauth.html
+      redirect_uri: https://localhost/console/oauth.html
     srest:
       secret: 'changeme'
       authorized_grant_types: client_credentials
