@@ -234,9 +234,13 @@ class OauthController < ApplicationController
     # that they don't have to be updated during `kato node rename`. We put
     # together the actual redirect_uri to use here. This also lets us ensure
     # we don't redirect outside the cluster.
+    require 'dev_mode'
     def substitute_redirect_uri abstract_uri
       u = URI.parse abstract_uri
       u.host = CCConfig[:external_domain]
+      if dev_mode?
+        return 'http://127.0.0.1:8080/oauth.html'
+      end
       return u.to_s
     end
 

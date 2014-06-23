@@ -1,5 +1,6 @@
 require 'bundler'
 Bundler.require(:default)
+$: << File.expand_path('../../lib', __FILE__)
 
 %W{
   lib/constants
