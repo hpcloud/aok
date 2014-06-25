@@ -195,7 +195,7 @@ class OauthController < ApplicationController
         core = Proc.new do
           raise(Aok::Errors::Unauthorized.new) unless identity
           redirect_uri = begin
-            client.identifier == 'cf' ? substitute_redirect_uri(client.redirect_uri) : client.redirect_uri
+            client.identifier == 'cf' ? substitute_redirect_uri(client.redirect_uri, req.params['redirect_uri']) : client.redirect_uri
           rescue
             logger.error "Couldn't parse redirect uri for #{client.identifier.inspect}. URI was #{client.redirect_uri.inspect}."
             nil
@@ -235,12 +235,12 @@ class OauthController < ApplicationController
     # together the actual redirect_uri to use here. This also lets us ensure
     # we don't redirect outside the cluster.
     require 'dev_mode'
-    def substitute_redirect_uri abstract_uri
+    def substitute_redirect_uri abstract_uri, desired_redirect_uri
+      if dev_mode? and URI.parse(desired_redirect_uri).host == '127.0.0.1'
+        return desired_redirect_uri
+      end
       u = URI.parse abstract_uri
       u.host = CCConfig[:external_domain]
-      if dev_mode?
-        return 'http://127.0.0.1:8080/oauth.html'
-      end
       return u.to_s
     end
 
