@@ -195,7 +195,7 @@ class OauthController < ApplicationController
         core = Proc.new do
           raise(Aok::Errors::Unauthorized.new) unless identity
           redirect_uri = begin
-            substitute_redirect_uri(client.redirect_uri)
+            client.identifier == 'cf' ? substitute_redirect_uri(client.redirect_uri) : client.redirect_uri
           rescue
             logger.error "Couldn't parse redirect uri for #{client.identifier.inspect}. URI was #{client.redirect_uri.inspect}."
             nil
