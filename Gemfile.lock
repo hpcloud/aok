@@ -1,9 +1,9 @@
 GIT
   remote: git://github.com/ActiveState/omniauth-ldap.git
-  revision: 0b009302919375d1da52ba864350656a1fc8e96d
+  revision: cb42223104b4ef0f3552414f2a6adb3bca537c3a
   specs:
     omniauth-ldap (1.0.4)
-      net-ldap (~> 0.3.1)
+      net-ldap (~> 0.6.1)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
@@ -51,15 +51,15 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (3.2.17)
-      activesupport (= 3.2.17)
+    activemodel (3.2.18)
+      activesupport (= 3.2.18)
       builder (~> 3.0.0)
-    activerecord (3.2.17)
-      activemodel (= 3.2.17)
-      activesupport (= 3.2.17)
+    activerecord (3.2.18)
+      activemodel (= 3.2.18)
+      activesupport (= 3.2.18)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activesupport (3.2.17)
+    activesupport (3.2.18)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     addressable (2.3.5)
@@ -132,7 +132,7 @@ GEM
       eventmachine (>= 0.12.10)
       json_pure (>= 1.7.3)
       thin (>= 1.4.1)
-    net-ldap (0.3.1)
+    net-ldap (0.6.1)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     omniauth (1.1.4)
@@ -251,9 +251,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel (= 3.2.17)
-  activerecord (= 3.2.17)
-  activesupport (= 3.2.17)
+  activemodel (= 3.2.18)
+  activerecord (= 3.2.18)
+  activesupport (= 3.2.18)
   addressable (= 2.3.5)
   arel (= 3.0.3)
   attr_required (= 0.0.5)
@@ -295,7 +295,7 @@ DEPENDENCIES
   multipart-post (= 2.0.0)
   mustache (= 0.99.4)
   nats (= 0.4.26)
-  net-ldap (= 0.3.1)
+  net-ldap (= 0.6.1)
   nokogiri (= 1.6.1)
   omniauth (= 1.1.4)
   omniauth-google-apps (= 0.0.2)

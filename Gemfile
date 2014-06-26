@@ -8,9 +8,9 @@ source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
 ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
 
-gem 'activemodel'       ,   '3.2.17'
-gem 'activerecord'      ,   '3.2.17', :require => 'active_record'
-gem 'activesupport'     ,   '3.2.17'
+gem 'activemodel'       ,   '3.2.18'
+gem 'activerecord'      ,   '3.2.18', :require => 'active_record'
+gem 'activesupport'     ,   '3.2.18'
 gem 'addressable'       ,    '2.3.5'
 gem 'arel'              ,    '3.0.3'
 gem 'attr_required'     ,    '0.0.5'
@@ -52,7 +52,7 @@ gem 'multi_xml'         ,    '0.5.5'
 gem 'multipart-post'    ,    '2.0.0'
 gem 'mustache'          ,   '0.99.4'
 gem 'nats'              ,   '0.4.26'
-gem 'net-ldap'          ,    '0.3.1'
+gem 'net-ldap'          ,    '0.6.1'
 gem 'nokogiri'          ,    '1.6.1'
 gem 'omniauth'          ,    '1.1.4'
 gem 'omniauth-google-apps',    '0.0.2'
