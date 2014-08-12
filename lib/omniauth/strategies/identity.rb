@@ -25,6 +25,10 @@ module OmniAuth
 
       def callback_phase
         return fail!(:invalid_credentials) unless identity
+        if request['time'] and (request['time'].to_i - Time.now.to_i).abs > (2 * 60 * 60)
+            return fail!(:time_offset)
+        end
+
         # stash the identity we just validated
         self.env['omniauth.identity'] = @identity
         super

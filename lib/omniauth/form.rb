@@ -23,6 +23,7 @@ module OmniAuth
       else
         form.instance_eval(&block)
       end
+      form.input_field 'hidden', 'time'
       form
     end
 

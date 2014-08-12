@@ -129,6 +129,8 @@ $().ready(function () {
                 // NOTE: apply additional theme colors in this statement
                 $("head").append("<style type=\"text/css\" charset=\"utf-8\"> body{background-color:" + settings.background_color + "}</style>");
 
+                document.forms.login_form.time.value = (new Date).valueOf() / 1000;
+
                 // This must be the last theme/styling to be applied
                 if (settings.style) {
                     $("head").append("<style type=\"text/css\" charset=\"utf-8\">" + settings.style + "</style>");
@@ -165,6 +167,8 @@ $().ready(function () {
                 if (params['message']) {
                     if(params['message'] === 'unauthorized'){
                         $('#failed-login-alert').text("The administrator has not granted you access to " + settings.product_name + ".");
+                    } else if (params['message'] === 'time_offset') {
+                        $('#failed-login-alert').text("Your clock is significantly different from the server clock.");
                     }
                     $('#failed-login-alert').removeClass('hide');
                 }
