@@ -87,7 +87,6 @@ module OmniAuth
       <body class="login" style="display:none;">
         <div id="header-container">
           <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-            <img class="navbar-brand" src="/console/img/stackato_logo_header.png" alt="Stackato">
           </nav>
         </div>
         <div class="page_wrapper">

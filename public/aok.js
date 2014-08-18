@@ -122,7 +122,7 @@ $().ready(function () {
                 $("#favicon").attr("href", settings.product_logo_favicon_url);
 
                 // Set the header logo
-                $('.navbar-brand').attr('src', settings.product_logo_header_url);
+                $('#header-container .navbar').append('<img class="navbar-brand" src="' + settings.product_logo_header_url + '" alt="' + settings.product_name + '">');
 
                 $('.form-signin-heading').html('Welcome to ' + settings.product_name);
 
