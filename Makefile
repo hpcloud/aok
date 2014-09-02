@@ -92,3 +92,14 @@ truststore:
 	rm -f truststore.jks
 	keytool -import -file cert.pem -keystore truststore.jks -storepass aaaaaa -alias $(VM)
 	rm -f cert.pem
+
+# Test targets
+
+# Runs tests assuming everything has been setup on the machine.
+unit-test:
+	bundle exec rspec spec/unit
+
+# Runs tests assuming a Sentinel-based install is on the machine.
+config-ci:
+	sed -i.bak s/^BUNDLE_WITHOUT:/#BUNDLE_WITHOUT:/ .bundle/config
+	bundle install
