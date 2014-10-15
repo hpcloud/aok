@@ -129,6 +129,7 @@ $().ready(function () {
                 // NOTE: apply additional theme colors in this statement
                 $("head").append("<style type=\"text/css\" charset=\"utf-8\"> body{background-color:" + settings.background_color + "}</style>");
 
+                // Embed the current browser time (UTC seconds since epoch) so we can get better error messages when the time is off
                 document.forms.login_form.time.value = (new Date).valueOf() / 1000;
 
                 // This must be the last theme/styling to be applied

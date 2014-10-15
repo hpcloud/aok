@@ -26,7 +26,9 @@ module OmniAuth
       def callback_phase
         return fail!(:invalid_credentials) unless identity
         if request['time'] and (request['time'].to_i - Time.now.to_i).abs > (2 * 60 * 60)
-            return fail!(:time_offset)
+          # User-submitted time (UTC seconds since epoch) too far off, we would fail anyway
+          # Being explicit about the error will at least let them see a better message
+          return fail!(:time_offset)
         end
 
         # stash the identity we just validated
