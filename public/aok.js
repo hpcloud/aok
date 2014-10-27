@@ -169,7 +169,10 @@ $().ready(function () {
                     if(params['message'] === 'unauthorized'){
                         $('#failed-login-alert').text("The administrator has not granted you access to " + settings.product_name + ".");
                     } else if (params['message'] === 'time_offset') {
-                        $('#failed-login-alert').text("Your clock is significantly different from the server clock.");
+                        $('#failed-login-alert').text(
+                            "The server date/time is significantly different than your local system. " +
+                            "Please confirm your computers time and date are correct.  If your date/time is " +
+                            "correct and you still can't login, please contact your system administrator.");
                     }
                     $('#failed-login-alert').removeClass('hide');
                 }
