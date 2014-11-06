@@ -72,6 +72,12 @@ describe 'LoginEndpoint Controller' do
       AppConfig[:strategy][:ldap][:allowed_groups] = %W{friends}
 
       post '/uaa/login.do'
+      last_response.should be_redirect
+      last_response.location.should =~ %r(/uaa/auth/failure\?message=unauthorized)
+      follow_redirect!
+      last_response.should be_redirect
+      last_response.location.should =~ %r(/aok/auth/ldap\?message=unauthorized)
+      follow_redirect!
       last_response.status.should eq(403)
     end
 
@@ -93,6 +99,12 @@ describe 'LoginEndpoint Controller' do
       AppConfig[:strategy][:ldap][:allowed_groups] = %W{friends}
 
       post '/uaa/login.do'
+      last_response.should be_redirect
+      last_response.location.should =~ %r(/uaa/auth/failure\?message=unauthorized)
+      follow_redirect!
+      last_response.should be_redirect
+      last_response.location.should =~ %r(/aok/auth/ldap\?message=unauthorized)
+      follow_redirect!
       last_response.status.should eq(403)
     end
 
