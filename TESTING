@@ -4,8 +4,8 @@ The rspec tests are to be run in situ on the VM. There is some futzing required
 to set up the database. You have to copy your production db config overwriting
 the test config:
 
-    kato config get --yaml aok database_environment/production |\ kato config
-    set --yaml aok database_environment/test
+    kato config get --yaml aok database_environment/production |\
+    kato config set --yaml aok database_environment/test
 
 and change the db name to something like aok_test:
 
@@ -27,7 +27,7 @@ your workstation. There are probably some java prereqs also (like maven).
 Please update this as you discover what else needs to be installed for the
 tests to run.
 
-On the VM, run `rake test:setup` to configure the VM
+On the VM, run `bundle exec rake test:setup` to configure the VM
 
 On your workstation, run `rake test:integration` to run the tests. Use
 `rake test:results` to view the results (failures and skips) of the test.
