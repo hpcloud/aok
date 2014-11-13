@@ -90,7 +90,7 @@ namespace :test do
     require 'pty'
     cmd = "mvn test -P aok --projects uaa"
     begin
-      ENV['VCAP_BVT_TARGET']="#{ENV["VMNAME"]}.local"
+      ENV['VCAP_BVT_TARGET']="#{ENV["AOK_TEST_VM"]}"
       PTY.spawn( cmd ) do |stdin, stdout, pid|
         begin
           # Do stuff with the output here. Just printing to show it works
@@ -116,7 +116,7 @@ namespace :test do
     require 'pty'
     cmd = "mvn package"
     begin
-      ENV['VCAP_BVT_TARGET']="#{ENV["VMNAME"]}.local"
+      ENV['VCAP_BVT_TARGET']="#{ENV["AOK_TEST_VM"]}"
       PTY.spawn( cmd ) do |stdin, stdout, pid|
         begin
           # Do stuff with the output here. Just printing to show it works
