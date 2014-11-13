@@ -22,24 +22,38 @@ and you're ready to run the tests:
 
 == Java Integration Tests
 
-You must have ActiveState's UAA repo cloned next to AOK in the filesystem on
-your workstation. There are probably some java prereqs also (like maven). 
+NOTE: See note/JavaIntegrationTestSetup for a complete, from-scratch, set of
+Java Integration test instructions. Old instructions follow:
 
-I am using maven 3.0.4 and java 1.6.0_33.
+You must have ActiveState's UAA repo cloned next to AOK in the filesystem on
+your workstation. There are probably some java prereqs also (like maven).
+
+I (aocole) am using maven 3.0.4 and java 1.6.0_33.
 
 Please update this as you discover what else needs to be installed for the
 tests to run.
 
-You need to have the VMNAME and VM environment varables set according to the network name of your VM. For instance:
-export VMNAME=stackato-abcd
-export VMNAME=stackato-abcd.local
+You need to have the AOK_TEST_VM environment variable set according to the network
+name of your VM. For instance:
 
-On the VM, run `bundle exec rake test:setup` to configure the VM. Wait for the VM to be fully running again according to `kato status`.
+  export AOK_TEST_VM=stackato-abcd.local
 
-On your workstation, run `bundle exec rake test:integration` to run the tests. Use
-`bundle exec rake test:results` to view the results (failures and skips) of the test.
+On the Stackato VM being used for testing, run:
+
+  cd /s/code/aok
+  bundle exec rake test:setup
+
+to configure the VM. Wait for the VM to be fully running again according to
+`kato status`.
+
+On your workstation, run `bundle exec rake test:integration` to run the tests.
+Use `bundle exec rake test:results` to view the results (failures and skips)
+of the test.
 
 If the tests don't run or a large portion of them fail:
+
  * Ensure that `make truststore` works
- * Ensure that you have run the setup step on the VM and that AOK and CCNG restarted successfully
- 
+ * Ensure that you have run the setup step on the VM and that AOK and CCNG
+   restarted successfully
+ * Ensure that you have run `rake rebuild` to rebuild the UAA test framework
+

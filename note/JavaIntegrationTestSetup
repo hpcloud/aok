@@ -1,0 +1,60 @@
+== AOK Java Integration Testing Notes
+
+I(ngy) am keeping notes about how I set up AOK testing and other stuff related
+to bz105536.
+
+== Environment
+
+I set up 2 new HPCS servers. One to do dev on and one running a modern
+Stackato (3.4.1).
+
+* pairup.stackato.ouistreet.net
+  * Ubuntu 12.04 image
+  * Ruby 1.9.3-p550 built with rbenv
+* api.stackato.west.ouistreet.net
+  * Stackato 3.4.1 image
+
+== Getting Stackato sources
+
+* cd ~/src/
+* git clone git@github.com:ActiveState/uaa
+* git clone git@github.com:ActiveState/aok --branch bz105536
+
+== Building Ruby and Ruby deps (and some debian prereqs)
+
+* sudo apt-get install build-essential
+* git clone git@github.com:sstephenson/rbenv ~/.rbenv
+* git clone git@github.com:sstephenson/ruby-build ~/.rbenv/plugins/ruby-build
+* Add to ~/.bashrc:
+  export PATH="~/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+* exec bash
+* rbenv install 1.9.3-p550
+* gem install bundler
+* rbenv rehash
+* cd ~/src/aok
+* (XXX Had to comment out the 'stackato-kato' dep from Gemfile)
+* sudo apt-get install libpq-dev libsqlite3-dev libexpat-dev
+* Comment out the 'stackato-kato' line in Gemfile
+  * Unless you are running the test suite on a Stackato VM
+* bundle install
+
+== Getting AOK Java Integration Tests working against a stackato VM
+
+* cd ~/src/aok
+* Rebuild the Java Integration tests in UAA:
+  * bundle exec rake test:rebuild
+* Following instructions taken from TESTING ("Java Integration Tests" section):
+
+* On the Stackato VM:
+  * cd /s/code/aok
+  * bundle exec rake test:setup
+  * Wait for `kato status` to return to normal
+
+* On the dev machine:
+  * sudo apt-get install maven default-jdk
+  * export AOK_TEST_VM=stackato.west.ouistreet.net
+  * Run tests with:\
+    * bundle exec rake test:integration
+  * View test results with:
+    * bundle exec rake test:results
