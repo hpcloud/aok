@@ -1,29 +1,7 @@
-== RSpec unit tests
-
-The rspec tests are to be run in situ on the VM. There is some futzing required
-to set up the database. You have to copy your production db config overwriting
-the test config:
-
-    kato config get --yaml aok database_environment/production |\
-    kato config set --yaml aok database_environment/test
-
-and change the db name to something like aok_test:
-
-    kato config set aok database_environment/test/database aok_test
-
-Then set up the database:
-
-    RACK_ENV=test bundle exec rake db:recreate
-
-and you're ready to run the tests:
-
-    bundle exec rake spec
-
-
-== Java Integration Tests
-
 NOTE: See note/JavaIntegrationTestSetup for a complete, from-scratch, set of
-Java Integration test instructions. Old instructions follow:
+Java Integration Test instructions. Old instructions follow:
+
+== Java Integration Tests (old instructions, see above NOTE)
 
 You must have ActiveState's UAA repo cloned next to AOK in the filesystem on
 your workstation. There are probably some java prereqs also (like maven).
@@ -57,3 +35,24 @@ If the tests don't run or a large portion of them fail:
    restarted successfully
  * Ensure that you have run `rake rebuild` to rebuild the UAA test framework
 
+
+== RSpec unit tests
+
+The rspec tests are to be run in situ on the VM. There is some futzing required
+to set up the database. You have to copy your production db config overwriting
+the test config:
+
+    kato config get --yaml aok database_environment/production |\
+    kato config set --yaml aok database_environment/test
+
+and change the db name to something like aok_test:
+
+    kato config set aok database_environment/test/database aok_test
+
+Then set up the database:
+
+    RACK_ENV=test bundle exec rake db:recreate
+
+and you're ready to run the tests:
+
+    bundle exec rake spec
