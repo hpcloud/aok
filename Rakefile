@@ -165,6 +165,23 @@ namespace :test do
     end
     Kato::Config.set("aok", "/", old_config.deep_merge(config))
 
+    kato_restart
+  end
+
+  desc "Reset aok's config to backup created by :setup. Insecure, not for production."
+  task :reset => :config do
+    require 'kato/config'
+    require 'yaml'
+
+    # set up kato config
+    config_file = File.join(File.dirname(__FILE__), 'old_config.yml')
+    config = YAML.load_file(config_file)
+    Kato::Config.set("aok", "/", config)
+
+    kato_restart
+  end
+
+  def kato_restart
     # restart kato for config changes to take effect
     require 'pty'
     cmd = "kato restart"
