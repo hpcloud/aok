@@ -17,8 +17,8 @@ Stackato (3.4.1).
 == Getting Stackato sources
 
 * cd ~/src/
-* git clone git@github.com:ActiveState/uaa
-* git clone git@github.com:ActiveState/aok --branch bz105536
+* git clone git@github.com:ActiveState/uaa --branch bz105536-C
+* git clone git@github.com:ActiveState/aok --branch bz105536-B
 
 == Building Ruby and Ruby deps (and some debian prereqs)
 
