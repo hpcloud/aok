@@ -97,6 +97,13 @@ class ClientsController < ApplicationController
 
   end
 
+  # Register, update or delete Multiple Clients: POST /oauth/clients/tx/modify
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-update-or-delete-multiple-clients-post-oauthclientstxmodify
+  post '/tx/modify' do
+    client_details = read_json_body
+    logger.debug client_details.inspect
+  end
+
   def handle_save_error client
     status((client.errors[:identifier] && client.errors[:identifier].any?{|e|e =~ /taken/}) ? 409 : 400)
     return  {
