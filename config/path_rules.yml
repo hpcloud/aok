@@ -3,7 +3,7 @@
 # Config files from: ../../../uaa/uaa/src/main/webapp/**/*.xml
 ---
 - name: userInfoSecurity
-  pattern: /userinfo
+  pattern: "/userinfo"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -26,7 +26,7 @@
         - class: org.springframework.security.access.vote.RoleVoter
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: scope=openid
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -75,9 +75,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -91,7 +91,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -151,7 +151,7 @@
     id: oauthTokenMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /oauth/token
+      value: "/oauth/token"
     property:
       name: headers
       map:
@@ -159,7 +159,7 @@
           key: authorization
           list:
             value:
-              text: ! 'Basic '
+              text: 'Basic '
   entry-point:
     id: basicAuthenticationEntryPoint
     class: org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint
@@ -169,7 +169,7 @@
     - name: typeName
       value: Basic
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   anonymous:
     enabled: 'false'
@@ -291,7 +291,7 @@
     id: oauthBearerTokenMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /oauth/token
+      value: "/oauth/token"
     property:
       name: headers
       map:
@@ -299,7 +299,7 @@
           key: authorization
           list:
             value:
-              text: ! 'Bearer '
+              text: 'Bearer '
   entry-point:
     id: oauthAuthenticationEntryPoint
     class: org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint
@@ -307,7 +307,7 @@
       name: realmName
       value: UAA/oauth
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   anonymous:
     enabled: 'false'
@@ -358,9 +358,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -374,7 +374,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -411,7 +411,7 @@
       class: org.cloudfoundry.identity.uaa.authentication.manager.LoginAuthenticationManager
       property:
       - name: addNewAccounts
-        value: ${login.addnew:true}
+        value: "${login.addnew:true}"
       - name: userDatabase
         id: userDatabase
         class: org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase
@@ -459,7 +459,7 @@
     id: oauthAuthorizeRequestMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /oauth/authorize
+      value: "/oauth/authorize"
     property:
     - name: accept
       list:
@@ -524,7 +524,7 @@
         - name: lockoutPeriodSeconds
           value: '300'
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   custom-filter:
     position: FORM_LOGIN_FILTER
@@ -591,7 +591,7 @@
     id: oauthAuthorizeRequestMatcherOld
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /oauth/authorize
+      value: "/oauth/authorize"
     property:
     - name: accept
       list:
@@ -604,7 +604,7 @@
         - key: response_type
           value: token
         - key: credentials
-          value: ! '{'
+          value: "{"
   create-session: stateless
   entry-point:
     id: oauthAuthenticationEntryPoint
@@ -656,7 +656,7 @@
         - name: lockoutPeriodSeconds
           value: '300'
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   custom-filter:
     position: FORM_LOGIN_FILTER
@@ -718,13 +718,13 @@
   access-denied-handler:
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
-- pattern: /authenticate/**
+- pattern: "/authenticate/**"
   security: none
 - request-matcher:
     id: loginAuthorizeRequestMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /oauth/authorize
+      value: "/oauth/authorize"
     property:
     - name: accept
       value: application/json
@@ -745,7 +745,7 @@
     class: org.cloudfoundry.identity.uaa.authentication.manager.LoginAuthenticationManager
     property:
     - name: addNewAccounts
-      value: ${login.addnew:true}
+      value: "${login.addnew:true}"
     - name: userDatabase
       id: userDatabase
       class: org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase
@@ -773,7 +773,7 @@
           text: select g.displayName from groups g, group_membership m where g.id
             = m.group_id and m.member_id = ?
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   custom-filter:
   - position: PRE_AUTH_FILTER
@@ -822,9 +822,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -838,7 +838,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -875,7 +875,7 @@
       class: org.cloudfoundry.identity.uaa.authentication.manager.LoginAuthenticationManager
       property:
       - name: addNewAccounts
-        value: ${login.addnew:true}
+        value: "${login.addnew:true}"
       - name: userDatabase
         id: userDatabase
         class: org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase
@@ -921,7 +921,7 @@
     id: loginAuthorizeRequestMatcherOld
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /oauth/authorize
+      value: "/oauth/authorize"
     property:
     - name: accept
       value: application/json
@@ -929,7 +929,7 @@
       map:
         entry:
           key: login
-          value: ! '{'
+          value: "{"
   create-session: always
   entry-point:
     id: oauthAuthenticationEntryPoint
@@ -942,7 +942,7 @@
     class: org.cloudfoundry.identity.uaa.authentication.manager.LoginAuthenticationManager
     property:
     - name: addNewAccounts
-      value: ${login.addnew:true}
+      value: "${login.addnew:true}"
     - name: userDatabase
       id: userDatabase
       class: org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase
@@ -970,7 +970,7 @@
           text: select g.displayName from groups g, group_membership m where g.id
             = m.group_id and m.member_id = ?
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   custom-filter:
   - position: PRE_AUTH_FILTER
@@ -1019,9 +1019,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -1035,7 +1035,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -1072,7 +1072,7 @@
       class: org.cloudfoundry.identity.uaa.authentication.manager.LoginAuthenticationManager
       property:
       - name: addNewAccounts
-        value: ${login.addnew:true}
+        value: "${login.addnew:true}"
       - name: userDatabase
         id: userDatabase
         class: org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase
@@ -1115,7 +1115,7 @@
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 - name: clientSecretSecurity
-  pattern: /oauth/clients/*/secret
+  pattern: "/oauth/clients/*/secret"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -1138,7 +1138,7 @@
         - class: org.springframework.security.access.vote.RoleVoter
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /oauth/clients/*/secret
+    pattern: "/oauth/clients/*/secret"
     access: IS_AUTHENTICATED_FULLY,scope=clients.secret
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -1187,9 +1187,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -1203,7 +1203,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -1236,7 +1236,7 @@
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 - name: clientAdminSecurity
-  pattern: /oauth/clients/**
+  pattern: "/oauth/clients/**"
   create-session: stateless
   entry-point:
     id: oauthAuthenticationEntryPoint
@@ -1248,17 +1248,26 @@
   authentication-manager:
     id: emptyAuthenticationManager
   intercept-url:
-  - pattern: /**
-    access: ! '#oauth2.hasScope(''clients.write'')'
+  - pattern: "/tx/**"
+    access: "#oauth2.hasScope('clients.admin')"
     method: DELETE
-  - pattern: /**
-    access: ! '#oauth2.hasScope(''clients.write'')'
+  - pattern: "/tx/**"
+    access: "#oauth2.hasScope('clients.admin')"
     method: POST
-  - pattern: /**
-    access: ! '#oauth2.hasScope(''clients.write'')'
+  - pattern: "/tx/**"
+    access: "#oauth2.hasScope('clients.admin')"
     method: PUT
-  - pattern: /**
-    access: ! '#oauth2.hasScope(''clients.read'')'
+  - pattern: "/**"
+    access: "#oauth2.hasScope('clients.write')"
+    method: DELETE
+  - pattern: "/**"
+    access: "#oauth2.hasScope('clients.write')"
+    method: POST
+  - pattern: "/**"
+    access: "#oauth2.hasScope('clients.write')"
+    method: PUT
+  - pattern: "/**"
+    access: "#oauth2.hasScope('clients.read')"
     method: GET
   custom-filter:
     before: PRE_AUTH_FILTER
@@ -1307,9 +1316,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -1323,7 +1332,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -1361,7 +1370,7 @@
     id: groupsUpdateRequestMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /Groups
+      value: "/Groups"
     property:
     - name: method
       value: PUT
@@ -1448,7 +1457,7 @@
                     id: zxcvbnScoreCalculator
                     class: org.cloudfoundry.identity.uaa.password.ZxcvbnPasswordScoreCalculator
                     constructor-arg:
-                      value: ${password-policy.required-score:0}
+                      value: "${password-policy.required-score:0}"
               - name: queryConverter
                 id: scimUserQueryConverter
                 class: org.cloudfoundry.identity.uaa.scim.jdbc.ScimSearchQueryConverter
@@ -1469,7 +1478,7 @@
                         - key: phoneNumbers\.value
                           value: phoneNumber
               - name: deactivateOnDelete
-                value: ${scim.delete.deactivate:false}
+                value: "${scim.delete.deactivate:false}"
             - name: defaultUserGroups
               id: defaultUserAuthorities
               set-class: java.util.HashSet
@@ -1492,7 +1501,7 @@
             value: 'false'
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: scope=scim.write,scope=groups.update,memberScope=writer
     method: PUT
   custom-filter:
@@ -1542,9 +1551,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -1558,7 +1567,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -1594,7 +1603,7 @@
     id: groupsPatchRequestMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /Groups
+      value: "/Groups"
     property:
     - name: method
       value: PATCH
@@ -1681,7 +1690,7 @@
                     id: zxcvbnScoreCalculator
                     class: org.cloudfoundry.identity.uaa.password.ZxcvbnPasswordScoreCalculator
                     constructor-arg:
-                      value: ${password-policy.required-score:0}
+                      value: "${password-policy.required-score:0}"
               - name: queryConverter
                 id: scimUserQueryConverter
                 class: org.cloudfoundry.identity.uaa.scim.jdbc.ScimSearchQueryConverter
@@ -1702,7 +1711,7 @@
                         - key: phoneNumbers\.value
                           value: phoneNumber
               - name: deactivateOnDelete
-                value: ${scim.delete.deactivate:false}
+                value: "${scim.delete.deactivate:false}"
             - name: defaultUserGroups
               id: defaultUserAuthorities
               set-class: java.util.HashSet
@@ -1725,7 +1734,7 @@
             value: 'false'
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: scope=scim.write,scope=groups.update,memberScope=writer
     method: PATCH
   custom-filter:
@@ -1775,9 +1784,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -1791,7 +1800,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -1827,7 +1836,7 @@
     id: groupsReadRequestMatcher
     class: org.cloudfoundry.identity.uaa.security.web.UaaRequestMatcher
     constructor-arg:
-      value: /Groups
+      value: "/Groups"
     property:
       name: method
       value: GET
@@ -1910,7 +1919,7 @@
                     id: zxcvbnScoreCalculator
                     class: org.cloudfoundry.identity.uaa.password.ZxcvbnPasswordScoreCalculator
                     constructor-arg:
-                      value: ${password-policy.required-score:0}
+                      value: "${password-policy.required-score:0}"
               - name: queryConverter
                 id: scimUserQueryConverter
                 class: org.cloudfoundry.identity.uaa.scim.jdbc.ScimSearchQueryConverter
@@ -1931,7 +1940,7 @@
                         - key: phoneNumbers\.value
                           value: phoneNumber
               - name: deactivateOnDelete
-                value: ${scim.delete.deactivate:false}
+                value: "${scim.delete.deactivate:false}"
             - name: defaultUserGroups
               id: defaultUserAuthorities
               set-class: java.util.HashSet
@@ -1954,7 +1963,7 @@
             value: 'false'
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: scope=scim.read,memberScope=reader
     method: GET
   custom-filter:
@@ -2004,9 +2013,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -2020,7 +2029,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -2052,7 +2061,7 @@
   access-denied-handler:
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
-- pattern: /Groups/**
+- pattern: "/Groups/**"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -2075,13 +2084,13 @@
         - class: org.springframework.security.access.vote.RoleVoter
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-  - pattern: /Groups/**
+  - pattern: "/Groups/**"
     access: scope=scim.write
     method: DELETE
-  - pattern: /Groups
+  - pattern: "/Groups"
     access: scope=scim.write
     method: POST
-  - pattern: /**
+  - pattern: "/**"
     access: ROLE_NONEXISTENT
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -2130,9 +2139,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -2146,7 +2155,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -2178,7 +2187,7 @@
   access-denied-handler:
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
-- pattern: /User*/*/password
+- pattern: "/User*/*/password"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -2201,7 +2210,7 @@
         - class: org.springframework.security.access.vote.RoleVoter
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /User*/*/password
+    pattern: "/User*/*/password"
     access: IS_AUTHENTICATED_FULLY,scope=password.write
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -2250,9 +2259,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -2266,7 +2275,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -2298,7 +2307,7 @@
   access-denied-handler:
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
-- pattern: /Users/**
+- pattern: "/Users/**"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -2325,19 +2334,19 @@
         - class: org.springframework.security.access.vote.AuthenticatedVoter
         - class: org.springframework.security.access.vote.RoleVoter
   intercept-url:
-  - pattern: /Users/**
+  - pattern: "/Users/**"
     access: scope=scim.read,user=self
     method: GET
-  - pattern: /Users/*
+  - pattern: "/Users/*"
     access: scope=scim.write
     method: DELETE
-  - pattern: /Users/*
+  - pattern: "/Users/*"
     access: scope=scim.write,user=self
     method: PUT
-  - pattern: /Users
+  - pattern: "/Users"
     access: scope=scim.write
     method: POST
-  - pattern: /**
+  - pattern: "/**"
     access: ROLE_NONEXISTENT
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -2386,9 +2395,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -2402,7 +2411,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -2434,7 +2443,7 @@
   access-denied-handler:
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
-- pattern: /ids/Users*
+- pattern: "/ids/Users*"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -2457,7 +2466,7 @@
         - class: org.springframework.security.access.vote.RoleVoter
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -2506,9 +2515,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -2522,7 +2531,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -2554,7 +2563,7 @@
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 - name: approvalsSecurity
-  pattern: /approvals
+  pattern: "/approvals"
   create-session: stateless
   authentication-manager:
     id: emptyAuthenticationManager
@@ -2577,7 +2586,7 @@
         - class: org.springframework.security.access.vote.RoleVoter
         - class: org.springframework.security.access.vote.AuthenticatedVoter
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   custom-filter:
     position: PRE_AUTH_FILTER
@@ -2626,9 +2635,9 @@
         class: org.cloudfoundry.identity.uaa.oauth.token.SignerProvider
         property:
         - name: signingKey
-          value: ${jwt.token.signing-key:tokenkey}
+          value: "${jwt.token.signing-key:tokenkey}"
         - name: verifierKey
-          value: ${jwt.token.verification-key:tokenkey}
+          value: "${jwt.token.verification-key:tokenkey}"
       - name: defaultUserAuthorities
         id: defaultUserAuthorities
         set-class: java.util.HashSet
@@ -2642,7 +2651,7 @@
         - text: uaa.user
         - text: approvals.me
       - name: issuer
-        value: ${issuer.uri:http://localhost:8080/uaa}
+        value: "${issuer.uri:http://localhost:8080/uaa}"
       - name: approvalStore
         id: approvalStore
         class: org.cloudfoundry.identity.uaa.oauth.approval.JdbcApprovalStore
@@ -2675,7 +2684,7 @@
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 - name: checkTokenSecurity
-  pattern: /check_token
+  pattern: "/check_token"
   create-session: stateless
   entry-point:
     id: basicAuthenticationEntryPoint
@@ -2709,7 +2718,7 @@
         class: org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
   use-expressions: 'true'
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: hasRole('uaa.resource')
   anonymous:
     enabled: 'false'
@@ -2754,7 +2763,7 @@
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 - name: tokenKeySecurity
-  pattern: /token_key
+  pattern: "/token_key"
   create-session: stateless
   entry-point:
     id: basicAuthenticationEntryPoint
@@ -2788,7 +2797,7 @@
         class: org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
   use-expressions: 'true'
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: isAnonymous() or hasRole('uaa.resource')
   anonymous:
     enabled: 'true'
@@ -2833,7 +2842,7 @@
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 - name: clientInfoSecurity
-  pattern: /clientinfo
+  pattern: "/clientinfo"
   create-session: stateless
   entry-point:
     id: basicAuthenticationEntryPoint
@@ -2867,7 +2876,7 @@
         class: org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
   use-expressions: 'true'
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: isFullyAuthenticated()
   anonymous:
     enabled: 'false'
@@ -2911,15 +2920,15 @@
   access-denied-handler:
     id: oauthAccessDeniedHandler
     class: org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
-- pattern: /resources/**
+- pattern: "/resources/**"
   security: none
-- pattern: /favicon.ico
+- pattern: "/favicon.ico"
   security: none
-- pattern: /info
+- pattern: "/info"
   security: none
-- pattern: /password/**
+- pattern: "/password/**"
   security: none
-- pattern: /healthz/**
+- pattern: "/healthz/**"
   security: none
 - name: uiSecurity
   request-matcher:
@@ -2930,20 +2939,20 @@
         bean:
         - class: org.springframework.security.web.util.AntPathRequestMatcher
           constructor-arg:
-            value: /
+            value: "/"
         - class: org.springframework.security.web.util.AntPathRequestMatcher
           constructor-arg:
-            value: /spring_security_login
+            value: "/spring_security_login"
         - class: org.springframework.security.web.util.AntPathRequestMatcher
           constructor-arg:
-            value: /oauth/**
+            value: "/oauth/**"
         - class: org.springframework.security.web.util.AntPathRequestMatcher
           constructor-arg:
-            value: /login**
+            value: "/login**"
         - class: org.springframework.security.web.util.AntPathRequestMatcher
           constructor-arg:
-            value: /logout.do*
-  access-denied-page: /
+            value: "/logout.do*"
+  access-denied-page: "/"
   authentication-manager:
     id: authzAuthenticationMgr
     class: org.cloudfoundry.identity.uaa.authentication.manager.AuthzAuthenticationManager
@@ -2988,22 +2997,22 @@
         - name: lockoutPeriodSeconds
           value: '300'
   intercept-url:
-  - pattern: /login**
+  - pattern: "/login**"
     access: IS_AUTHENTICATED_ANONYMOUSLY
-  - pattern: /**
+  - pattern: "/**"
     access: IS_AUTHENTICATED_FULLY
   form-login:
-    authentication-failure-url: /login?error=true
-    login-page: /login
-    login-processing-url: /login.do
+    authentication-failure-url: "/login?error=true"
+    login-page: "/login"
+    login-processing-url: "/login.do"
     username-parameter: username
-    default-target-url: /
+    default-target-url: "/"
     password-parameter: password
     authentication-details-source:
       id: authenticationDetailsSource
       class: org.cloudfoundry.identity.uaa.authentication.UaaAuthenticationDetailsSource
   logout:
-    logout-url: /logout.do
+    logout-url: "/logout.do"
     success-handler:
       id: logoutHandler
       class: org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
@@ -3011,7 +3020,7 @@
       - name: targetUrlParameter
         value: redirect
       - name: defaultTargetUrl
-        value: /
+        value: "/"
 - name: denyAll
   use-expressions: 'true'
   create-session: stateless
@@ -3021,5 +3030,5 @@
   authentication-manager:
     id: emptyAuthenticationManager
   intercept-url:
-    pattern: /**
+    pattern: "/**"
     access: denyAll
