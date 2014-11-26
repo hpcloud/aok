@@ -99,7 +99,15 @@ class ClientsController < ApplicationController
 
   # Register, update or delete Multiple Clients: POST /oauth/clients/tx/modify
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-update-or-delete-multiple-clients-post-oauthclientstxmodify
+
+  #[{"scope"=>["bar", "foo"], "client_id"=>"YHGvtq", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"j4tJ6r", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"3JQqKI", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"dFJXGx", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"7e1eWO", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}]
+
   post '/tx/modify' do
+    client_details = read_json_body
+    logger.debug client_details.inspect
+  end
+
+  post '/tx' do
     client_details = read_json_body
     logger.debug client_details.inspect
   end
