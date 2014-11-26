@@ -99,18 +99,38 @@ class ClientsController < ApplicationController
 
   # Register, update or delete Multiple Clients: POST /oauth/clients/tx/modify
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-update-or-delete-multiple-clients-post-oauthclientstxmodify
-
-  #[{"scope"=>["bar", "foo"], "client_id"=>"YHGvtq", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"j4tJ6r", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"3JQqKI", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"dFJXGx", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"7e1eWO", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}]
-
   post '/tx/modify' do
-    client_details = read_json_body
-    logger.debug client_details.inspect
+    tx_XXX "post=tx/modify"
   end
 
-  post '/tx' do
-    client_details = read_json_body
-    logger.debug client_details.inspect
+  # Change Multiple Client Secrets: POST /oauth/clients/tx/secret
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#change-multiple-client-secrets-post-oauthclientstxsecret
+  post '/tx/secret' do
+    tx_XXX "post=tx/secret"
   end
+
+  # Register Multiple Clients: POST /oauth/clients/tx
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-multiple-clients-post-oauthclientstx
+  # XXX UAA integration test payload:
+  # [{"scope"=>["bar", "foo"], "client_id"=>"YHGvtq", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"j4tJ6r", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"3JQqKI", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"dFJXGx", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"7e1eWO", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}]
+  post '/tx' do
+    tx_XXX "post=tx"
+  end
+
+  # Update Multiple Clients: PUT /oauth/clients/tx
+  # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-multiple-clients-put-oauthclientstx
+  put '/tx' do
+    tx_XXX "put=tx"
+  end
+
+  # XXX Dev code for tx additions:
+  def tx_XXX _caller
+    logger.debug "tx_XXX - #{_caller}"
+    logger.debug read_json_body.inspect
+  end
+
+
+
 
   def handle_save_error client
     status((client.errors[:identifier] && client.errors[:identifier].any?{|e|e =~ /taken/}) ? 409 : 400)
