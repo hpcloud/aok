@@ -16,7 +16,7 @@ module UaaSpringSecurityUtils
     attr_accessor :beans, :path_rules, :logger, :files
 
     def initialize(glob_pattern="/s/code/uaa/uaa/src/main/webapp/**/*.xml")
-      self.files = Dir.glob(glob_pattern)
+      self.files = Dir.glob(glob_pattern).sort
       raise "Files list is empty!" if files.empty?
     end
 
