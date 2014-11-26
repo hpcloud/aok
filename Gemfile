@@ -17,7 +17,7 @@ gem 'attr_required'     ,    '0.0.5'
 gem 'axiom-types'       ,    '0.0.5'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
-gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git"
+# gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'ci_reporter'       , :groups => [:test]
 gem 'coercible'         ,    '1.0.0'
@@ -90,7 +90,7 @@ gem 'simplecov-rcov'    , :groups => [:test]
 gem 'sinatra'           ,    '1.3.6', :require => 'sinatra/base'
 gem 'sqlite3'           ,    '1.3.7'
 gem 'squash_ruby'       ,    '1.4.0'
-gem 'stackato-kato'     ,    '3.0.0'
+# gem 'stackato-kato'     ,    '3.0.0'
 gem 'steno'             ,    '1.2.2'
 gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.6.1'
