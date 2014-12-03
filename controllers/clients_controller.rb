@@ -32,13 +32,13 @@ class ClientsController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-client-post-oauthclientsclient_id
   post "/?" do
     client_details = read_json_body
-    client = Client.new
-    set_client_details client, client_details, :allow_secret
-    if client.save
-      return 201, client_hash(client).to_json
+    resp, success = client_create(client_details)
+    code = if success
+      201
     else
-      handle_save_error client
+      (resp[:error_description] && resp[:error_description] =~ /identifier.+?taken/i) ? 409 : 400
     end
+    return code, resp.to_json
   end
 
   def set_client_details(client, client_details, allow_secret = false)
@@ -60,23 +60,15 @@ class ClientsController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-client-put-oauthclientsclient_id
   put '/:identifier' do
     cd = read_json_body
-    client = Client.find_by_identifier params[:identifier]
-    raise Aok::Errors::NotFound.new("Client not found.") unless client
-    set_client_details client, cd
-    if client.save
-      return 200, client_hash(client).to_json
-    else
-      handle_save_error client
-    end
+    resp, success = client_update(cd, params[:identifier])
+    return success ? 200 : 400, resp.to_json
   end
 
   # Delete Client
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#delete-client-delete-oauthclientsclient_id
   delete '/:identifier' do
-    client = Client.find_by_identifier params[:identifier]
-    raise Aok::Errors::NotFound.new("Client not found.") unless client
-    client.destroy
-    return
+    resp, success = client_delete(params[:identifier])
+    return success ? 200 : 400, resp.to_json
   end
 
   # Change Client Secret
@@ -92,52 +84,117 @@ class ClientsController < ApplicationController
     if client.save
       return 200, {'status' => 'saved'}.to_json
     else
-      handle_save_error client
+      handle_save_error(client).to_json
     end
-
   end
 
   # Register, update or delete Multiple Clients: POST /oauth/clients/tx/modify
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-update-or-delete-multiple-clients-post-oauthclientstxmodify
   post '/tx/modify' do
-    tx_XXX "post=tx/modify"
+    response_details = nil
+    tx_success = true
+    Client.transaction do
+      clients_details = read_json_body
+      response_details = clients_details.collect do |client_details|
+        case client_details['action']
+        when 'add'
+          resp, success = client_create(client_details)
+          tx_success &= success
+          resp
+        when 'update'
+          resp, success = client_update(client_details)
+          tx_success &= success
+          resp
+        when 'delete'
+          resp, success = client_delete(client_details['client_id'])
+          tx_success &= success
+          resp
+        else
+          logger.debug "unknown action #{client_details['action'].inspect}"
+          raise Aok::Errors::NotImplemented
+        end
+      end
+      raise ActiveRecord::Rollback unless tx_success
+    end
+    return tx_success ? 200 : 400, response_details.to_json
   end
 
   # Change Multiple Client Secrets: POST /oauth/clients/tx/secret
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#change-multiple-client-secrets-post-oauthclientstxsecret
   post '/tx/secret' do
-    tx_XXX "post=tx/secret"
+    raise Aok::Errors::NotImplemented
   end
 
   # Register Multiple Clients: POST /oauth/clients/tx
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#register-multiple-clients-post-oauthclientstx
-  # XXX UAA integration test payload:
-  # [{"scope"=>["bar", "foo"], "client_id"=>"YHGvtq", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"j4tJ6r", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"3JQqKI", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"dFJXGx", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}, {"scope"=>["bar", "foo"], "client_id"=>"7e1eWO", "client_secret"=>"secret", "authorized_grant_types"=>["client_credentials"], "authorities"=>["uaa.none"], "foo"=>["bar"]}]
   post '/tx' do
-    tx_XXX "post=tx"
+    response_details = nil
+    tx_success = true
+    Client.transaction do
+      clients_details = read_json_body
+      response_details = clients_details.collect do |client_details|
+        resp, success = client_create(client_details)
+        tx_success &= success
+        resp
+      end
+      raise ActiveRecord::Rollback unless tx_success
+    end
+
+    return tx_success ? 201 : 400, response_details.to_json
   end
 
   # Update Multiple Clients: PUT /oauth/clients/tx
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#update-multiple-clients-put-oauthclientstx
   put '/tx' do
-    tx_XXX "put=tx"
+    response_details = nil
+    tx_success = true
+    Client.transaction do
+      clients_details = read_json_body
+      response_details = clients_details.collect do |client_details|
+        resp, success = client_update(client_details)
+        tx_success &= success
+        resp
+      end
+      raise ActiveRecord::Rollback unless tx_success
+    end
+    return tx_success ? 200 : 400, response_details.to_json
   end
 
-  # XXX Dev code for tx additions:
-  def tx_XXX _caller
-    logger.debug "tx_XXX - #{_caller}"
-    logger.debug read_json_body.inspect
+  def client_create(client_details)
+    client = Client.new
+    set_client_details client, client_details, :allow_secret
+    if client.save
+      return client_hash(client), true
+    else
+      return handle_save_error(client), false
+    end
   end
 
+  def client_update(client_details, identifier=nil)
+    identifier ||= client_details['client_id']
+    client = Client.find_by_identifier identifier.to_s
+    raise Aok::Errors::NotFound.new("Client #{identifier} does not exist") unless client
+    set_client_details client, client_details
+    if client.save
+      return client_hash(client), true
+    else
+      return handle_save_error(client), false
+    end
+  end
 
+  def client_delete(identifier)
+    client = Client.find_by_identifier identifier.to_s
+    logger.debug "Client #{identifier} does not exist"
+    raise Aok::Errors::NotFound.new("Client #{identifier} does not exist") unless client
+    client.destroy
+    return client_hash(client), true
+  end    
 
-
-  def handle_save_error client
-    status((client.errors[:identifier] && client.errors[:identifier].any?{|e|e =~ /taken/}) ? 409 : 400)
+  def handle_save_error(client)
     return  {
       :error => "invalid_#{client.class.name.underscore}",
       :error_description => client.errors.full_messages.join('. ')
-    }.to_json
+    }
   end
 
   # List Tokens for Client
