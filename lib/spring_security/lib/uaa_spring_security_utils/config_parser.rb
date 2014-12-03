@@ -15,8 +15,11 @@ module UaaSpringSecurityUtils
 
     attr_accessor :beans, :path_rules, :logger, :files
 
-    def initialize(glob_pattern="/s/code/uaa/uaa/src/main/webapp/**/*.xml")
-      self.files = Dir.glob(glob_pattern)
+    # This takes an array of the filepaths you want to parse, in the order
+    # they should be applied. Imports will be processed, so in our case we
+    # can just import the root spring-servlet.xml file
+    def initialize(files)
+      self.files = files
       raise "Files list is empty!" if files.empty?
     end
 
@@ -71,26 +74,41 @@ module UaaSpringSecurityUtils
       return hash
     end
 
-    def index_beans
-      @beans = {}
-      files.each do |f|
-        xml = Nokogiri::XML.parse(File.read f)
-        bean_nodes = xml.xpath('//*[@id]')
-        bean_nodes.each do |bean_node|
-          beans[bean_node['id']] = bean_node
-        end
+    def index_beans_in_file(f)
+      xml = Nokogiri::XML.parse(File.read f)
+      bean_nodes = xml.xpath('//*[@id]')
+      bean_nodes.each do |bean_node|
+        beans[bean_node['id']] = bean_node
+      end
+      xml.xpath('//beans:import', NS_DEF).each do |node|
+        import_path = File.join(File.dirname(f), node['resource'])
+        index_beans_in_file(import_path)
       end
     end
 
     def parse
-      index_beans
+      @beans = {}
+      files.each do |f|
+        index_beans_in_file(f)
+      end
       raise "no beans!" if beans.empty?
       @path_rules = []
       files.each do |f|
-        xml = Nokogiri::XML.parse(File.read f)
-        # xml.xpath('//sec:http', NS_DEF).each do |node|
-        xml.xpath('//sec:http', NS_DEF).each do |node|
+        import(f)
+      end
+    end
+
+    def import(f)
+      xml = Nokogiri::XML.parse(File.read f)
+      xml.xpath('//sec:http | //beans:import', NS_DEF).each do |node|
+        case node.name
+        when 'import'
+          import_path = File.join(File.dirname(f), node['resource'])
+          import(import_path)
+        when 'http'
           path_rules << node_to_hash(node)
+        else
+          raise "unexpected node type #{node.name.inspect}"
         end
       end
     end
