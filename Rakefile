@@ -90,7 +90,7 @@ namespace :test do
     require 'pty'
     cmd = "mvn test -P aok --projects uaa"
     begin
-      ENV['VCAP_BVT_TARGET']="#{ENV["VMNAME"]}.local"
+      ENV['VCAP_BVT_TARGET']="#{ENV["AOK_API_URL"]}"
       PTY.spawn( cmd ) do |stdin, stdout, pid|
         begin
           # Do stuff with the output here. Just printing to show it works
@@ -116,7 +116,7 @@ namespace :test do
     require 'pty'
     cmd = "mvn package"
     begin
-      ENV['VCAP_BVT_TARGET']="#{ENV["VMNAME"]}.local"
+      ENV['VCAP_BVT_TARGET']="#{ENV["AOK_API_URL"]}"
       PTY.spawn( cmd ) do |stdin, stdout, pid|
         begin
           # Do stuff with the output here. Just printing to show it works
@@ -148,7 +148,7 @@ namespace :test do
 
     dir = '../uaa/uaa/target/surefire-reports'
     `grep  -L -E "<(failure|error|skipped)" #{dir}/* | xargs rm`
-    `#{viewer} -n #{dir}`
+    `#{viewer} #{dir}`
   end
 
   desc "Set up aok's config for testing. Insecure, not for production."
