@@ -1,4 +1,4 @@
-VM=$(VMNAME).local
+VM=$(AOK_API_URL)
 
 EXTERNAL_VERSION=0.0.6
 
@@ -68,10 +68,10 @@ console:
 	bundle exec irb -r './config/boot'
 
 vmname:
-ifndef VMNAME
-	@echo "You need to set VMNAME. Something like this:"
+ifndef AOK_API_URL
+	@echo "You need to set AOK_API_URL. Something like this:"
 	@echo
-	@echo "export VMNAME=stackato-g4jx"
+	@echo "export AOK_API_URL=stackato-g4jx.local"
 	@echo
 	@exit 1
 endif
