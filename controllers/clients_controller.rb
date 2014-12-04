@@ -48,7 +48,9 @@ class ClientsController < ApplicationController
     client.identifier = client.name = client_details['client_id']
     client.secret = client_details['client_secret'] if allow_secret
     client.authorized_grant_types = client_details['authorized_grant_types'].join(',')
-    client.authorities = client_details['authorities'].join(',')
+    if client_details['authorities'].kind_of? Array
+      client.authorities = client_details['authorities'].join(',')
+    end
     client.redirect_uri = client_details['redirect_uri']
 
     # TODO: once we have schema for this, store in the db
