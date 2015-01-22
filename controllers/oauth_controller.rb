@@ -91,7 +91,7 @@ class OauthController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
-  helpers do
+  module Helpers
     def respond(status, header, response)
       if env['aok.finishable_error']
         return env['aok.finishable_error'].finish
@@ -246,5 +246,7 @@ class OauthController < ApplicationController
     end
 
   end
+
+  helpers Helpers
 
 end
