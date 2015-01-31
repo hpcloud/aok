@@ -47,6 +47,29 @@ class OauthController < ApplicationController
     end.call(env)
   end
 
+  # Token revocation endpoint
+  # Request body should be form encoded containing:
+  # - token = {token}
+  # - token_type = {access|refresh}_token
+  post '/revoke' do
+    authenticate!(:basic)
+    client = security_context.client
+    token = params[:token]
+    token_type = params[:token_type]
+
+    parsed_token = parse_oauth_token(token, token_type)
+
+    # Tokens can only be revoked by the client that created them.
+    if parsed_token.client_id != client.id
+      raise Aok::Errors::AccessDenied.new('You do not have access to revoke this token')
+    end
+
+    # Revoke the found token
+    parsed_token.revoke!
+
+    204
+  end
+
   # Note: UAA has overloaded this endpoint
   #
   # Browser Requests Code

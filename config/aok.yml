@@ -148,7 +148,7 @@ oauth:
     cloud_controller:
       secret: cloudcontrollersecret
       authorized_grant_types: client_credentials
-      authorities: scim.read,scim.write,clients.read,clients.write
+      authorities: uaa.resource,scim.read,scim.write,clients.read,clients.write
       scope: uaa.none
   users:
     default_authorities:

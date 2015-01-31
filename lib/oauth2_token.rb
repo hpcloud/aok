@@ -25,6 +25,11 @@ module Oauth2Token
     self.save!
   end
 
+  def revoke!
+    self.revoked = true
+    self.save!
+  end
+
   def initialize *args
     super *args
     setup

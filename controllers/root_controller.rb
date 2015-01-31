@@ -48,6 +48,21 @@ class RootController < ApplicationController
     }.to_json
   end
 
+  # OAuth2 Token Introspection Endpoint
+  # Based off working draft - https://tools.ietf.org/html/draft-ietf-oauth-introspection-04
+  # Requires the following form encoded data:
+  # - token = {token}
+  # - token_type = {access|refresh}_token
+  get '/uaa/check_token/?', :provides => :json do
+    # Get and validate the required parameters
+    token = params[:token]
+    token_type = params[:token_type]
+
+    parsed_token = parse_oauth_token(token, token_type)
+
+    parsed_token.to_json
+  end
+
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
   post '/uaa/check_token/?' do
