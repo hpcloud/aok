@@ -186,17 +186,18 @@ class RootController < ApplicationController
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#logout-get-logoutdo
   get '/uaa/logout.do', :provides => :html do
     # Revoke user tokens access tokens on logout.
-    begin
-      user = current_user
-      if user
-        user.access_tokens.each do |token|
+    user = current_user
+    if user && user.access_tokens
+      user.access_tokens.each do |token|
+        begin
           token.revoke!
+        rescue Exception => e
+          # Do not stop the logout process if we are unable to revoke a users token
+          logger.error "Unable to revoke user's access token(s): #{e.message}"
         end
       end
-    rescue Exception => e
-      # Do not stop the logout process if we are unable to revoke a users token
-      logger.debug "Unable to revoke user's access token(s): #{e.message}"
     end
+
     session.destroy
     redirect to('/')
   end
