@@ -218,7 +218,7 @@ class OauthController < ApplicationController
         core = Proc.new do
           raise(Aok::Errors::Unauthorized.new) unless identity
           redirect_uri = begin
-            client.identifier == 'cf' ? substitute_redirect_uri(client.redirect_uri, req.params['redirect_uri']) : client.redirect_uri
+            substitute_redirect_uri(client.redirect_uri, req.params['redirect_uri'])
           rescue
             logger.error "Couldn't parse redirect uri for #{client.identifier.inspect}. URI was #{client.redirect_uri.inspect}."
             nil
@@ -263,7 +263,10 @@ class OauthController < ApplicationController
         return desired_redirect_uri
       end
       u = URI.parse abstract_uri
-      u.host = CCConfig[:external_domain]
+      # Clients can use the special host 'ENDPOINT' to have the clusters host substitued in
+      if u.host == 'ENDPOINT'
+        u.host = CCConfig[:external_domain]
+      end
       return u.to_s
     end
 
