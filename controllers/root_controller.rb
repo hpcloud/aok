@@ -60,7 +60,7 @@ class RootController < ApplicationController
 
     parsed_token = parse_oauth_token(token, token_type)
 
-    parsed_token.to_json
+    parsed_token.to_json(:methods => [:active])
   end
 
   # OAuth2 Token Validation Service

@@ -24,17 +24,6 @@ module TokenHelper
       raise Aok::Errors::NotFound.new
     end
 
-    # Specify if the token is currently active or not
-    # Token is active unless it has been revoked or has expired.
-    # xxx: Move this to the oauth_token model
-    active = true
-    if parsed_token.revoked
-      active = false
-    elsif parsed_token.expires_in <= 0
-      active = false
-    end
-    parsed_token[:active] = active
-
     parsed_token
   end
 end
