@@ -52,19 +52,30 @@ class RootController < ApplicationController
   # Based off working draft - https://tools.ietf.org/html/draft-ietf-oauth-introspection-04
   # Requires the following form encoded data:
   # - token = {token}
-  # - token_type = {access|refresh}_token
-  get '/uaa/check_token/?', :provides => :json do
+  # - token_type_hint = {access|refresh}_token
+  post '/uaa/check_token', :provides => :json do
     # Get and validate the required parameters
-    token = params[:token]
-    token_type = params[:token_type]
+    token = params['token']
+    token_type_hint = params['token_type_hint']
 
-    parsed_token = parse_oauth_token(token, token_type)
+    # Use the standard token decoder to gather the return content
+    decoded_token = CF::UAA::TokenCoder.decode(
+        token,
+        {
+            :skey => AppConfig[:jwt][:token][:signing_key]
+        }
+    )
 
-    parsed_token.to_json(:methods => [:active])
+    # Validate the token and add the active property to the return data
+    parsed_token = parse_oauth_token(token, token_type_hint)
+    decoded_token[:active] = parsed_token.active
+
+    decoded_token.to_json
   end
 
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
+  # xxx: 2015-02 Check on the validity and usage of this endpoint to be merged with the introspection endpoint above
   post '/uaa/check_token/?' do
 
     # if no token is specified use the 'current' token
