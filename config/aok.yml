@@ -152,7 +152,7 @@ oauth:
       scope: uaa.none
     doppler:
       secret: dopplersecret
-      authorized_grant_types: authorization_code refresh_token
+      authorized_grant_types: authorization_code,refresh_token
       authorities: uaa.resource
       scope: uaa.none
   users:
