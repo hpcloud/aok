@@ -139,7 +139,7 @@ oauth:
     cf:
       authorized_grant_types: password,implicit
       authorities: uaa.none
-      scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write
+      scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose
       redirect_uri: https://ENDPOINT/console/oauth.html # host will be overwritten with cluster endpoint
     srest:
       secret: 'changeme'
