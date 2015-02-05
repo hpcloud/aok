@@ -151,7 +151,7 @@ oauth:
       authorities: scim.read,scim.write,clients.read,clients.write
       scope: uaa.none
     doppler:
-      secret: dopplersecret
+      secret: secret
       authorized_grant_types: authorization_code,refresh_token
       authorities: uaa.resource
       scope: uaa.none
