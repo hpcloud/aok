@@ -152,6 +152,11 @@ oauth:
       authorized_grant_types: client_credentials
       authorities: scim.read,scim.write,clients.read,clients.write
       scope: uaa.none
+    doppler:
+      secret: secret
+      authorized_grant_types: authorization_code,refresh_token
+      authorities: uaa.resource
+      scope: uaa.none
   users:
     default_authorities:
         - openid
