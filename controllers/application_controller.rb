@@ -2,7 +2,7 @@ require 'logger'
 require 'kato/local/node'
 
 class ApplicationController < Sinatra::Base
-  helpers ApplicationHelper, CurrentUserHelper, ErrorHandlingHelper
+  helpers ApplicationHelper, CurrentUserHelper, ErrorHandlingHelper, TokenHelper
 
   set :raise_errors, true # throw exceptions up the rack stack
   set :show_exceptions, false # disable html error pages

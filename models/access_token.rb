@@ -24,6 +24,11 @@ class AccessToken < ActiveRecord::Base
 
   private
 
+  # Automatically load the active field from oauth2_token on find.
+  after_find do
+    init_active
+  end
+
   def setup
     super
     if refresh_token && !persisted?

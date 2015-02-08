@@ -1,4 +1,8 @@
 module Oauth2Token
+  # Non database attribute to show if this token is still active
+  # Note: init_active needs to be called for this to be set (automatically done on finds of access|refresh_tokens)
+  attr_accessor :active
+
   def self.included(klass)
     klass.class_eval do
       cattr_accessor :default_lifetime
@@ -23,6 +27,23 @@ module Oauth2Token
   def expired!
     self.expires_at = Time.now.utc
     self.save!
+  end
+
+  def revoke!
+    self.revoked = true
+    self.save!
+  end
+
+  # Initializes the non-persisted :active attribute
+  def init_active
+    active = true
+    if self.revoked
+      active = false
+    elsif self.expires_in <= 0
+      active = false
+    end
+
+    self.active = active
   end
 
   def initialize *args
