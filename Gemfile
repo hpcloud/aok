@@ -79,7 +79,9 @@ gem 'rerun'             ,    '0.8.2', :groups => [:development]
 gem 'rspec'             ,   '2.14.1'
 gem 'rspec-core'        ,   '2.14.7'
 gem 'rspec-expectations',   '2.14.4'
+gem 'rspec-instafail'   , :groups => [:test]
 gem 'rspec-mocks'       ,   '2.14.4'
+gem 'rubocop'           , :groups => [:test]
 gem 'ruby-openid'       ,    '2.3.0'
 gem 'ruby-openid-apps-discovery',    '1.2.0'
 gem 'ruby-termios'      ,    '0.9.6'
