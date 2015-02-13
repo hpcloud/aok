@@ -1,7 +1,7 @@
 
 [program:aok]
 directory=/s/code/aok
-command=/opt/rubies/current/bin/bundle exec bin/aok
+command=/home/stackato/.rbenv/shims/bundle exec bin/aok
 priority=2
 redirect_stderr=true
 stdout_logfile=/s/logs/aok.log
