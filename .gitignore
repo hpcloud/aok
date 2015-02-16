@@ -12,3 +12,6 @@ STDOUT
 STDERR
 
 .idea/
+
+# Testing output
+rspec-junit.xml
