@@ -17,6 +17,6 @@ namespace :spec do
     options[:path] ||= 'spec/unit'
     options[:format] ||= 'RSpec::Instafail'
     puts "Running rspec against '#{options[:path]}'..."
-    sh "bundle exec rspec #{options[:path]} --require rspec/instafail --format RSpec::Instafail  --format RspecJunitFormatter --out rspec.xml"
+    sh "bundle exec rspec #{options[:path]} --require rspec/instafail --format RSpec::Instafail  --format RspecJunitFormatter --out rspec-junit.xml"
   end
 end
