@@ -79,6 +79,7 @@ gem 'rerun'             ,    '0.8.2', :groups => [:development]
 gem 'rspec'             ,   '2.14.1'
 gem 'rspec-core'        ,   '2.14.7'
 gem 'rspec-expectations',   '2.14.4'
+gem 'rspec_junit_formatter', :groups => [:test]
 gem 'rspec-instafail'   , :groups => [:test]
 gem 'rspec-mocks'       ,   '2.14.4'
 gem 'rubocop'           , :groups => [:test]
