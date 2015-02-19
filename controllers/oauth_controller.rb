@@ -91,7 +91,7 @@ class OauthController < ApplicationController
     raise Aok::Errors::NotImplemented
   end
 
-  helpers do
+  module Helpers
     def respond(status, header, response)
       if env['aok.finishable_error']
         return env['aok.finishable_error'].finish
@@ -236,14 +236,17 @@ class OauthController < ApplicationController
     # we don't redirect outside the cluster.
     require 'dev_mode'
     def substitute_redirect_uri abstract_uri, desired_redirect_uri
-      if dev_mode? and URI.parse(desired_redirect_uri).host == '127.0.0.1'
-        return desired_redirect_uri
-      end
+      d = URI.parse(desired_redirect_uri)
+      return desired_redirect_uri if dev_mode? and d.host == '127.0.0.1'
       u = URI.parse abstract_uri
-      u.host = CCConfig[:external_domain]
+      # The host may be :external_domain or any of the :cluster_endpoint_aliases
+      aliases = Kato::Config.get('router2g')['cluster_endpoint_aliases']
+      u.host = aliases.include?(d.host) ? d.host : CCConfig[:external_domain]
       return u.to_s
     end
 
   end
+
+  helpers Helpers
 
 end
