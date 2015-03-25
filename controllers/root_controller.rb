@@ -51,8 +51,16 @@ class RootController < ApplicationController
   # OAuth2 Token Validation Service
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#oauth2-token-validation-service-post-check_token
   post '/uaa/check_token/?' do
+
+    # if no token is specified use the 'current' token
+    token = params[:token]
+    if !token
+     authenticate!
+     token = security_context.raw_token
+    end
+
     CF::UAA::TokenCoder.decode(
-      params[:token],
+      token,
       {
         :skey => AppConfig[:jwt][:token][:signing_key]
       }
