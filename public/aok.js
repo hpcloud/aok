@@ -9,7 +9,7 @@ Settings = {
     setting_defaults: {
         product_name: 'Stackato',
         company_name: 'ActiveState Software',
-        vendor_version: '3.5.0',
+        vendor_version: '3.6.0',
         default_locale: 'en',
         product_logo_favicon_url: '/console/img/stackato_logo_favicon.png',
         product_logo_header_url: '/console/img/stackato_logo_header.png',
