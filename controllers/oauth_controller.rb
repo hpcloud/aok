@@ -195,7 +195,7 @@ class OauthController < ApplicationController
         core = Proc.new do
           raise(Aok::Errors::Unauthorized.new) unless identity
           redirect_uri = begin
-            client.identifier == 'cf' ? substitute_redirect_uri(client.redirect_uri, req.params['redirect_uri']) : client.redirect_uri
+            substitute_redirect_uri(client.redirect_uri, req.params['redirect_uri'])
           rescue
             logger.error "Couldn't parse redirect uri for #{client.identifier.inspect}. URI was #{client.redirect_uri.inspect}."
             nil
@@ -239,9 +239,12 @@ class OauthController < ApplicationController
       d = URI.parse(desired_redirect_uri)
       return desired_redirect_uri if dev_mode? and d.host == '127.0.0.1'
       u = URI.parse abstract_uri
-      # The host may be :external_domain or any of the :cluster_endpoint_aliases
-      aliases = Kato::Config.get('router2g')['cluster_endpoint_aliases']
-      u.host = aliases.include?(d.host) ? d.host : CCConfig[:external_domain]
+      # Clients can use the special host 'ENDPOINT' to have the clusters host substitued in
+      if u.host == 'ENDPOINT'
+	      # The host may be :external_domain or any of the :cluster_endpoint_aliases
+	      aliases = Kato::Config.get('router2g')['cluster_endpoint_aliases']
+	      u.host = aliases.include?(d.host) ? d.host : CCConfig[:external_domain] 
+      end
       return u.to_s
     end
 
