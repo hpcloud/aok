@@ -1,6 +1,6 @@
 source (ENV['RUBYGEMS_MIRROR'] or 'https://rubygems.org')
 
-ruby '1.9.3' # prevents hard-to-diagnose errors with bundle install
+ruby '2.1.5' # prevents hard-to-diagnose errors with bundle install
 
 gem 'sinatra', '~>1.3.3', :require => 'sinatra/base'
 
@@ -32,7 +32,7 @@ gem 'thin'
 
 # ActiveRecord stuff
 gem 'rake'
-gem 'activerecord', '~> 3.2.17', :require => 'active_record'
+gem 'activerecord', '~> 3.2.18', :require => 'active_record'
 gem 'pg'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => 'bcrypt'
 

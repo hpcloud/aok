@@ -1,4 +1,4 @@
-IT
+GIT
   remote: git://github.com/ActiveState/omniauth-ldap.git
   revision: cb42223104b4ef0f3552414f2a6adb3bca537c3a
   specs:
