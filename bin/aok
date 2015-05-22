@@ -9,17 +9,17 @@ app = Rack::Adapter.load(File.join(File.dirname(__FILE__), '..', 'config.ru'))
 
 EM.run do
   bind_address = Kato::Local::Node.get_local_node_id
-  server = Thin::Server.new(bind_address, AppConfig[:port], :signals => false)
+  @server = Thin::Server.new(bind_address, AppConfig[:port], :signals => false)
 
   # Set default time zone to UTC to prevent ActiveRecord from converting times to local timezone before storing
   ActiveRecord::Base.default_timezone = :utc
 
   ENV['RACK_ENV'] = 'production'
-  server.app = app
+  @server.app = app
   # The routers proxying to us handle killing inactive connections. Set an upper limit
   # just to be safe.
-  server.timeout = 15 * 60 # 15 min
-  server.start
+  @server.timeout = 15 * 60 # 15 min
+  @server.start
 
   def register_component(message_bus)
     VCAP::Component.register(
@@ -44,10 +44,38 @@ EM.run do
     )
   end
 
+  def stop_router_registrar(&blk)
+    puts "Unregistering with router"
+    @registrar.shutdown(&blk)
+  end
+
+  def stop!
+    puts "Stopping AOK"
+    stop_router_registrar do
+      @server.stop
+      EM.stop
+      puts "AOK stopped"
+    end
+  end
+
   require "cf_message_bus/message_bus"
   message_bus = CfMessageBus::MessageBus.new(:uri => CCConfig[:message_bus_servers].first, :logger => ApplicationController.logger)
   register_component(message_bus)
   registrar.register_with_router
 
+  %w(TERM INT QUIT).each do |signal|
+    trap(signal) do
+      EM.add_timer(0) do
+        puts "Caught signal #{signal}" 
+        stop!
+      end
+    end
+  end
 
+  trap('USR2') do
+    EM.add_timer(0) do
+      puts 'Caught signal USR2' 
+      stop_router_registrar
+    end
+  end
 end
