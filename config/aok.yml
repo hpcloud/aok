@@ -152,6 +152,13 @@ oauth:
       authorized_grant_types: client_credentials
       authorities: scim.read,scim.write,clients.read,clients.write
       scope: uaa.none
+    doppler:
+      id: doppler
+      secret: dopplersecret
+      authorized_grant_types: authorization_code,refresh_token
+      authorities: uaa.resource
+      scope: uaa.none
+      description: 'Doppler client to authenticate access requests to the Loggregator firehose endpoint.'
   users:
     default_authorities:
         - openid
