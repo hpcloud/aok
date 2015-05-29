@@ -159,6 +159,13 @@ oauth:
       authorities: uaa.resource
       scope: uaa.none
       description: 'Doppler client to authenticate access requests to the Loggregator firehose endpoint.'
+    admin:
+      id: admin
+      secret: admin-secret
+      authorized_grant_types: client_credentials
+      authorities: clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write,groups.update
+      scope: uaa.none
+      description: 'Admin client to access and manage users, groups and memberships details in the AOK postgresql database (via uaac).'
   users:
     default_authorities:
         - openid
