@@ -166,6 +166,13 @@ oauth:
       authorities: clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write,groups.update
       scope: uaa.none
       description: 'Admin client to access and manage users, groups and memberships details in the AOK postgresql database (via uaac).'
+    kato:
+      id: kato
+      secret: kato-secret
+      authorized_grant_types: client_credentials
+      authorities: doppler.firehose
+      scope: uaa.none
+      description: 'Kato client to access the loggregator firehose.'
   users:
     default_authorities:
         - openid
