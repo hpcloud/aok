@@ -1,0 +1,3 @@
+[submodule "gems/kato"]
+	path = gems/kato
+	url = git@github.com:ActiveState/kato

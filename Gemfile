@@ -93,7 +93,6 @@ gem 'simplecov-rcov'    , :groups => [:test]
 gem 'sinatra'           ,    '1.3.6', :require => 'sinatra/base'
 gem 'sqlite3'           ,    '1.3.7'
 gem 'squash_ruby'       ,    '1.4.0'
-gem 'stackato-kato'     ,    '3.0.0'
 gem 'steno'             ,    '1.2.2'
 gem 'term-ansicolor'    ,    '1.0.7'
 gem 'thin'              ,    '1.6.1'
@@ -107,4 +106,7 @@ gem 'webmock'           , :groups => [:test]
 gem 'xmlparser'         ,  '0.7.2.1'
 gem 'yajl-ruby'         ,    '1.1.0'
 gem 'zxcvbn-ruby'       ,    '0.0.2', :require => 'zxcvbn'
+
+gem 'kato-common', :path => 'gems/kato/common'
+gem 'kato-config', :path => 'gems/kato/config'
 
