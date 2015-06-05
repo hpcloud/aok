@@ -46,7 +46,7 @@ gem 'rack-oauth2', '~>1.0.5'
 # CF
 gem "cf-uaa-lib", "~> 1.3.7", :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem "cf-message-bus", '~>0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git", :ref => "dbc2fc6e"
-gem "vcap_common", :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0", :require => ['cf/registrar','vcap/common','vcap/component', 'json_message']
+gem "vcap_common", :git => "https://github.com/ActiveState/vcap-common.git", :ref => "abd9790e", :require => ['cf/registrar','vcap/common','vcap/component', 'json_message']
 
 # UAA config file utilities
 gem "nokogiri", "~> 1.6.0"
