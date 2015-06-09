@@ -11,26 +11,18 @@ GIT
 GIT
   remote: https://github.com/ActiveState/cf-message-bus.git
   revision: dbc2fc6e71b70980d6d4559b39ed9451449140eb
+  ref: dbc2fc6e
   specs:
     cf-message-bus (0.0.5)
       eventmachine (~> 1.0.0)
       nats (= 0.4.26)
       vcap-concurrency
-      vcap-concurrency
       yajl-ruby
 
 GIT
-  remote: https://github.com/cloudfoundry/cf-uaa-lib.git
-  revision: 8d34eede588c7620eb22031369f9515f602df68b
-  ref: 8d34eede
-  specs:
-    cf-uaa-lib (1.3.7)
-      multi_json
-
-GIT
-  remote: https://github.com/cloudfoundry/vcap-common.git
-  revision: 41c927ee34491144924f11d1b13b12f38783431f
-  tag: v2.2.0
+  remote: https://github.com/ActiveState/vcap-common.git
+  revision: abd9790ec67a0ec4aa193ca4caf633f227e4e8b6
+  ref: abd9790e
   specs:
     vcap_common (2.2.0)
       addressable (~> 2.2)
@@ -47,6 +39,14 @@ GIT
       thin
       vmstat (~> 2.0)
       yajl-ruby
+
+GIT
+  remote: https://github.com/cloudfoundry/cf-uaa-lib.git
+  revision: 8d34eede588c7620eb22031369f9515f602df68b
+  ref: 8d34eede
+  specs:
+    cf-uaa-lib (1.3.7)
+      multi_json
 
 GEM
   remote: https://rubygems.org/
