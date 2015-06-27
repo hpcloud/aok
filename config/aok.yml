@@ -146,7 +146,7 @@ oauth:
       authorized_grant_types: authorization_code
       authorities: uaa.none
       scope: uaa.resource,cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write
-      redirect_uri: https://ENDPOINT/srest/console/auth/callback
+      redirect_uri: https://ENDPOINT/srest/proxy/srest-api/console/auth/callback
     cloud_controller:
       secret: cloudcontrollersecret
       authorized_grant_types: client_credentials
