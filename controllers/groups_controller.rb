@@ -101,21 +101,31 @@ class GroupsController < ApplicationController
       identities = []
       groups = []
       group_details['members'].each do |member_hash|
-        case member_hash['type']
-        when 'GROUP'
-          g = Group.find_by_guid member_hash['value']
-          if g.nil?
-            raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
+        if !member_hash['type'].nil?
+          case member_hash['type']
+          when 'GROUP'
+            g = Group.find_by_guid member_hash['value']
+            if g.nil?
+              raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
+            end
+            groups << g
+          when 'USER', nil
+            i = Identity.find_by_guid member_hash['value']
+            if i.nil?
+              raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
+            end
+            identities << i
+          else
+            raise Aok::Errors::ScimGroupInvalid.new("Invalid group: Group member type #{member_hash['type'].inspect} not supported.")
           end
-          groups << g
-        when 'USER', nil
-          i = Identity.find_by_guid member_hash['value']
+        elsif !member_hash.nil?
+          i = Identity.find_by_guid member_hash
           if i.nil?
             raise Aok::Errors::ScimGroupInvalid.new("Invalid group member: #{member_hash['value']}.")
           end
           identities << i
         else
-          raise Aok::Errors::ScimGroupInvalid.new("Invalid group: Group member type #{member_hash['type'].inspect} not supported.")
+          raise Aok:Errors::ScimGroupInvalid.new("Invalid members details: #{member_hash}")
         end
       end
       group.groups = groups.uniq

@@ -9,6 +9,7 @@ required_groups = %W{
   scim.read
   scim.write
   uaa.user
+  doppler.firehose
 } + AppConfig[:oauth][:users][:default_authorities]
 
 required_groups.uniq.each do |name|
