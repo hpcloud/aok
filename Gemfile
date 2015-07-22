@@ -17,7 +17,7 @@ gem 'attr_required'     ,    '0.0.5'
 gem 'axiom-types'       ,    '0.0.5'
 gem 'bcrypt-ruby'       ,    '3.0.1', :require => 'bcrypt'
 gem 'builder'           ,    '3.0.4'
-gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git"
+gem 'cf-message-bus'    ,    '0.0.5', :git => "https://github.com/ActiveState/cf-message-bus.git", :ref => "dbc2fc6e"
 gem 'cf-uaa-lib'        ,    '1.3.7', :git => "https://github.com/cloudfoundry/cf-uaa-lib.git", :ref => "8d34eede"
 gem 'ci_reporter'       , :groups => [:test]
 gem 'coercible'         ,    '1.0.0'
@@ -100,7 +100,7 @@ gem 'thin'              ,    '1.6.1'
 gem 'tilt'              ,    '1.4.1'
 gem 'tzinfo'            ,   '0.3.38'
 gem 'vcap-concurrency'  ,    '0.1.0'
-gem 'vcap_common'       ,    '2.2.0', :require => ['cf/registrar','vcap/common','vcap/component', 'json_message'], :git => "https://github.com/cloudfoundry/vcap-common.git", :tag => "v2.2.0"
+gem 'vcap_common'       ,    '2.2.0', :require => ['cf/registrar','vcap/common','vcap/component', 'json_message'], :git => "https://github.com/ActiveState/vcap-common.git", :ref => "abd9790e"
 gem 'virtus'            ,    '1.0.1'
 gem 'vmstat'            ,    '2.1.0'
 gem 'webmock'           , :groups => [:test]
