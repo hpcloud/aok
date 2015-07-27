@@ -23,6 +23,7 @@ $: << File.expand_path('../../lib', __FILE__)
   helpers/application_helper
   helpers/current_user_helper
   helpers/error_handling_helper
+  helpers/user_helper
 
   controllers/application_controller
   controllers/login_endpoint
