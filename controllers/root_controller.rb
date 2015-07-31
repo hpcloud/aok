@@ -1,6 +1,8 @@
 require 'time'
 require 'uaa'
 class RootController < ApplicationController
+  helpers UserHelper
+
   # TODO: Move to config
   MIMIMUM_PASSWORD_SCORE = 0
 
@@ -147,9 +149,24 @@ class RootController < ApplicationController
 
   # Converting UserIds to Names
   # https://github.com/cloudfoundry/uaa/blob/master/docs/UAA-APIs.rst#converting-userids-to-names
-  # Note: This will probably not be implemented in AOK
   get '/uaa/ids/Users/?' do
-    raise Aok::Errors::NotImplemented
+    # Filter _must_ be provided to this endpoint
+    if params[:filter].blank?
+      raise Aok::Errors::ScimFilterError.new("SCIM filter must be provided to this endpoint")
+    end
+
+    # As per the spec, only 'id' and 'userName' are allowed as filter fields and 'eq' as operation filters
+    filter = Aok::Scim::ActiveRecordQueryBuilder.new.build_query(
+        params[:filter],
+        {
+            :allowed_ops => ['eq'],
+            :allowed_fields => ['id', 'username']
+        }
+    )
+
+    users = query_users_as_scim(filter, params)
+
+    users.to_json
   end
 
   # Query the strength of a password

@@ -23,9 +23,32 @@ module Aok
         'usertype' => 'user_type',
         'displayname' => 'name',
       }
+      # Filter boolean expressions
+      BooleanExpressions = ['or', 'and']
 
-      def build_query(filter)
+      def build_query(filter, opts = {})
+        # Parse the filter into a RPN stack
         @rpn = SCIM::Query::Filter::Parser.new.parse(filter).rpn
+
+        # Check if restricted fields are provided and ensure only these are set.
+        valid_fields = []
+        if opts[:allowed_ops]
+          valid_fields.push(*opts[:allowed_ops])
+        end
+        if opts[:allowed_fields]
+          valid_fields.push(*opts[:allowed_fields])
+        end
+
+        if valid_fields.length > 0
+          valid_fields.push(*BooleanExpressions)
+          @rpn.each do |field|
+            if !field.start_with?('"') && !valid_fields.include?(field)
+              raise Aok::Errors::ScimFilterError.new("Filter list includes a field/op '#{field}' not in the allowed list")
+            end
+          end
+        end
+
+
         finalize eval_expr
       end
 
