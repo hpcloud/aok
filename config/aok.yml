@@ -151,7 +151,7 @@ oauth:
       secret: cloudcontrollersecret
       authorized_grant_types: client_credentials
       authorities: scim.read,scim.write,clients.read,clients.write
-      scope: uaa.none
+      scope: uaa.none,scim.userids
     doppler:
       id: doppler
       secret: dopplersecret
